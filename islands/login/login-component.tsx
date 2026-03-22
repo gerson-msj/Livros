@@ -43,18 +43,18 @@ export default function Login(props: { model: ILoginModel }) {
     }
 
     try {
-      const response = await fetch("/login", {
+      const response = await fetch("/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(model.value)
       })
-
-      const data: ILoginData = await response.json()
+      
       if (response.ok) {
-        window.location.href = "/biblioteca"
+        globalThis.location.href = "/biblioteca"
       } else {
+        const data: ILoginData = await response.json()
         errMsgs.value = [data.errMsg ?? `Status: ${response.status}.`]
       }
     } catch (error) {
@@ -81,7 +81,7 @@ export default function Login(props: { model: ILoginModel }) {
       />
 
       <div class="buttons">
-        <button type="button" class="button is-primary" onClick={() => cadastrar()}>Entrar</button>
+        <button type="button" class="button is-primary" onClick={() => entrar()}>Entrar</button>
         <a href="/cadastro" class="button is-dark is-responsive">Cadastrar</a>
         <a href="/recuperar_senha" class="button is-dark is-responsive">Recuperar Senha</a>
       </div>

@@ -33,16 +33,18 @@ export const handler = define.handlers<ILoginData>({
     if (model.validationResults.length > 0) {
       data.errMsg = "Dados inválidos"
       status = 400 // Requisição inválida
+      return Response.json(data, { status })
     } else {
       // valida a existência do usuário
       // elimina sessões anteriores
       // cria uma sessão para o usuário
       // inclui a sessão em um cookie
       status = 204 // No Content
+      return new Response(null, {status})
 
       // Se não localizar retorna 400 - Requisição inválida
     }
 
-    return Response.json(data, { status })
+    
   }
 })
