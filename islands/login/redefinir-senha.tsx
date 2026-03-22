@@ -1,25 +1,26 @@
 import { useSignal } from "@preact/signals"
-import { ICadastroModel, validateCadastroModel } from "../../app/domain/models/cadastro-model.ts"
 import Usuario from "../../components/login/Usuario.tsx"
 import Senha from "../../components/login/Senha.tsx"
 import Validations from "../../components/Validations.tsx"
-import { ICadastroData } from "../../routes/cadastro.tsx"
+import { IRedefinirSenhaModel, validateRedefinirSenhaModel } from "../../app/domain/models/redefinir-senha-model.ts"
+import { IRedefinirSenhaData } from "../../routes/redefinir-senha.tsx"
+import Chave from "../../components/login/Chave.tsx"
 
-export default function Cadastro(props: { model: ICadastroModel }) {
+export default function RedefinirSenha(props: { model: IRedefinirSenhaModel }) {
   const model = useSignal(props.model)
   const errMsgs = useSignal<string[]>([])
   const chave = useSignal<string | undefined>(undefined)
   const possuiChave = chave.value !== undefined
 
-  const onChange = <k extends keyof ICadastroModel>(key: k, value: ICadastroModel[k]) => {
+  const onChange = <k extends keyof IRedefinirSenhaModel>(key: k, value: IRedefinirSenhaModel[k]) => {
     const changed = { ...model.value, [key]: value }
     const changedValidated = getModelValidated(changed, key)
     model.value = changedValidated
     updateErrMsgs()
   }
 
-  const getModelValidated = (model: ICadastroModel, key?: keyof ICadastroModel): ICadastroModel => {
-    const newValidations = validateCadastroModel(model, key)
+  const getModelValidated = (model: IRedefinirSenhaModel, key?: keyof IRedefinirSenhaModel): IRedefinirSenhaModel => {
+    const newValidations = validateRedefinirSenhaModel(model, key)
     const validationResults = [...model.validationResults.filter((r) => r.key !== key), ...newValidations]
     return { ...model, validationResults }
   }
@@ -35,18 +36,18 @@ export default function Cadastro(props: { model: ICadastroModel }) {
     errMsgs.value = model.value.validationResults.map((v) => v.message)
   }
 
-  const classNames = (key: keyof ICadastroModel) => {
+  const classNames = (key: keyof IRedefinirSenhaModel) => {
     return model.value.validationResults.some((v) => v.key === key) ? "input is-danger" : "input"
   }
 
-  const cadastrar = async () => {
+  const redefinir = async () => {
     const isValid = validateAll()
     if (!isValid) {
       return
     }
 
     try {
-      const response = await fetch("/cadastro", {
+      const response = await fetch("/redefinir-senha", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -54,7 +55,7 @@ export default function Cadastro(props: { model: ICadastroModel }) {
         body: JSON.stringify(model.value)
       })
 
-      const data: ICadastroData = await response.json()
+      const data: IRedefinirSenhaData = await response.json()
       if (response.ok) {
         chave.value = data.chave
       } else {
@@ -77,24 +78,32 @@ export default function Cadastro(props: { model: ICadastroModel }) {
         disabled={possuiChave}
       />
 
+      <Chave
+        value={model.value.chave}
+        onChange={({ currentTarget: { value } }) => onChange("chave", value)}
+        class={classNames("chave")}
+        placeholder="Informe sua chave de redefinição de senha"
+        disabled={possuiChave}
+      />
+
       <Senha
         value={model.value.senha}
         onChange={({ currentTarget: { value } }) => onChange("senha", value)}
         class={classNames("senha")}
-        placeholder="Informe sua senha"
+        placeholder="Informe sua nova senha"
         disabled={possuiChave}
       />
 
       {possuiChave && (
         <article class="message is-info">
           <div class="message-header">
-            <p>Cadastro realizado com sucesso!</p>
+            <p>Redefinição de senha realizada com sucesso!</p>
           </div>
           <div class="message-body">
             <p>
               Chave para redefinição de senha: <span class="has-text-weight-bold">{chave.value}</span>
             </p>
-            <p>Anote esta chave para realizar uma redefinição de senha no futuro.</p>
+            <p>Anote esta chave para realizar novas redefinições no futuro.</p>
           </div>
         </article>
       )}
@@ -102,7 +111,7 @@ export default function Cadastro(props: { model: ICadastroModel }) {
       <div class="buttons">
         {!possuiChave && (
           <>
-            <button type="button" class="button is-primary" onClick={() => cadastrar()}>Cadastrar</button>
+            <button type="button" class="button is-primary" onClick={() => redefinir()}>Redefinir</button>
             <a href="/" class="button is-dark">Voltar</a>
           </>
         )}

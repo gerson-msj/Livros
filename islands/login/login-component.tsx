@@ -83,7 +83,7 @@ export default function Login(props: { model: ILoginModel }) {
       <div class="buttons">
         <button type="button" class="button is-primary" onClick={() => entrar()}>Entrar</button>
         <a href="/cadastro" class="button is-dark is-responsive">Cadastrar</a>
-        <a href="/recuperar_senha" class="button is-dark is-responsive">Recuperar Senha</a>
+        <a href="/redefinir-senha" class="button is-dark is-responsive">Redefinir Senha</a>
       </div>
 
       <Validations validations={errMsgs.value} />
