@@ -4,10 +4,13 @@ import Usuario from "../../components/login/Usuario.tsx"
 import Senha from "../../components/login/Senha.tsx"
 import Validations from "../../components/Validations.tsx"
 import { ILoginData } from "../../routes/index.tsx"
+import { useEffect } from "preact/hooks"
 
 export default function Login(props: { model: ILoginModel }) {
   const model = useSignal(props.model)
   const errMsgs = useSignal<string[]>([])
+
+  
 
   const onChange = <k extends keyof ILoginModel>(key: k, value: ILoginModel[k]) => {
     const changed = { ...model.value, [key]: value }
@@ -63,6 +66,10 @@ export default function Login(props: { model: ILoginModel }) {
       errMsgs.value = [errMsg]
     }
   }
+
+  useEffect(() => {
+    globalThis.location.href = "/biblioteca"
+  }, [])
 
   return (
     <>

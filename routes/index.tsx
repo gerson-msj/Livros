@@ -9,6 +9,7 @@ export interface ILoginData {
 }
 
 export default define.page<typeof handler>((props) => {
+  
   return (
     <>
       <h1 class="title">Livros - Login</h1>
@@ -23,13 +24,7 @@ export const handler = define.handlers<ILoginData>({
       model: createLoginModel()
     }
 
-    // return { data }
-    return new Response(JSON.stringify(data), {
-      status: 302,
-      headers: {
-        Location: "/biblioteca"
-      }
-    })
+    return { data }
   },
   async POST(ctx) {
     const data: ILoginData = {}
