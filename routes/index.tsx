@@ -22,7 +22,14 @@ export const handler = define.handlers<ILoginData>({
     const data: ILoginData = {
       model: createLoginModel()
     }
-    return { data }
+
+    // return { data }
+    return new Response(JSON.stringify(data), {
+      status: 302,
+      headers: {
+        Location: "/biblioteca"
+      }
+    })
   },
   async POST(ctx) {
     const data: ILoginData = {}
@@ -40,11 +47,9 @@ export const handler = define.handlers<ILoginData>({
       // cria uma sessão para o usuário
       // inclui a sessão em um cookie
       status = 204 // No Content
-      return new Response(null, {status})
+      return new Response(null, { status })
 
       // Se não localizar retorna 400 - Requisição inválida
     }
-
-    
   }
 })
