@@ -27,13 +27,13 @@ export default define.page<typeof handler>((props) => {
           </tr>
         </thead>
         <tbody>
-          {model.map((m, i) => {
+          {model.map((m, i) => (
             <tr key={i}>
               <td>{m.titulo}</td>
               <td>{m.autor?.nomeAutor ?? m.serie?.autor?.nomeAutor}</td>
               <td>{m.dataConclusao}</td>
             </tr>
-          })}
+          ))}
         </tbody>
       </table>
     </>
