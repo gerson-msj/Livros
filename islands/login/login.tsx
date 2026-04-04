@@ -5,7 +5,6 @@ import Senha from "../../components/login/Senha.tsx"
 import Validations from "../../components/Validations.tsx"
 import { ILoginData } from "../../routes/index.tsx"
 import { useEffect } from "preact/hooks"
-import Msgbox, { MsgboxOptions } from "../msgbox.tsx"
 
 export default function Login(props: { model: ILoginModel }) {
   const model = useSignal(props.model)
@@ -67,12 +66,8 @@ export default function Login(props: { model: ILoginModel }) {
   }
 
   useEffect(() => {
-    //globalThis.location.href = "/biblioteca"
+    globalThis.location.href = "/biblioteca"
   }, [])
-
-  const msgboxOptions = useSignal<MsgboxOptions>({
-    ok: "Ok", cancel: "Cancelar", title: "Teste", msg: "Está certo?", isActive: true
-  })
 
   return (
     <>
@@ -97,12 +92,6 @@ export default function Login(props: { model: ILoginModel }) {
       </div>
 
       <Validations validations={errMsgs.value} />
-      
-      <Msgbox options={msgboxOptions} />
-
-      <p>
-        Resultado da mensagem: {msgboxOptions.value.result}
-      </p>
     </>
   )
 }

@@ -1,5 +1,5 @@
 import { createLoginModel, ILoginModel, validateLoginModel } from "../app/domain/models/login-model.ts"
-import Login from "../islands/login/login-component.tsx"
+import Login from "../islands/login/login.tsx"
 import { define } from "../utils.ts"
 
 export interface ILoginData {

@@ -1,0 +1,19 @@
+.menu-list.overfow {
+    overflow-y: auto;
+    height: 150px;
+
+    scrollbar-color: var(--bulma-link) transparent;
+    scrollbar-width: thin;
+}
+
+.is-placeholder {
+    color: var(--bulma-input-placeholder-color) !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+input[type="date"] {
+    color-scheme: dark;
+}
