@@ -15,12 +15,22 @@ export default function Modal(props: ModalProps) {
     const { options } = props
 
     const close = () => {
-        options.value = { isActive: false, action: "closed" }
+        if (options.value.isActive == true) {
+            options.value = { isActive: false, action: "closed" }
+        }
     }
 
-    useSignalEffect(() => {
+    useSignalEffect(() => { // Mantém action em acordo com active
         if (options.value.isActive === true && options.value.action !== "opened") {
             options.value = { ...options.value, action: "opened" }
+        }
+
+        if (options.value.isActive === false && options.value.action !== "closed") {
+            options.value = { ...options.value, action: "closed" }
+        }
+
+        if (options.value.isActive == undefined && options.value.action !== undefined) {
+            options.value = { ...options.value, action: undefined }
         }
     })
 

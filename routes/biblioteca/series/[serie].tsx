@@ -1,22 +1,17 @@
+import { IErrorData } from "../../../app/domain/data/error-data.ts"
 import { IAutorModel } from "../../../app/domain/models/autor-model.ts"
-import LivroAdd from "../../../islands/livro-add.tsx"
+import SerieAdd from "../../../islands/series/serie-add.tsx"
 import { define } from "../../../utils.ts"
 
-interface ILivroAddData {
-    autores: IAutorModel[]
+interface ISerieAddData extends IErrorData {
+    autores?: IAutorModel[]
 }
 
-export default define.page<typeof handler>((props) => {
-    return (
-        <>
-            <LivroAdd autores={props.data.autores} />
-        </>
-    )
-})
+export default define.page<typeof handler>((props) => <SerieAdd autores={props.data.autores} />)
 
 export const handler = define.handlers({
     GET() {
-        const data: ILivroAddData = {
+        const data: ISerieAddData = {
             autores: [
                 { id: 1, nomeAutor: "Ana" },
                 { id: 2, nomeAutor: "Beto" },

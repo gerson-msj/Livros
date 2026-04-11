@@ -8,15 +8,15 @@ export interface IAutorModel extends IModelValidation<IAutorModel> {
     livros?: ILivroModel[]
 }
 
-export const createAutor = (): IAutorModel => {
+export const createAutor = (id?: number, nomeAutor?: string): IAutorModel => {
     return {
-        id: 0,
-        nomeAutor: "",
+        id: id ?? 0,
+        nomeAutor: nomeAutor ?? "",
         validationResults: []
     }
 }
 
-export const validateAutorModel = <k extends keyof IAutorModel>(
+export const autorModelValidator = <k extends keyof IAutorModel>(
     model: IAutorModel,
     key?: k
 ): IValidationResult<IAutorModel>[] => {

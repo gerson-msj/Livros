@@ -8,7 +8,7 @@ export default function InputDate({ label, ...inputHtmlAttributes }: InputTextTy
 
     return (
         <div class="field">
-            <label class="label">{label}</label>
+            {label !== "" && <label class="label">{label}</label>}
             <div class="control has-icons-right">
                 <input
                     type="date"

@@ -1,5 +1,5 @@
 import { IModelValidation, isValidISODate, IValidationResult, validateField } from "../validation/model-validation.ts"
-import { IAutorModel, validateAutorModel } from "./autor-model.ts"
+import { autorModelValidator, IAutorModel } from "./autor-model.ts"
 import { ISerieModel } from "./serie-model.ts"
 
 export interface ILivroModel extends IModelValidation<ILivroModel> {
@@ -13,20 +13,20 @@ export interface ILivroModel extends IModelValidation<ILivroModel> {
     serie?: ISerieModel
 }
 
-export const createLivro = (): ILivroModel => {
+export const createLivro = (id?: number, titulo?: string): ILivroModel => {
     return {
-        id: 0,
-        titulo: "",
+        id: id ?? 0,
+        titulo: titulo ?? "",
         validationResults: []
     }
 }
 
-export const validateLivroModel = <k extends keyof ILivroModel>(
+export const livroModelValidator = (
     model: ILivroModel,
-    validateAs: "livro" | "serie",
-    key?: k
+    key?: keyof ILivroModel
 ): IValidationResult<ILivroModel>[] => {
     const results: IValidationResult<ILivroModel>[] = []
+    const validateAsSerie = model.ordem !== undefined
 
     if (validateField("titulo", key)) {
         const success = model.titulo.trim().length >= 3
@@ -48,11 +48,11 @@ export const validateLivroModel = <k extends keyof ILivroModel>(
         }
     }
 
-    if (validateField("autor", key) && validateAs == "livro") {
+    if (validateField("autor", key) && !validateAsSerie) {
         if (!model.autor) {
             results.push({ key: "autor", message: "Autor não informado" })
         } else {
-            const autorResults = validateAutorModel(model.autor)
+            const autorResults = autorModelValidator(model.autor)
             const mappedResults = autorResults.map<IValidationResult<ILivroModel>>((ar) => {
                 return { key: "autor", message: ar.message }
             })

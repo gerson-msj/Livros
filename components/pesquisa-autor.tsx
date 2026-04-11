@@ -1,12 +1,14 @@
 import { useSignal } from "@preact/signals"
 import { createAutor, IAutorModel } from "../app/domain/models/autor-model.ts"
 import Modal, { ModalOptions } from "../islands/modal.tsx"
+import Input from "./input.tsx"
 
 interface IPesquisaAutorProps {
     autor?: IAutorModel
     autores: IAutorModel[]
     onChange: (autor: IAutorModel) => void
     class: string
+    disabled?: boolean
 }
 
 export default function PesquisaAutor(props: IPesquisaAutorProps) {
@@ -14,6 +16,7 @@ export default function PesquisaAutor(props: IPesquisaAutorProps) {
     const modalOptions = useSignal<ModalOptions>({ isActive: false })
     const autoresFiltrados = useSignal(props.autores)
     const pesquisa = useSignal("")
+    const disabled = props.disabled ?? false
 
     const pesquisar = (value: string) => {
         pesquisa.value = value
@@ -36,27 +39,59 @@ export default function PesquisaAutor(props: IPesquisaAutorProps) {
     }
 
     const abrirPesquisa = () => {
+        if (disabled) return
         pesquisa.value = ""
         autoresFiltrados.value = props.autores
         modalOptions.value = { ...modalOptions.value, isActive: true }
     }
 
+    const teclasPermitidas = [
+        "Tab",
+        "Shift",
+        "Control",
+        "Alt",
+        "Meta",
+        "Escape",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown"
+    ]
+
     return (
         <>
-            <div class="field">
-                <label class="label">Autor</label>
-                <div class="control has-icons-right">
-                    <div
-                        class={`${props.class} is-clickable ${props.autor ? "" : "is-placeholder"}`}
-                        onClick={() => abrirPesquisa()}
-                    >
-                        {props.autor?.nomeAutor ?? "Selecione um autor"}
+            {disabled && (
+                <Input
+                    label="Autor"
+                    value={props.autor?.nomeAutor}
+                    class="input"
+                    disabled
+                />
+            )}
+
+            {!disabled && (
+                <div class="field">
+                    <label class="label">Autor</label>
+                    <div class="control has-icons-right">
+                        <input
+                            type="text"
+                            value={props.autor?.nomeAutor}
+                            placeholder="Selecione um autor"
+                            class="input"
+                            readOnly
+                            onKeyDown={(e) => {
+                                if (teclasPermitidas.includes(e.key) || e.ctrlKey) return
+                                e.preventDefault()
+                                abrirPesquisa()
+                            }}
+                        />
+                        <span class="icon is-small is-right is-clickable" onClick={() => abrirPesquisa()}>
+                            <i class="fas fa-search"></i>
+                        </span>
                     </div>
-                    <span class="icon is-small is-right">
-                        <i class="fas fa-search"></i>
-                    </span>
                 </div>
-            </div>
+            )}
+
             <Modal options={modalOptions}>
                 <div class="card m-6">
                     <div class="card-content">
