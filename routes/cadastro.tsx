@@ -10,14 +10,12 @@ export default define.page<typeof handler>((props) => <Cadastro model={props.dat
 
 export const handler = define.handlers<ICadastroData>({
     GET() {
-        debugger
         const data: ICadastroData = {
             model: createCadastroModel()
         }
         return { data }
     },
     async POST(ctx) {
-        debugger
         const model: ICadastroModel = await ctx.req.json()
         const data: ICadastroData = {
             errors: ValidatorService.getValidationErrors(cadastroModelValidator, model)
@@ -33,7 +31,13 @@ export const handler = define.handlers<ICadastroData>({
         const sessionId = crypto.randomUUID()
         const expireIn = parseInt(Deno.env.get("SESSION_EXPIRES_IN_MINUTES") ?? "20")
 
-        await usuarioRepository.novo(model, data.chave, sessionId, expireIn)
+        try {
+            await usuarioRepository.novo(model, data.chave, sessionId, expireIn)
+        } catch (error) {
+            const errMsg = error instanceof Error ? error.message : "Erro inesperado"
+            data.errors = [errMsg]
+            return Response.json(data, { status: 400 })
+        }
 
         const maxAge = 20 * 60 // expiresIn em segundos
         const headers: HeadersInit = {

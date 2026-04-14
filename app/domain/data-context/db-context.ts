@@ -25,6 +25,7 @@ export class DbContext {
 
     public async openDb() {
         this._kv ??= await Deno.openKv(Deno.env.get("DBPATH")) // Temporário em dev.
+        //this._kv ??= await Deno.openKv() // Temporário em dev.
     }
 
     public closeDb(): void {

@@ -26,7 +26,6 @@ export default function Cadastro(props: { model: ICadastroModel }) {
     }
 
     const cadastrar = async () => {
-        console.log("cadastrar")
         model.value = validator.validateModel(model.value)
         updateErrMsgs()
         if (model.value.validationResults !== undefined) {

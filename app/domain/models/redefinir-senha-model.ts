@@ -16,40 +16,40 @@ export const createRedefinirSenhaModel = (): IRedefinirSenhaModel => {
 }
 
 export const validateRedefinirSenhaModel = <k extends keyof IRedefinirSenhaModel>(
-  model: IRedefinirSenhaModel,
-  key?: k
+    model: IRedefinirSenhaModel,
+    key?: k
 ): IValidationResult<IRedefinirSenhaModel>[] => {
-  const results: IValidationResult<IRedefinirSenhaModel>[] = []
+    const results: IValidationResult<IRedefinirSenhaModel>[] = []
 
-  if (validateField("usuario", key)) {
-    const success = model.usuario.trim().length >= 3
-    if (!success) {
-      results.push({
-        key: "usuario",
-        message: "Usuário inválido"
-      })
+    if (validateField("usuario", key)) {
+        const success = model.usuario.trim().length >= 3
+        if (!success) {
+            results.push({
+                key: "usuario",
+                message: "Usuário inválido"
+            })
+        }
     }
-  }
 
-   if (validateField("chave", key)) {
-    const success = model.chave.trim().length >= 4
-    if (!success) {
-      results.push({
-        key: "chave",
-        message: "Chave inválida"
-      })
+    if (validateField("chave", key)) {
+        const success = model.chave.trim().length >= 4
+        if (!success) {
+            results.push({
+                key: "chave",
+                message: "Chave inválida"
+            })
+        }
     }
-  }
 
-  if (validateField("senha", key)) {
-    const success = model.senha.trim().length >= 3
-    if (!success) {
-      results.push({
-        key: "senha",
-        message: "Senha inválida"
-      })
+    if (validateField("senha", key)) {
+        const success = model.senha.trim().length >= 3
+        if (!success) {
+            results.push({
+                key: "senha",
+                message: "Senha inválida"
+            })
+        }
     }
-  }
 
-  return results
+    return results
 }

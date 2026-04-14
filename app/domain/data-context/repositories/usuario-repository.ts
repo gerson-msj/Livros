@@ -27,6 +27,7 @@ export default class UsuarioRepository extends RepositoryBase {
         sessionId: string,
         expiresIn: number
     ): Promise<number> {
+        await this.dbContext.openDb()
         const usuarioIdxKey = this.getIdxKey("usuarios:usuario_idx", model.usuario)
         const [seqRes, usuarioIdxRes] = await this.dbContext.kv.getMany<[number, number]>([
             this.seqKey,

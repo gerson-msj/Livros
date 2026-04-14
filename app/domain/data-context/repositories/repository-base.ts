@@ -14,10 +14,6 @@ export default abstract class RepositoryBase {
         this.seqKey = [`${prefix}:seq`]
     }
 
-    protected nextSeq(): Promise<number> {
-        return this.dbContext.nextSeq(this.seqKey)
-    }
-
     protected getEntityKey(id: number): Deno.KvKey {
         return [this.prefix, id]
     }

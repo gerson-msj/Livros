@@ -11,8 +11,8 @@ export default class ValidatorService<TModel extends IModelValidation<TModel>> {
 
     public validateModel(model: TModel, key?: keyof TModel): TModel {
         const newValidations = this._validator(model, key)
-        const validationResults = [...model.validationResults?.filter((r) => r.key !== key) ?? [], ...newValidations]
-        return { ...model, validationResults }
+        const results = [...model.validationResults?.filter((r) => r.key !== key) ?? [], ...newValidations]
+        return { ...model, validationResults: results.length === 0 ? undefined : results }
     }
 
     public getValidationClass(model: TModel, key: keyof TModel) {
