@@ -5,7 +5,7 @@ export default function Series(props: { model?: ISerieModel[] }) {
         <>
             <h1 class="title">Séries</h1>
             <div class="buttons">
-                <a href="/biblioteca/series/add" class="button is-dark is-primary">Adicionar Série</a>
+                <a href="/biblioteca/series/nova" class="button is-dark is-primary">Adicionar Série</a>
                 <a href="/biblioteca" class="button is-dark">Voltar</a>
             </div>
 
@@ -16,7 +16,7 @@ export default function Series(props: { model?: ISerieModel[] }) {
                             <tr
                                 key={`serie_${serieIndex}`}
                                 class="is-clickable"
-                                onClick={() => globalThis.location.href = `/biblioteca/series/edit/${serie.id.toString()}`}
+                                onClick={() => globalThis.location.href = `/biblioteca/series/${serie.id.toString()}`}
                             >
                                 <td>
                                     <div class="columns mb-0 mt-1">

@@ -1,78 +1,61 @@
 import { useSignal } from "@preact/signals"
-import { ICadastroModel, validateCadastroModel } from "../../app/domain/models/cadastro-model.ts"
+import { cadastroModelValidator, ICadastroModel } from "../../app/domain/models/cadastro-model.ts"
 import Usuario from "../../components/login/Usuario.tsx"
 import Senha from "../../components/login/Senha.tsx"
 import Validations from "../../components/Validations.tsx"
-import { ICadastroData } from "../../routes/cadastro.tsx"
+import ValidatorService from "../../app/services/validator-service.ts"
+import ControllerService from "../../app/services/controller-service.ts"
+import { ICadastroData } from "../../app/domain/data/cadastro-data.ts"
 
 export default function Cadastro(props: { model: ICadastroModel }) {
     const model = useSignal(props.model)
     const errMsgs = useSignal<string[]>([])
+    const validator = new ValidatorService<ICadastroModel>(cadastroModelValidator)
     const chave = useSignal<string | undefined>(undefined)
     const possuiChave = chave.value !== undefined
 
     const onChange = <k extends keyof ICadastroModel>(key: k, value: ICadastroModel[k]) => {
         const changed = { ...model.value, [key]: value }
-        const changedValidated = getModelValidated(changed, key)
+        const changedValidated = validator.validateModel(changed, key)
         model.value = changedValidated
         updateErrMsgs()
     }
 
-    const getModelValidated = (model: ICadastroModel, key?: keyof ICadastroModel): ICadastroModel => {
-        const newValidations = validateCadastroModel(model, key)
-        const validationResults = [...model.validationResults.filter((r) => r.key !== key), ...newValidations]
-        return { ...model, validationResults }
-    }
-
-    const validateAll = (): boolean => {
-        const modelValidated = getModelValidated(model.value)
-        model.value = modelValidated
-        updateErrMsgs()
-        return model.value.validationResults.length === 0
-    }
-
     const updateErrMsgs = () => {
-        errMsgs.value = model.value.validationResults.map((v) => v.message)
-    }
-
-    const classNames = (key: keyof ICadastroModel) => {
-        return model.value.validationResults.some((v) => v.key === key) ? "input is-danger" : "input"
+        errMsgs.value = model.value.validationResults?.map((v) => v.message) ?? []
     }
 
     const cadastrar = async () => {
-        const isValid = validateAll()
-        if (!isValid) {
+        console.log("cadastrar")
+        model.value = validator.validateModel(model.value)
+        updateErrMsgs()
+        if (model.value.validationResults !== undefined) {
             return
         }
 
-        try {
-            const response = await fetch("/cadastro", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(model.value)
-            })
-
-            const data: ICadastroData = await response.json()
-            if (response.ok) {
-                chave.value = data.chave
-            } else {
-                errMsgs.value = [data.errMsg ?? `Status: ${response.status}.`]
-            }
-        } catch (error) {
-            const errMsg = "Falha de comunicação com o servidor"
-            console.error(errMsg, error)
-            errMsgs.value = [errMsg]
+        const request: RequestInit = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(model.value)
         }
+
+        await ControllerService.requestServer<ICadastroData>(
+            request,
+            (data) => chave.value = data.chave,
+            (errors) => errMsgs.value = errors
+        )
     }
 
     return (
         <>
+            <p class="title is-3">Livros - Cadastro</p>
+
             <Usuario
                 value={model.value.usuario}
                 onChange={({ currentTarget: { value } }) => onChange("usuario", value)}
-                class={classNames("usuario")}
+                class={`input ${validator.getValidationClass(model.value, "usuario")}`}
                 placeholder="Informe seu nome de usuário"
                 disabled={possuiChave}
             />
@@ -80,7 +63,7 @@ export default function Cadastro(props: { model: ICadastroModel }) {
             <Senha
                 value={model.value.senha}
                 onChange={({ currentTarget: { value } }) => onChange("senha", value)}
-                class={classNames("senha")}
+                class={`input ${validator.getValidationClass(model.value, "senha")}`}
                 placeholder="Informe sua senha"
                 disabled={possuiChave}
             />

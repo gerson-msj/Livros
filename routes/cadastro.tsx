@@ -1,46 +1,45 @@
 import { define } from "../utils.ts"
-import { createCadastroModel, ICadastroModel, validateCadastroModel } from "../app/domain/models/cadastro-model.ts"
-import Cadastro from "../islands/login/cadastro-component.tsx"
+import { cadastroModelValidator, createCadastroModel, ICadastroModel } from "../app/domain/models/cadastro-model.ts"
+import Cadastro from "../islands/login/cadastro.tsx"
+import { ICadastroData } from "../app/domain/data/cadastro-data.ts"
+import ValidatorService from "../app/services/validator-service.ts"
+import { DbContext } from "../app/domain/data-context/db-context.ts"
+import UsuarioRepository from "../app/domain/data-context/repositories/usuario-repository.ts"
 
-export interface ICadastroData {
-  model?: ICadastroModel
-  errMsg?: string
-  chave?: string
-}
-
-export default define.page<typeof handler>((props) => {
-  return (
-    <>
-      <h1 class="title">Livros - Cadastro</h1>
-      <Cadastro model={props.data.model!} />
-    </>
-  )
-})
+export default define.page<typeof handler>((props) => <Cadastro model={props.data.model!} />)
 
 export const handler = define.handlers<ICadastroData>({
-  GET() {
-    const data: ICadastroData = {
-      model: createCadastroModel()
-    }
-    return { data }
-  },
-  async POST(ctx) {
-    const data: ICadastroData = {}
-    let status: number = 200 // OK
+    GET() {
+        debugger
+        const data: ICadastroData = {
+            model: createCadastroModel()
+        }
+        return { data }
+    },
+    async POST(ctx) {
+        debugger
+        const model: ICadastroModel = await ctx.req.json()
+        const data: ICadastroData = {
+            errors: ValidatorService.getValidationErrors(cadastroModelValidator, model)
+        }
 
-    const model: ICadastroModel = await ctx.req.json()
-    model.validationResults = validateCadastroModel(model)
-    if (model.validationResults.length > 0) {
-      data.errMsg = "Dados inválidos"
-      status = 400 // Bad Request
-    } else {
-      // realiza a criação do usuário
-      // retorna a chave em caso positivo ou novo errMsg
-      // cria uma sessão para o novo usuário
-      // inclui a sessão em um cookie
-      data.chave = "1234"
-    }
+        if (data.errors) {
+            return Response.json(data, { status: 400 })
+        }
 
-    return Response.json(data, { status })
-  }
+        using dbContext = new DbContext()
+        const usuarioRepository = new UsuarioRepository(dbContext)
+        data.chave = crypto.randomUUID()
+        const sessionId = crypto.randomUUID()
+        const expireIn = parseInt(Deno.env.get("SESSION_EXPIRES_IN_MINUTES") ?? "20")
+
+        await usuarioRepository.novo(model, data.chave, sessionId, expireIn)
+
+        const maxAge = 20 * 60 // expiresIn em segundos
+        const headers: HeadersInit = {
+            "Set-Cookie": `session=${sessionId}; Max-Age=${maxAge}; HttpOnly; Path=/`
+        }
+
+        return Response.json(data, { status: 200, headers })
+    }
 })

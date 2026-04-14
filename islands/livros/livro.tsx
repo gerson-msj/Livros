@@ -1,13 +1,13 @@
 import { useSignal, useSignalEffect } from "@preact/signals"
-import { createLivro, ILivroModel, livroModelValidator } from "../../app/domain/models/livro-model.ts"
+import { ILivroModel, livroModelValidator } from "../../app/domain/models/livro-model.ts"
 import { IAutorModel } from "../../app/domain/models/autor-model.ts"
 import PesquisaAutor from "../../components/pesquisa-autor.tsx"
 import Input from "../../components/input.tsx"
 import InputDate from "../../components/input-date.tsx"
 import Validations from "../../components/Validations.tsx"
-import { getErrMsgs, getModelValidated, getValidationClass } from "../../app/domain/validation/model-validation.ts"
+import { getModelValidated, getValidationClass, modelToErrors } from "../../app/domain/validation/model-validation.ts"
 import Msgbox, { MsgboxOptions } from "../msgbox.tsx"
-import { ILivroData } from "../../routes/biblioteca/livros/[livro].tsx"
+import ControllerService from "../../app/services/controller-service.ts"
 
 export default function Livro(props: {
     livro: ILivroModel
@@ -15,7 +15,7 @@ export default function Livro(props: {
 }) {
     const model = useSignal(props.livro)
     const errMsgs = useSignal<string[]>([])
-    const msgOptions = useSignal<MsgboxOptions>({ title: "Livro adicionado com sucesso!", ok: "Ok" })
+    const msgbox = useSignal<MsgboxOptions>({ ok: "Ok" })
     const isEdit = model.value.id > 0
 
     const voltar = () => {
@@ -23,8 +23,11 @@ export default function Livro(props: {
     }
 
     useSignalEffect(() => {
-        if (msgOptions.value.result !== undefined) {
-            msgOptions.value = { ...msgOptions.value, result: undefined }
+        const ok = (msgbox.value.result !== undefined && msgbox.value.key === "salvar") ||
+            (msgbox.value.result === "ok" && msgbox.value.key === "excluir")
+
+        if (ok) {
+            msgbox.value = { ...msgbox.value, result: undefined }
             voltar()
         }
     })
@@ -32,12 +35,12 @@ export default function Livro(props: {
     const onChange = <k extends keyof ILivroModel>(key: k, value: ILivroModel[k]) => {
         const changed = { ...model.value, [key]: value }
         model.value = getModelValidated(livroModelValidator, changed, key)
-        errMsgs.value = getErrMsgs(model.value)
+        errMsgs.value = modelToErrors(model.value)
     }
 
     const salvar = async () => {
         model.value = getModelValidated(livroModelValidator, model.value)
-        errMsgs.value = getErrMsgs(model.value)
+        errMsgs.value = modelToErrors(model.value)
         if (errMsgs.value.length > 0) return
 
         const request: RequestInit = {
@@ -46,26 +49,38 @@ export default function Livro(props: {
             body: JSON.stringify(model.value)
         }
 
-        try {
-            const response = await fetch("", request)
-            if (response.ok) {
-                msgOptions.value = { ...msgOptions.value, isActive: true }
-            } else {
-                const data: { errMsg?: string } = await response.json()
-                errMsgs.value = [data.errMsg ?? `Status: ${response.status}.`]
-            }
-        } catch (error) {
-            const errMsg = "Falha de comunicação com o servidor"
-            console.error(errMsg, error)
-            errMsgs.value = [errMsg]
-        }
+        await ControllerService.requestServer(
+            request,
+            () => {
+                const title = isEdit ? "Livro atualizado com sucesso" : "Livro adicionado com sucesso"
+                msgbox.value = { title, key: "salvar", isActive: true, ok: "Ok" }
+            },
+            (errors) => errMsgs.value = errors
+        )
     }
 
-    const excluir = () => {}
+    const excluir = async (confirmado: boolean = false) => {
+        if (!confirmado) {
+            msgbox.value = {
+                title: "Deseja realmente excluir este livro?",
+                ok: "Sim",
+                cancel: "Não",
+                key: "excluir",
+                isActive: true
+            }
+            return
+        }
+
+        await ControllerService.requestServer(
+            { method: "DELETE" },
+            voltar,
+            (errors) => errMsgs.value = errors
+        )
+    }
 
     return (
         <>
-            <h1 class="title">{isEdit ? "Editar" : "Adicionar"} Livro</h1>
+            <p class="title is-3">{isEdit ? "Editar" : "Adicionar"} Livro</p>
             <div class="buttons">
                 <button type="button" class="button is-dark is-primary" onClick={() => salvar()}>Salvar</button>
                 <button type="button" class="button is-dark" onClick={() => voltar()}>Voltar</button>
@@ -98,7 +113,7 @@ export default function Livro(props: {
 
             <Validations errMsgs={errMsgs.value} />
 
-            <Msgbox options={msgOptions} />
+            <Msgbox options={msgbox} />
         </>
     )
 }

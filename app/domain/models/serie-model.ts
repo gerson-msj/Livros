@@ -1,4 +1,4 @@
-import { clearValidations, getModelValidated, IModelValidation, IValidationResult, validateField } from "../validation/model-validation.ts"
+import { getValidationErrors, IModelValidation, IValidationResult, validateField } from "../validation/model-validation.ts"
 import { autorModelValidator, IAutorModel } from "./autor-model.ts"
 import { ILivroModel, livroModelValidator } from "./livro-model.ts"
 
@@ -32,13 +32,6 @@ export function serieModelValidator(model: ISerieModel, key?: keyof ISerieModel)
         if (!success) {
             results.push({ key: "autor", message: "Autor não informado" })
         }
-        // else {
-        //     model.autor = getModelValidated(autorModelValidator, model.autor!)
-        //     const autorResults = model.autor.validationResults?.map<IValidationResult<ISerieModel>>((autorResult) => {
-        //         return { key: "autor", message: autorResult.message }
-        //     })
-        //     results.push(...autorResults ?? [])
-        // }
     }
 
     if (validateField("livros", key)) {
@@ -63,4 +56,23 @@ export function serieModelValidator(model: ISerieModel, key?: keyof ISerieModel)
     }
 
     return results
+}
+
+export function serieModelValidatorFull(model: ISerieModel): string[] | undefined {
+    const serieValidationResult = serieModelValidator(model)
+    const autorValidationResult = model.autor !== undefined ? autorModelValidator(model.autor) : []
+    const livrosValidationResult: IValidationResult<ILivroModel>[] = []
+    model.livros?.forEach((livro, index) => {
+        const results = livroModelValidator(livro)
+        results.forEach((result) => result.index = index)
+        livrosValidationResult.push(...results)
+    })
+
+    const errors = [
+        ...getValidationErrors(serieValidationResult),
+        ...getValidationErrors(autorValidationResult),
+        ...getValidationErrors(livrosValidationResult)
+    ]
+
+    return errors.length === 0 ? undefined : errors
 }

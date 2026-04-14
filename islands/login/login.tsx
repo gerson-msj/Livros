@@ -1,87 +1,60 @@
 import { useSignal } from "@preact/signals"
-import { ILoginModel, validateLoginModel } from "../../app/domain/models/login-model.ts"
+import { ILoginModel, loginModelValidator } from "../../app/domain/models/login-model.ts"
 import Usuario from "../../components/login/Usuario.tsx"
 import Senha from "../../components/login/Senha.tsx"
 import Validations from "../../components/Validations.tsx"
-import { ILoginData } from "../../routes/index.tsx"
-import { useEffect } from "preact/hooks"
+import ValidatorService from "../../app/services/validator-service.ts"
+import ControllerService from "../../app/services/controller-service.ts"
 
 export default function Login(props: { model: ILoginModel }) {
     const model = useSignal(props.model)
     const errMsgs = useSignal<string[]>([])
+    const validator = new ValidatorService<ILoginModel>(loginModelValidator)
 
     const onChange = <k extends keyof ILoginModel>(key: k, value: ILoginModel[k]) => {
         const changed = { ...model.value, [key]: value }
-        const changedValidated = getModelValidated(changed, key)
+        const changedValidated = validator.validateModel(changed, key)
         model.value = changedValidated
         updateErrMsgs()
     }
-    const getModelValidated = (model: ILoginModel, key?: keyof ILoginModel): ILoginModel => {
-        const newValidations = validateLoginModel(model, key)
-        const validationResults = [...model.validationResults.filter((r) => r.key !== key), ...newValidations]
-        return { ...model, validationResults }
-    }
-
-    const validateAll = (): boolean => {
-        const modelValidated = getModelValidated(model.value)
-        model.value = modelValidated
-        updateErrMsgs()
-        return model.value.validationResults.length === 0
-    }
 
     const updateErrMsgs = () => {
-        errMsgs.value = model.value.validationResults.map((v) => v.message)
-    }
-
-    const classNames = (key: keyof ILoginModel) => {
-        return model.value.validationResults.some((v) => v.key === key) ? "input is-danger" : "input"
+        errMsgs.value = model.value.validationResults?.map((v) => v.message) ?? []
     }
 
     const entrar = async () => {
-        const isValid = validateAll()
-        if (!isValid) {
-            return
-        }
+        model.value = validator.validateModel(model.value)
+        updateErrMsgs()
+        if (model.value.validationResults !== undefined) return
 
-        try {
-            const response = await fetch("/", {
+        await ControllerService.requestServer(
+            {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(model.value)
-            })
-
-            if (response.ok) {
-                globalThis.location.href = "/biblioteca"
-            } else {
-                const data: ILoginData = await response.json()
-                errMsgs.value = [data.errMsg ?? `Status: ${response.status}.`]
-            }
-        } catch (error) {
-            const errMsg = "Falha de comunicação com o servidor"
-            console.error(errMsg, error)
-            errMsgs.value = [errMsg]
-        }
+            },
+            () => globalThis.location.href = "/biblioteca",
+            (errors) => errMsgs.value = errors
+        )
     }
-
-    useEffect(() => {
-        globalThis.location.href = "/biblioteca"
-    }, [])
 
     return (
         <>
+            <h1 class="title">Livros - Login</h1>
+
             <Usuario
                 value={model.value.usuario}
                 onChange={({ currentTarget: { value } }) => onChange("usuario", value)}
-                class={classNames("usuario")}
+                class={`input ${validator.getValidationClass(model.value, "usuario")}`}
                 placeholder="Informe seu nome de usuário"
             />
 
             <Senha
                 value={model.value.senha}
                 onChange={({ currentTarget: { value } }) => onChange("senha", value)}
-                class={classNames("senha")}
+                class={`input ${validator.getValidationClass(model.value, "senha")}`}
                 placeholder="Informe sua senha"
             />
 

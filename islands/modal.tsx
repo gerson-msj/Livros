@@ -1,5 +1,6 @@
 import { ComponentChild } from "preact"
 import { Signal, useSignalEffect } from "@preact/signals"
+import { useEffect } from "preact/hooks"
 
 export interface ModalOptions {
     isActive?: boolean
@@ -33,6 +34,17 @@ export default function Modal(props: ModalProps) {
             options.value = { ...options.value, action: undefined }
         }
     })
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape" && options.value.isActive) {
+                close()
+            }
+        }
+
+        document.addEventListener("keydown", handleKeyDown)
+        return () => document.removeEventListener("keydown", handleKeyDown)
+    }, [])
 
     return (
         <div class={` modal ${options.value.isActive ? "is-active" : ""}`}>

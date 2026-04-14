@@ -12,7 +12,8 @@
         "dev": "vite",
         "build": "vite build",
         "start": "deno serve -A _fresh/server.js",
-        "update": "deno run -A -r jsr:@fresh/update ."
+        "update": "deno run -A -r jsr:@fresh/update .",
+        "debug": "deno run -A --inspect --unstable-kv npm:vite"
     },
     "lint": {
         "rules": {
