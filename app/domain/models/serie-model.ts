@@ -1,4 +1,5 @@
-import { getValidationErrors, IModelValidation, IValidationResult, validateField } from "../validation/model-validation.ts"
+import ValidatorService from "@/app/services/validator-service.ts"
+import { IModelValidation, IValidationResult } from "../validation/model-validation.ts"
 import { autorModelValidator, IAutorModel } from "./autor-model.ts"
 import { ILivroModel, livroModelValidator } from "./livro-model.ts"
 
@@ -20,21 +21,21 @@ export function createSerieModel(): ISerieModel {
 export function serieModelValidator(model: ISerieModel, key?: keyof ISerieModel): IValidationResult<ISerieModel>[] {
     const results: IValidationResult<ISerieModel>[] = []
 
-    if (validateField("nomeSerie", key)) {
+    if (ValidatorService.validateField("nomeSerie", key)) {
         const success = model.nomeSerie.trim().length >= 3
         if (!success) {
             results.push({ key: "nomeSerie", message: "Nome da série inválido" })
         }
     }
 
-    if (validateField("autor", key)) {
+    if (ValidatorService.validateField("autor", key)) {
         const success = model.autor !== undefined
         if (!success) {
             results.push({ key: "autor", message: "Autor não informado" })
         }
     }
 
-    if (validateField("livros", key)) {
+    if (ValidatorService.validateField("livros", key)) {
         const livros = model.livros ?? []
 
         const qtdMinima = livros.length ?? 0 >= 2
@@ -68,11 +69,12 @@ export function serieModelValidatorFull(model: ISerieModel): string[] | undefine
         livrosValidationResult.push(...results)
     })
 
-    const errors = [
-        ...getValidationErrors(serieValidationResult),
-        ...getValidationErrors(autorValidationResult),
-        ...getValidationErrors(livrosValidationResult)
-    ]
+    // const errors = [
+    //     ...ValidatorServicegetValidationErrors(serieValidationResult),
+    //     ...getValidationErrors(autorValidationResult),
+    //     ...getValidationErrors(livrosValidationResult)
+    // ]
 
-    return errors.length === 0 ? undefined : errors
+    //return errors.length === 0 ? undefined : errors
+    return undefined
 }

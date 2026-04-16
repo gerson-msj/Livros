@@ -1,7 +1,7 @@
 import { IErrorData } from "../../../app/domain/data/error-data.ts"
 import { createAutor, IAutorModel } from "../../../app/domain/models/autor-model.ts"
 import { ILivroModel, livroModelValidator } from "../../../app/domain/models/livro-model.ts"
-import ControllerService from "../../../app/services/controller-service.ts"
+import PageService from "@/app/services/page-service.ts"
 import Livro from "../../../islands/livros/livro.tsx"
 import { define } from "../../../utils.ts"
 
@@ -14,7 +14,7 @@ export default define.page<typeof handler>((props) => <Livro livro={props.data.l
 
 export const handler = define.handlers({
     GET(ctx) {
-        const id = ControllerService.getId(ctx.params.livro)
+        const id = PageService.getId(ctx.params.livro)
 
         // Obter livro novo ou existente
         const livro: ILivroModel = {
@@ -39,7 +39,7 @@ export const handler = define.handlers({
         return { data }
     },
     async POST(ctx) {
-        const id = ControllerService.getId(ctx.params.livro)
+        const id = PageService.getId(ctx.params.livro)
 
         const data: ILivroData = {}
         let status: number = 200
@@ -57,7 +57,7 @@ export const handler = define.handlers({
         return Response.json(data, { status })
     },
     DELETE(ctx) {
-        const id = ControllerService.getId(ctx.params.id)
+        const id = PageService.getId(ctx.params.id)
         console.log(id)
 
         // Realiza a exclusõe e retorna erros

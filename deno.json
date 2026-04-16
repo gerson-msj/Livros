@@ -3,7 +3,7 @@
     "nodeModulesDir": "manual",
     "tasks": {
         "check": "deno fmt --check . && deno lint . && deno check",
-        "dev": "vite",
+        "dev": "deno run -A --unstable-kv npm:vite",
         "build": "vite build",
         "start": "deno serve -A _fresh/server.js",
         "update": "deno run -A -r jsr:@fresh/update .",
@@ -13,6 +13,7 @@
     "exclude": ["**/_fresh/*"],
     "imports": {
         "@/": "./",
+        "@std/http": "jsr:@std/http@^1.0.25",
         "fresh": "jsr:@fresh/core@^2.2.2",
         "preact": "npm:preact@^10.28.3",
         "@preact/signals": "npm:@preact/signals@^2.7.1",

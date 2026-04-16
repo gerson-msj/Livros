@@ -1,5 +1,6 @@
-import { IModelValidation, IValidationResult, validateField } from "../validation/model-validation.ts"
+import { IModelValidation, IValidationResult } from "../validation/model-validation.ts"
 import { ILivroModel } from "./livro-model.ts"
+import ValidatorService from "@/app/services/validator-service.ts"
 
 export interface IAutorModel extends IModelValidation<IAutorModel> {
     id: number
@@ -22,7 +23,7 @@ export const autorModelValidator = <k extends keyof IAutorModel>(
 ): IValidationResult<IAutorModel>[] => {
     const results: IValidationResult<IAutorModel>[] = []
 
-    if (validateField("nomeAutor", key)) {
+    if (ValidatorService.validateField("nomeAutor", key)) {
         const success = model.nomeAutor.trim().length >= 3
         if (!success) {
             results.push({

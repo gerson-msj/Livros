@@ -1,7 +1,7 @@
 import { IErrorData } from "../../../app/domain/data/error-data.ts"
 import { createAutor, IAutorModel } from "../../../app/domain/models/autor-model.ts"
 import { ISerieModel, serieModelValidatorFull } from "../../../app/domain/models/serie-model.ts"
-import ControllerService from "../../../app/services/controller-service.ts"
+import PageService from "@/app/services/page-service.ts"
 import Serie from "../../../islands/series/serie.tsx"
 import { define } from "../../../utils.ts"
 
@@ -14,7 +14,7 @@ export default define.page<typeof handler>((props) => <Serie serie={props.data.s
 
 export const handler = define.handlers({
     GET(ctx) {
-        const id = ControllerService.getId(ctx.params.serie)
+        const id = PageService.getId(ctx.params.serie)
 
         // Obter serie nova ou existente
         const serie: ISerieModel = {
@@ -43,7 +43,7 @@ export const handler = define.handlers({
         return { data }
     },
     async POST(ctx) {
-        const id = ControllerService.getId(ctx.params.serie)
+        const id = PageService.getId(ctx.params.serie)
 
         const model: ISerieModel = await ctx.req.json()
 
@@ -59,7 +59,7 @@ export const handler = define.handlers({
         return Response.json(data, { status })
     },
     DELETE(ctx) {
-        const id = ControllerService.getId(ctx.params.serie)
+        const id = PageService.getId(ctx.params.serie)
         console.log(id)
 
         // Realiza a exclusõe e retorna erros

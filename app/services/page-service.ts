@@ -1,0 +1,49 @@
+import { IErrorData } from "../domain/data/error-data.ts"
+
+export default class PageService {
+    public static getId = (parameter: string) => !isNaN(parseInt(parameter)) && isFinite(parseInt(parameter)) ? parseInt(parameter) : 0
+
+    public static requestPost = <TModel>(
+        model: TModel,
+        handleSuccess: <TData extends IErrorData>(data?: TData) => void,
+        handleError: (errors: string[]) => void
+    ) => {
+        const request: RequestInit = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(model)
+        }
+
+        return this.requestServer(request, handleSuccess, handleError)
+    }
+
+    public static requestServer = async <TData extends IErrorData>(
+        request: RequestInit,
+        handleSuccess: <TData extends IErrorData>(data?: TData) => void,
+        handleError: (errors: string[]) => void
+    ) => {
+        try {
+            console.log("will fetch")
+            const response = await fetch("", request)
+            console.log("response", response)
+            if (response.ok) {
+                const text = await response.text()
+                const data: TData | undefined = text ? JSON.parse(text) : undefined
+                handleSuccess(data)
+            } else {
+                const errorData: IErrorData = await response.json()
+                handleError(errorData.errors ?? [`Status: ${response.status}.`])
+            }
+        } catch (error) {
+            const errMsg = "Falha de comunicação com o servidor"
+            console.error(errMsg, error)
+            handleError([errMsg])
+        }
+    }
+
+    public static handleError(error: unknown): string[] {
+        console.error(error)
+        const errMsg = error instanceof Error ? error.message : "Erro inesperado!"
+        return [errMsg]
+    }
+}

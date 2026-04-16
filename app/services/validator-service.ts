@@ -2,21 +2,28 @@ import { IModelValidation, IValidationResult } from "../domain/validation/model-
 
 export default class ValidatorService<TModel extends IModelValidation<TModel>> {
     private _validator: (model: TModel, key?: keyof TModel) => IValidationResult<TModel>[]
+    private _model: TModel
 
     constructor(
-        validator: (model: TModel, key?: keyof TModel) => IValidationResult<TModel>[]
+        validator: (model: TModel, key?: keyof TModel) => IValidationResult<TModel>[],
+        model: TModel
     ) {
         this._validator = validator
+        this._model = model
     }
 
-    public validateModel(model: TModel, key?: keyof TModel): TModel {
-        const newValidations = this._validator(model, key)
-        const results = [...model.validationResults?.filter((r) => r.key !== key) ?? [], ...newValidations]
-        return { ...model, validationResults: results.length === 0 ? undefined : results }
+    public validateModel(): TModel {
+        return this.validateChanged(this._model)
     }
 
-    public getValidationClass(model: TModel, key: keyof TModel) {
-        return model.validationResults?.some((v) => v.key === key) ? "is-danger" : ""
+    public validateChanged(changed: TModel, key?: keyof TModel): TModel {
+        const newValidations = this._validator(changed, key)
+        const results = [...changed.validationResults?.filter((r) => r.key !== key) ?? [], ...newValidations]
+        return { ...changed, validationResults: results.length === 0 ? undefined : results }
+    }
+
+    public class(key: keyof TModel) {
+        return this._model.validationResults?.some((v) => v.key === key) ? "is-danger" : ""
     }
 
     /**

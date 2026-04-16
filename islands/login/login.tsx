@@ -4,16 +4,16 @@ import Usuario from "../../components/login/Usuario.tsx"
 import Senha from "../../components/login/Senha.tsx"
 import Validations from "../../components/Validations.tsx"
 import ValidatorService from "../../app/services/validator-service.ts"
-import ControllerService from "../../app/services/controller-service.ts"
+import PageService from "@/app/services/page-service.ts"
 
 export default function Login(props: { model: ILoginModel }) {
     const model = useSignal(props.model)
     const errMsgs = useSignal<string[]>([])
-    const validator = new ValidatorService<ILoginModel>(loginModelValidator)
+    const validator = new ValidatorService<ILoginModel>(loginModelValidator, model.value)
 
     const onChange = <k extends keyof ILoginModel>(key: k, value: ILoginModel[k]) => {
         const changed = { ...model.value, [key]: value }
-        const changedValidated = validator.validateModel(changed, key)
+        const changedValidated = validator.validateChanged(changed, key)
         model.value = changedValidated
         updateErrMsgs()
     }
@@ -23,18 +23,12 @@ export default function Login(props: { model: ILoginModel }) {
     }
 
     const entrar = async () => {
-        model.value = validator.validateModel(model.value)
+        model.value = validator.validateModel()
         updateErrMsgs()
         if (model.value.validationResults !== undefined) return
 
-        await ControllerService.requestServer(
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(model.value)
-            },
+        await PageService.requestPost(
+            model.value,
             () => globalThis.location.href = "/biblioteca",
             (errors) => errMsgs.value = errors
         )
@@ -42,19 +36,19 @@ export default function Login(props: { model: ILoginModel }) {
 
     return (
         <>
-            <h1 class="title">Livros - Login</h1>
+            <p class="title is-3">Livros - Login</p>
 
             <Usuario
                 value={model.value.usuario}
                 onChange={({ currentTarget: { value } }) => onChange("usuario", value)}
-                class={`input ${validator.getValidationClass(model.value, "usuario")}`}
+                class={`input ${validator.class("usuario")}`}
                 placeholder="Informe seu nome de usuário"
             />
 
             <Senha
                 value={model.value.senha}
                 onChange={({ currentTarget: { value } }) => onChange("senha", value)}
-                class={`input ${validator.getValidationClass(model.value, "senha")}`}
+                class={`input ${validator.class("senha")}`}
                 placeholder="Informe sua senha"
             />
 

@@ -1,23 +1,16 @@
-import { createRedefinirSenhaModel, IRedefinirSenhaModel, validateRedefinirSenhaModel } from "../app/domain/models/redefinir-senha-model.ts"
+import { IRedefinirSenhaData } from "@/app/domain/data/redefinir-senha-data.ts"
+import {
+    createRedefinirSenhaModel,
+    IRedefinirSenhaModel,
+    redefinirSenhaModelValidator
+} from "../app/domain/models/redefinir-senha-model.ts"
 import RedefinirSenha from "../islands/login/redefinir-senha.tsx"
 import { define } from "../utils.ts"
+import ValidatorService from "@/app/services/validator-service.ts"
+import PageService from "@/app/services/page-service.ts"
+import { setCookie } from "@std/http/cookie"
 
-export interface IRedefinirSenhaData {
-    model?: IRedefinirSenhaModel
-    errMsg?: string
-    chave?: string
-}
-
-export default define.page<typeof handler>((props) => {
-    return (
-        <>
-            <h1 class="title">Livros - Redefinir Senha</h1>
-            <form>
-                <RedefinirSenha model={props.data.model!} />
-            </form>
-        </>
-    )
-})
+export default define.page<typeof handler>((props) => <RedefinirSenha model={props.data.model!} />)
 
 export const handler = define.handlers<IRedefinirSenhaData>({
     GET() {
@@ -27,21 +20,26 @@ export const handler = define.handlers<IRedefinirSenhaData>({
         return { data }
     },
     async POST(ctx) {
-        const data: IRedefinirSenhaData = {}
-        let status: number = 200 // OK
-
         const model: IRedefinirSenhaModel = await ctx.req.json()
-        model.validationResults = validateRedefinirSenhaModel(model)
-        if (model.validationResults.length > 0) {
-            data.errMsg = "Dados inválidos"
-            status = 400 // Bad Request
-        } else {
-            // Valida usuário e chave
-            // Atera a senha
-            // Cria uma nova chave e sessão para o usuário
-            data.chave = "5678"
+
+        const data: IRedefinirSenhaData = {
+            errors: ValidatorService.getValidationErrors(redefinirSenhaModelValidator, model)
         }
 
-        return Response.json(data, { status })
+        if (data.errors) {
+            return Response.json(data, { status: 400 })
+        }
+
+        try {
+            const service = ctx.state.sp.get("loginService")
+            const { cookie, chave } = await service.redefinirSenha(model)
+            const headers = new Headers()
+            setCookie(headers, cookie)
+            data.chave = chave
+            return Response.json(data, { status: 200 })
+        } catch (error) {
+            data.errors = PageService.handleError(error)
+            return Response.json(data, { status: 400 })
+        }
     }
 })

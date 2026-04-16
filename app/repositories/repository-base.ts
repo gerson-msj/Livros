@@ -1,9 +1,13 @@
-import { DbContext, DbIdx, DbPrefix } from "../db-context.ts"
+import { DbContext, DbIdx, DbPrefix } from "@/app/data-context/db-context.ts"
 
 export default abstract class RepositoryBase {
     protected dbContext: DbContext
     protected prefix: DbPrefix
     protected seqKey: Deno.KvKey
+
+    public get kv(): Deno.Kv {
+        return this.dbContext.kv
+    }
 
     constructor(
         dbContext: DbContext,
@@ -14,8 +18,8 @@ export default abstract class RepositoryBase {
         this.seqKey = [`${prefix}:seq`]
     }
 
-    protected getEntityKey(id: number): Deno.KvKey {
-        return [this.prefix, id]
+    protected getKey<T extends Deno.KvKeyPart>(keyPart: T): Deno.KvKey {
+        return [this.prefix, keyPart]
     }
 
     protected getIdxKey(idx: DbIdx, value: Deno.KvKeyPart): Deno.KvKey {
@@ -46,5 +50,9 @@ export default abstract class RepositoryBase {
         }
 
         throw lastError
+    }
+
+    protected openDb(): Promise<void> {
+        return this.dbContext.openDb()
     }
 }

@@ -1,4 +1,5 @@
-import { IModelValidation, IValidationResult, validateField } from "../validation/model-validation.ts"
+import ValidatorService from "@/app/services/validator-service.ts"
+import { IModelValidation, IValidationResult } from "../validation/model-validation.ts"
 
 export interface IRedefinirSenhaModel extends IModelValidation<IRedefinirSenhaModel> {
     usuario: string
@@ -10,18 +11,17 @@ export const createRedefinirSenhaModel = (): IRedefinirSenhaModel => {
     return {
         usuario: "",
         chave: "",
-        senha: "",
-        validationResults: []
+        senha: ""
     }
 }
 
-export const validateRedefinirSenhaModel = <k extends keyof IRedefinirSenhaModel>(
+export const redefinirSenhaModelValidator = <k extends keyof IRedefinirSenhaModel>(
     model: IRedefinirSenhaModel,
     key?: k
 ): IValidationResult<IRedefinirSenhaModel>[] => {
     const results: IValidationResult<IRedefinirSenhaModel>[] = []
 
-    if (validateField("usuario", key)) {
+    if (ValidatorService.validateField("usuario", key)) {
         const success = model.usuario.trim().length >= 3
         if (!success) {
             results.push({
@@ -31,7 +31,7 @@ export const validateRedefinirSenhaModel = <k extends keyof IRedefinirSenhaModel
         }
     }
 
-    if (validateField("chave", key)) {
+    if (ValidatorService.validateField("chave", key)) {
         const success = model.chave.trim().length >= 4
         if (!success) {
             results.push({
@@ -41,7 +41,7 @@ export const validateRedefinirSenhaModel = <k extends keyof IRedefinirSenhaModel
         }
     }
 
-    if (validateField("senha", key)) {
+    if (ValidatorService.validateField("senha", key)) {
         const success = model.senha.trim().length >= 3
         if (!success) {
             results.push({

@@ -3,8 +3,8 @@ import { cadastroModelValidator, createCadastroModel, ICadastroModel } from "../
 import Cadastro from "../islands/login/cadastro.tsx"
 import { ICadastroData } from "../app/domain/data/cadastro-data.ts"
 import ValidatorService from "../app/services/validator-service.ts"
-import { DbContext } from "../app/domain/data-context/db-context.ts"
-import UsuarioRepository from "../app/domain/data-context/repositories/usuario-repository.ts"
+import LoginService from "@/app/services/login-service.ts"
+import { setCookie } from "@std/http/cookie"
 
 export default define.page<typeof handler>((props) => <Cadastro model={props.data.model!} />)
 
@@ -25,25 +25,17 @@ export const handler = define.handlers<ICadastroData>({
             return Response.json(data, { status: 400 })
         }
 
-        using dbContext = new DbContext()
-        const usuarioRepository = new UsuarioRepository(dbContext)
-        data.chave = crypto.randomUUID()
-        const sessionId = crypto.randomUUID()
-        const expireIn = parseInt(Deno.env.get("SESSION_EXPIRES_IN_MINUTES") ?? "20")
-
         try {
-            await usuarioRepository.novo(model, data.chave, sessionId, expireIn)
+            const service: LoginService = ctx.state.sp.get("loginService")
+            const { cookie, chave } = await service.novoUsuarioLogado(model)
+            const headers = new Headers()
+            setCookie(headers, cookie)
+            data.chave = chave
+            return Response.json(data, { status: 200, headers })
         } catch (error) {
             const errMsg = error instanceof Error ? error.message : "Erro inesperado"
             data.errors = [errMsg]
             return Response.json(data, { status: 400 })
         }
-
-        const maxAge = 20 * 60 // expiresIn em segundos
-        const headers: HeadersInit = {
-            "Set-Cookie": `session=${sessionId}; Max-Age=${maxAge}; HttpOnly; Path=/`
-        }
-
-        return Response.json(data, { status: 200, headers })
     }
 })

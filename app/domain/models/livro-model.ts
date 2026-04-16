@@ -1,4 +1,5 @@
-import { IModelValidation, isValidISODate, IValidationResult, validateField } from "../validation/model-validation.ts"
+import ValidatorService from "@/app/services/validator-service.ts"
+import { IModelValidation, IValidationResult } from "../validation/model-validation.ts"
 import { autorModelValidator, IAutorModel } from "./autor-model.ts"
 import { ISerieModel } from "./serie-model.ts"
 
@@ -28,7 +29,7 @@ export const livroModelValidator = (
     const results: IValidationResult<ILivroModel>[] = []
     const validateAsSerie = model.ordem !== undefined
 
-    if (validateField("titulo", key)) {
+    if (ValidatorService.validateField("titulo", key)) {
         const success = model.titulo.trim().length >= 3
         if (!success) {
             results.push({
@@ -38,8 +39,8 @@ export const livroModelValidator = (
         }
     }
 
-    if (validateField("dataConclusao", key)) {
-        const success = model.dataConclusao == undefined || isValidISODate(model.dataConclusao)
+    if (ValidatorService.validateField("dataConclusao", key)) {
+        const success = model.dataConclusao == undefined || ValidatorService.isValidISODate(model.dataConclusao)
         if (!success) {
             results.push({
                 key: "dataConclusao",
@@ -48,7 +49,7 @@ export const livroModelValidator = (
         }
     }
 
-    if (validateField("autor", key) && !validateAsSerie) {
+    if (ValidatorService.validateField("autor", key) && !validateAsSerie) {
         if (!model.autor) {
             results.push({ key: "autor", message: "Autor não informado" })
         } else {

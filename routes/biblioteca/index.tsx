@@ -1,7 +1,7 @@
-import { IAutorModel } from "../../app/domain/models/autor-model.ts"
-import { ILivroModel } from "../../app/domain/models/livro-model.ts"
-import { ISerieModel } from "../../app/domain/models/serie-model.ts"
-import { define } from "../../utils.ts"
+import { define } from "@/utils.ts"
+import { ILivroModel } from "@/app/domain/models/livro-model.ts"
+import { IAutorModel } from "@/app/domain/models/autor-model.ts"
+import { ISerieModel } from "@/app/domain/models/serie-model.ts"
 
 interface IBibliotecaData {
     model: ILivroModel[]

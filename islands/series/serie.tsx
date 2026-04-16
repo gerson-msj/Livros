@@ -8,7 +8,7 @@ import { ILivroModel, livroModelValidator } from "../../app/domain/models/livro-
 import InputDate from "../../components/input-date.tsx"
 import Validations from "../../components/Validations.tsx"
 import Msgbox, { MsgboxOptions } from "../msgbox.tsx"
-import ControllerService from "../../app/services/controller-service.ts"
+import PageService from "@/app/services/page-service.ts"
 
 export default function Serie(props: {
     serie: ISerieModel
@@ -84,7 +84,7 @@ export default function Serie(props: {
             body: JSON.stringify(model.value)
         }
 
-        await ControllerService.requestServer(
+        await PageService.requestServer(
             request,
             () => {
                 const title = isEdit ? "Série atualizada com sucesso" : "Série adicionada com sucesso"
@@ -110,7 +110,7 @@ export default function Serie(props: {
             return
         }
 
-        await ControllerService.requestServer(
+        await PageService.requestServer(
             { method: "DELETE" },
             voltar,
             (errors) => errMsgs.value = errors

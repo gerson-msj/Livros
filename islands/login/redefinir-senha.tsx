@@ -2,78 +2,50 @@ import { useSignal } from "@preact/signals"
 import Usuario from "../../components/login/Usuario.tsx"
 import Senha from "../../components/login/Senha.tsx"
 import Validations from "../../components/Validations.tsx"
-import { IRedefinirSenhaModel, validateRedefinirSenhaModel } from "../../app/domain/models/redefinir-senha-model.ts"
-import { IRedefinirSenhaData } from "../../routes/redefinir-senha.tsx"
+import { IRedefinirSenhaModel, redefinirSenhaModelValidator } from "../../app/domain/models/redefinir-senha-model.ts"
 import Chave from "../../components/login/Chave.tsx"
+import ValidatorService from "@/app/services/validator-service.ts"
+import PageService from "@/app/services/page-service.ts"
+import { IRedefinirSenhaData } from "@/app/domain/data/redefinir-senha-data.ts"
 
 export default function RedefinirSenha(props: { model: IRedefinirSenhaModel }) {
     const model = useSignal(props.model)
     const errMsgs = useSignal<string[]>([])
     const chave = useSignal<string | undefined>(undefined)
     const possuiChave = chave.value !== undefined
+    const validator = new ValidatorService<IRedefinirSenhaModel>(redefinirSenhaModelValidator, model.value)
 
     const onChange = <k extends keyof IRedefinirSenhaModel>(key: k, value: IRedefinirSenhaModel[k]) => {
         const changed = { ...model.value, [key]: value }
-        const changedValidated = getModelValidated(changed, key)
+        const changedValidated = validator.validateChanged(changed, key)
         model.value = changedValidated
         updateErrMsgs()
     }
 
-    const getModelValidated = (model: IRedefinirSenhaModel, key?: keyof IRedefinirSenhaModel): IRedefinirSenhaModel => {
-        const newValidations = validateRedefinirSenhaModel(model, key)
-        const validationResults = [...model.validationResults.filter((r) => r.key !== key), ...newValidations]
-        return { ...model, validationResults }
-    }
-
-    const validateAll = (): boolean => {
-        const modelValidated = getModelValidated(model.value)
-        model.value = modelValidated
-        updateErrMsgs()
-        return model.value.validationResults.length === 0
-    }
-
     const updateErrMsgs = () => {
-        errMsgs.value = model.value.validationResults.map((v) => v.message)
-    }
-
-    const classNames = (key: keyof IRedefinirSenhaModel) => {
-        return model.value.validationResults.some((v) => v.key === key) ? "input is-danger" : "input"
+        errMsgs.value = model.value.validationResults?.map((v) => v.message) ?? []
     }
 
     const redefinir = async () => {
-        const isValid = validateAll()
-        if (!isValid) {
-            return
-        }
+        model.value = validator.validateModel()
+        updateErrMsgs()
+        if (model.value.validationResults !== undefined) return
 
-        try {
-            const response = await fetch("/redefinir-senha", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(model.value)
-            })
-
-            const data: IRedefinirSenhaData = await response.json()
-            if (response.ok) {
-                chave.value = data.chave
-            } else {
-                errMsgs.value = [data.errMsg ?? `Status: ${response.status}.`]
-            }
-        } catch (error) {
-            const errMsg = "Falha de comunicação com o servidor"
-            console.error(errMsg, error)
-            errMsgs.value = [errMsg]
-        }
+        await PageService.requestPost<IRedefinirSenhaModel, IRedefinirSenhaData>(
+            model.value,
+            (data) => chave.value = data.chave,
+            (errors) => errMsgs.value = errors
+        )
     }
 
     return (
         <>
+            <p class="title is-3">Livros - Redefinir Senha</p>
+
             <Usuario
                 value={model.value.usuario}
                 onChange={({ currentTarget: { value } }) => onChange("usuario", value)}
-                class={classNames("usuario")}
+                class={`input ${validator.class("usuario")}`}
                 placeholder="Informe seu nome de usuário"
                 disabled={possuiChave}
             />
@@ -81,7 +53,7 @@ export default function RedefinirSenha(props: { model: IRedefinirSenhaModel }) {
             <Chave
                 value={model.value.chave}
                 onChange={({ currentTarget: { value } }) => onChange("chave", value)}
-                class={classNames("chave")}
+                class={`input ${validator.class("chave")}`}
                 placeholder="Informe sua chave de redefinição de senha"
                 disabled={possuiChave}
             />
@@ -89,7 +61,7 @@ export default function RedefinirSenha(props: { model: IRedefinirSenhaModel }) {
             <Senha
                 value={model.value.senha}
                 onChange={({ currentTarget: { value } }) => onChange("senha", value)}
-                class={classNames("senha")}
+                class={`input ${validator.class("senha")}`}
                 placeholder="Informe sua nova senha"
                 disabled={possuiChave}
             />

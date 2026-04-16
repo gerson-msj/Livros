@@ -7,7 +7,7 @@ import InputDate from "../../components/input-date.tsx"
 import Validations from "../../components/Validations.tsx"
 import { getModelValidated, getValidationClass, modelToErrors } from "../../app/domain/validation/model-validation.ts"
 import Msgbox, { MsgboxOptions } from "../msgbox.tsx"
-import ControllerService from "../../app/services/controller-service.ts"
+import PageService from "@/app/services/page-service.ts"
 
 export default function Livro(props: {
     livro: ILivroModel
@@ -49,7 +49,7 @@ export default function Livro(props: {
             body: JSON.stringify(model.value)
         }
 
-        await ControllerService.requestServer(
+        await PageService.requestServer(
             request,
             () => {
                 const title = isEdit ? "Livro atualizado com sucesso" : "Livro adicionado com sucesso"
@@ -71,7 +71,7 @@ export default function Livro(props: {
             return
         }
 
-        await ControllerService.requestServer(
+        await PageService.requestServer(
             { method: "DELETE" },
             voltar,
             (errors) => errMsgs.value = errors
