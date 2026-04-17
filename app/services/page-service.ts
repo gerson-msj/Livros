@@ -19,13 +19,11 @@ export default class PageService {
 
     public static requestServer = async <TData extends IErrorData>(
         request: RequestInit,
-        handleSuccess: <TData extends IErrorData>(data?: TData) => void,
+        handleSuccess: (data?: TData) => void,
         handleError: (errors: string[]) => void
     ) => {
         try {
-            console.log("will fetch")
             const response = await fetch("", request)
-            console.log("response", response)
             if (response.ok) {
                 const text = await response.text()
                 const data: TData | undefined = text ? JSON.parse(text) : undefined

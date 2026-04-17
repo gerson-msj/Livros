@@ -2,43 +2,11 @@ import { define } from "@/utils.ts"
 import { ILivroModel } from "@/app/domain/models/livro-model.ts"
 import { IAutorModel } from "@/app/domain/models/autor-model.ts"
 import { ISerieModel } from "@/app/domain/models/serie-model.ts"
+import Biblioteca from "@/islands/biblioteca.tsx"
+import { IBibliotecaData } from "@/app/domain/data/biblioteca-data.ts"
+import { deleteCookie } from "@std/http/cookie"
 
-interface IBibliotecaData {
-    model: ILivroModel[]
-}
-
-export default define.page<typeof handler>((props) => {
-    const { model } = props.data
-
-    return (
-        <>
-            <h1 class="title">Biblioteca</h1>
-            <div class="buttons">
-                <a href="/biblioteca/livros" class="button is-dark is-responsive">Livros</a>
-                <a href="/biblioteca/series" class="button is-dark is-responsive">Séries</a>
-            </div>
-            <h3 class="subtitle">Leituras mais recentes</h3>
-            <table class="table is-fullwidth">
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Autor</th>
-                        <th>Conclusão</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {model.map((m, i) => (
-                        <tr key={i}>
-                            <td>{m.titulo}</td>
-                            <td>{m.autor?.nomeAutor ?? m.serie?.autor?.nomeAutor}</td>
-                            <td>{m.dataConclusao}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </>
-    )
-})
+export default define.page<typeof handler>((props) => <Biblioteca model={props.data.model!} />)
 
 export const handler = define.handlers<IBibliotecaData>({
     GET() {
@@ -55,5 +23,10 @@ export const handler = define.handlers<IBibliotecaData>({
         }
 
         return { data }
+    },
+    POST() {
+        const headers = new Headers()
+        deleteCookie(headers, "session")
+        return new Response(null, { status: 201, headers })
     }
 })

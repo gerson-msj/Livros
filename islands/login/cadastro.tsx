@@ -42,7 +42,7 @@ export default function Cadastro(props: { model: ICadastroModel }) {
 
         await PageService.requestServer<ICadastroData>(
             request,
-            (data) => chave.value = data.chave,
+            (data) => chave.value = data?.chave,
             (errors) => errMsgs.value = errors
         )
     }

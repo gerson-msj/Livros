@@ -5,6 +5,11 @@ import LoginService from "@/app/services/login-service.ts"
 import { ServiceProvider } from "@/app/services/service-provider.ts"
 import SessionRepository from "@/app/repositories/session-repository.ts"
 import UsuarioRepository from "@/app/repositories/usuario-repository.ts"
+import LivroRepository from "@/app/repositories/livro-repository.ts"
+import AutorRepository from "@/app/repositories/autor-repository.ts"
+import SerieRepository from "@/app/repositories/serie-repository.ts"
+import LivroService from "@/app/services/livro-service.ts"
+import SerieService from "@/app/services/serie-service.ts"
 
 /**
  * ### Configura a injeção de dependência
@@ -25,7 +30,6 @@ const dependencyInjection = define.middleware(async (ctx) => {
         ))
     sp.register("loginService", () =>
         new LoginService(
-            sp.get("dbContext"),
             sp.get("usuarioRepository"),
             sp.get("sessionRepository")
         ))
@@ -33,6 +37,35 @@ const dependencyInjection = define.middleware(async (ctx) => {
     ctx.state.sp = sp
     return await ctx.next()
 })
+
+const userDependencyInjection = (sp: ServiceProvider, userId: number) => {
+    sp.register("autorRepository", () =>
+        new AutorRepository(
+            sp.get("dbContext"),
+            userId
+        ))
+    sp.register("livroRepository", () =>
+        new LivroRepository(
+            sp.get("dbContext"),
+            userId
+        ))
+    sp.register("serieRepository", () =>
+        new SerieRepository(
+            sp.get("dbContext"),
+            userId
+        ))
+    sp.register("livroService", () =>
+        new LivroService(
+            sp.get("autorRepository"),
+            sp.get("livroRepository")
+        ))
+    sp.register("serieService", () =>
+        new SerieService(
+            sp.get("autorRepository"),
+            sp.get("livroRepository"),
+            sp.get("serieRepository")
+        ))
+}
 
 /**
  * ### Resgata e valida a sessão do usuário
@@ -47,6 +80,10 @@ const session = define.middleware(async (ctx) => {
         ctx.state.sessionData = await loginService.validateSession(sessionId)
         if (ctx.state.sessionData !== undefined && !ctx.req.url.includes("biblioteca")) {
             return Response.redirect(new URL("/biblioteca", ctx.req.url), 303)
+        }
+
+        if (ctx.state.sessionData !== undefined) {
+            userDependencyInjection(ctx.state.sp, ctx.state.sessionData.userId)
         }
     }
 

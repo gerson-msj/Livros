@@ -1,5 +1,5 @@
 import { IErrorData } from "../../../app/domain/data/error-data.ts"
-import { createAutor, IAutorModel } from "../../../app/domain/models/autor-model.ts"
+import { IAutorModel } from "../../../app/domain/models/autor-model.ts"
 import { ILivroModel, livroModelValidator } from "../../../app/domain/models/livro-model.ts"
 import PageService from "@/app/services/page-service.ts"
 import Livro from "../../../islands/livros/livro.tsx"
@@ -10,31 +10,23 @@ export interface ILivroData extends IErrorData {
     autores?: IAutorModel[]
 }
 
-export default define.page<typeof handler>((props) => <Livro livro={props.data.livro!} autores={props.data.autores ?? []} />)
+export default define.page<typeof handler>((props) => <Livro data={props.data} />)
 
 export const handler = define.handlers({
-    GET(ctx) {
+    async GET(ctx) {
         const id = PageService.getId(ctx.params.livro)
 
-        // Obter livro novo ou existente
-        const livro: ILivroModel = {
-            id,
-            titulo: "Título",
-            autor: id === 0 ? undefined : { id: 1, nomeAutor: "Ana" }
+        const livroService = ctx.state.sp.get("livroService")
+        const autorRepository = ctx.state.sp.get("autorRepository")
+
+        const data: ILivroData = {}
+
+        try {
+            data.livro = await livroService.obterLivroPorId(id)
+            data.autores = id === 0 ? await autorRepository.obterAutores() : []
+        } catch (error) {
+            data.errors = PageService.handleError(error)
         }
-
-        // Obter autores somente para novos livros
-        const autores: IAutorModel[] | undefined = id === 0
-            ? [
-                createAutor(1, "Ana"),
-                createAutor(2, "Beto"),
-                createAutor(3, "Carla"),
-                createAutor(4, "Denis"),
-                createAutor(5, "Edna")
-            ]
-            : undefined
-
-        const data: ILivroData = { livro, autores }
 
         return { data }
     },

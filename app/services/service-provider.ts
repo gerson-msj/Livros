@@ -2,6 +2,11 @@ import { DbContext } from "@/app/data-context/db-context.ts"
 import SessionRepository from "@/app/repositories/session-repository.ts"
 import UsuarioRepository from "@/app/repositories/usuario-repository.ts"
 import LoginService from "@/app/services/login-service.ts"
+import LivroService from "@/app/services/livro-service.ts"
+import AutorRepository from "@/app/repositories/autor-repository.ts"
+import LivroRepository from "@/app/repositories/livro-repository.ts"
+import SerieService from "@/app/services/serie-service.ts"
+import SerieRepository from "@/app/repositories/serie-repository.ts"
 
 type ServiceMap = {
     /** Dados */
@@ -10,26 +15,17 @@ type ServiceMap = {
     /** Repositories */
     sessionRepository: SessionRepository
     usuarioRepository: UsuarioRepository
+    autorRepository: AutorRepository
+    livroRepository: LivroRepository
+    serieRepository: SerieRepository
 
     /** Services */
     loginService: LoginService
+    livroService: LivroService
+    serieService: SerieService
 }
 
 type Factory<K extends keyof ServiceMap> = (sp: ServiceProvider) => ServiceMap[K]
-
-const _keys = [
-    /** Dados */
-    "dbContext",
-
-    /** Repositories */
-    "sessionRepository",
-    "usuarioRepository",
-
-    /** Services */
-    "loginService"
-] as const
-
-export type ServiceProviderKey = typeof _keys[number]
 
 export class ServiceProvider {
     #instances = new Map<keyof ServiceMap, ServiceMap[keyof ServiceMap]>()

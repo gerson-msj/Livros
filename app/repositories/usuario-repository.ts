@@ -16,6 +16,7 @@ export default class UsuarioRepository extends RepositoryBase {
         chave: string
         novoUsuarioOperation: Deno.AtomicOperation
     }> {
+        await this.openDb()
         const usuarioIdxKey = this.getIdxKey("usuarios:usuario_idx", model.usuario)
         const [seqRes, usuarioIdxRes] = await this.dbContext.kv.getMany<[number, number]>([
             this.seqKey,
@@ -46,8 +47,8 @@ export default class UsuarioRepository extends RepositoryBase {
     }
 
     public async obterUsuario(usuario: string): Promise<IUsuarioValue | null> {
-        const idxKey = this.getIdxKey("usuarios:usuario_idx", usuario)
         await this.openDb()
+        const idxKey = this.getIdxKey("usuarios:usuario_idx", usuario)
         const idxRes = await this.kv.get<number>(idxKey)
         if (idxRes.value === null) {
             return null
@@ -70,6 +71,7 @@ export default class UsuarioRepository extends RepositoryBase {
         usuarioValue.chave = await CryptService.criptografarSenha(chave)
         usuarioValue.senha = await CryptService.criptografarSenha(senha)
 
+        await this.openDb()
         const redefinirSenhaOperation = this.dbContext.kv.atomic()
             .set(key, usuarioValue)
 

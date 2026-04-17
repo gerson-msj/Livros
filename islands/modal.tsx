@@ -35,16 +35,16 @@ export default function Modal(props: ModalProps) {
         }
     })
 
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "Escape" && options.value.isActive) {
-                close()
-            }
-        }
+    // useEffect(() => {
+    //     const handleKeyDown = (event: KeyboardEvent) => {
+    //         if (event.key === "Escape" && options.value.isActive) {
+    //             close()
+    //         }
+    //     }
 
-        document.addEventListener("keydown", handleKeyDown)
-        return () => document.removeEventListener("keydown", handleKeyDown)
-    }, [])
+    //     document.addEventListener("keydown", handleKeyDown)
+    //     return () => document.removeEventListener("keydown", handleKeyDown)
+    // }, [])
 
     return (
         <div class={` modal ${options.value.isActive ? "is-active" : ""}`}>

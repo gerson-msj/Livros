@@ -30,7 +30,8 @@ export default class SessionRepository extends RepositoryBase {
         return res.value
     }
 
-    public deleteSession(sessionId: string): Promise<void> {
+    public async deleteSession(sessionId: string): Promise<void> {
+        await this.openDb()
         const k = [this.prefix, sessionId]
         return this.dbContext.kv.delete(k)
     }

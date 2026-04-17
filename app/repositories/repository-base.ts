@@ -4,52 +4,34 @@ export default abstract class RepositoryBase {
     protected dbContext: DbContext
     protected prefix: DbPrefix
     protected seqKey: Deno.KvKey
-
-    public get kv(): Deno.Kv {
-        return this.dbContext.kv
-    }
+    protected userId: number
 
     constructor(
         dbContext: DbContext,
-        prefix: DbPrefix
+        prefix: DbPrefix,
+        userId: number = 0
     ) {
         this.dbContext = dbContext
         this.prefix = prefix
         this.seqKey = [`${prefix}:seq`]
+        this.userId = userId
     }
 
-    protected getKey<T extends Deno.KvKeyPart>(keyPart: T): Deno.KvKey {
-        return [this.prefix, keyPart]
+    protected getKey<T extends Deno.KvKeyPart>(keyPart?: T): Deno.KvKey {
+        if (keyPart !== undefined) {
+            return this.userId > 0 ? [this.prefix, this.userId, keyPart] : [this.prefix, keyPart]
+        } else {
+            return this.userId > 0 ? [this.prefix, this.userId] : [this.prefix]
+        }
     }
 
     protected getIdxKey(idx: DbIdx, value: Deno.KvKeyPart): Deno.KvKey {
-        return [idx, value]
+        return this.userId > 0 ? [idx, this.userId, value] : [idx, value]
     }
 
-    protected async retry<T>(action: () => Promise<T>): Promise<T> {
-        const maxRetries = 3
-        const delayMs = 500
-
-        let lastError: unknown
-
-        for (let attempt = 0; attempt < maxRetries; attempt++) {
-            try {
-                return await action()
-            } catch (error) {
-                lastError = error
-
-                const isLastAttempt = attempt === maxRetries - 1
-                if (isLastAttempt) {
-                    break
-                }
-
-                if (delayMs > 0) {
-                    await new Promise((resolve) => setTimeout(resolve, delayMs))
-                }
-            }
-        }
-
-        throw lastError
+    protected async getKv(): Promise<Deno.Kv> {
+        await this.openDb()
+        return this.dbContext.kv
     }
 
     protected openDb(): Promise<void> {

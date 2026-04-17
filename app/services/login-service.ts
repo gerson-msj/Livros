@@ -2,7 +2,6 @@ import ServiceBase from "./service-base.ts"
 import { createSessionData, ISessionData } from "@/app/domain/data/session-data.ts"
 import { ICadastroModel } from "@/app/domain/models/cadastro-model.ts"
 import { Cookie } from "@std/http/cookie"
-import { DbContext } from "@/app/data-context/db-context.ts"
 import { ILoginModel } from "@/app/domain/models/login-model.ts"
 import UsuarioRepository from "@/app/repositories/usuario-repository.ts"
 import SessionRepository from "@/app/repositories/session-repository.ts"
@@ -15,11 +14,10 @@ export default class LoginService extends ServiceBase {
     private sessionRepository: SessionRepository
 
     constructor(
-        dbContext: DbContext,
         usuarioRepository: UsuarioRepository,
         sessionRepository: SessionRepository
     ) {
-        super(dbContext)
+        super()
         this.usuarioRepository = usuarioRepository
         this.sessionRepository = sessionRepository
     }
@@ -27,7 +25,6 @@ export default class LoginService extends ServiceBase {
     public async novoUsuarioLogado(
         model: ICadastroModel
     ): Promise<{ cookie: Cookie; chave: string }> {
-        await this.dbContext.openDb()
         const { userId, chave, novoUsuarioOperation } = await this.usuarioRepository.novoUsuarioSetOperation(model)
         const { sessionData, sessionOperation } = this.createSession(userId)
 
@@ -83,7 +80,6 @@ export default class LoginService extends ServiceBase {
     }
 
     public async redefinirSenha(model: IRedefinirSenhaModel): Promise<{ cookie: Cookie; chave: string }> {
-        await this.dbContext.openDb()
         const usuarioValue = await this.tentarObterUsuario(model.usuario)
         const chaveValida = await CryptService.validarSenha(model.chave, usuarioValue.chave)
         if (chaveValida !== true) {

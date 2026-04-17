@@ -2,11 +2,17 @@
 
 const prefixes = [
     "sessions",
-    "usuarios"
+    "usuarios",
+    "autores",
+    "livros",
+    "series"
 ] as const
 
 const seqs = [
-    "usuarios:seq"
+    "usuarios:seq",
+    "autores:seq",
+    "livros:seq",
+    "series:seq"
 ] as const
 
 const idxs = [

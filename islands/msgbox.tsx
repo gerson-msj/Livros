@@ -1,5 +1,6 @@
 import { Signal, useSignal, useSignalEffect } from "@preact/signals"
 import Modal, { ModalOptions } from "./modal.tsx"
+import { useEffect } from "preact/hooks"
 
 export interface MsgboxOptions {
     isActive?: boolean
@@ -20,6 +21,7 @@ export default function Msgbox(props: MsgboxProps) {
     const modalOptions = useSignal<ModalOptions>({})
 
     useSignalEffect(() => { // By Modal
+        console.log("byModal")
         const msgIsActive = options.peek().isActive ?? false
         const modalIsActive = modalOptions.value.isActive ?? false
 
@@ -33,9 +35,9 @@ export default function Msgbox(props: MsgboxProps) {
      * peek() não assina
      */
     useSignalEffect(() => { // By Msg
+        console.log("byMsg")
         const msgIsActive = options.value.isActive ?? false
         const modalIsActive = modalOptions.peek().isActive ?? false
-
         if (msgIsActive !== modalIsActive) {
             modalOptions.value = { ...modalOptions.peek(), isActive: msgIsActive }
         }
