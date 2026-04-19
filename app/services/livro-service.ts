@@ -44,4 +44,7 @@ export default class LivroService extends ServiceBase {
 
         return livroModel
     }
+
+    public async incluirLivro(model: ILivroModel): Promise<void> {
+    }
 }

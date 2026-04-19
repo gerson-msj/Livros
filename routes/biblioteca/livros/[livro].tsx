@@ -4,6 +4,7 @@ import { ILivroModel, livroModelValidator } from "../../../app/domain/models/liv
 import PageService from "@/app/services/page-service.ts"
 import Livro from "../../../islands/livros/livro.tsx"
 import { define } from "../../../utils.ts"
+import ValidatorService from "@/app/services/validator-service.ts"
 
 export interface ILivroData extends IErrorData {
     livro?: ILivroModel
@@ -34,20 +35,26 @@ export const handler = define.handlers({
     async POST(ctx) {
         const id = PageService.getId(ctx.params.livro)
 
-        const data: ILivroData = {}
-        let status: number = 200
-
         const model: ILivroModel = await ctx.req.json()
         model.ordem = undefined
-        model.validationResults = livroModelValidator(model)
-        if (model.validationResults.length > 0 || model.id !== id) {
-            data.errors = ["Dados inválidos"]
-            status = 400
+
+        const data: ILivroData = {
+            errors: model.id !== id ? ["Dados inválidos"] : ValidatorService.getValidationErrors(livroModelValidator, model)
         }
 
-        // realiza a gravação e retorna possíveis erros.
+        if (data.errors) {
+            return Response.json(data, { status: 400 })
+        }
 
-        return Response.json(data, { status })
+        try {
+            await ctx.state.sp.get("dbContext").openDb()
+            const service = ctx.state.sp.get("livroService")
+            await service.incluirLivro(model)
+            return Response.json(data, { status: 200 })
+        } catch (error) {
+            data.errors = PageService.handleError(error)
+            return Response.json(data, { status: 400 })
+        }
     },
     DELETE(ctx) {
         const id = PageService.getId(ctx.params.id)
