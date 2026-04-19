@@ -15,7 +15,7 @@ export default class SessionRepository extends RepositoryBase {
             expiresTime: sessionData.expiresTime
         }
 
-        return this.dbContext.kv.atomic()
+        return this.db.atomic()
             .set(k, v, { expireIn: sessionData.expireIn })
     }
 
@@ -25,14 +25,12 @@ export default class SessionRepository extends RepositoryBase {
         }
 
         const k = [this.prefix, sessionId]
-        await this.dbContext.openDb()
-        const res = await this.dbContext.kv.get<ISessionValue>(k)
+        const res = await this.db.get<ISessionValue>(k)
         return res.value
     }
 
-    public async deleteSession(sessionId: string): Promise<void> {
-        await this.openDb()
+    public deleteSession(sessionId: string): Promise<void> {
         const k = [this.prefix, sessionId]
-        return this.dbContext.kv.delete(k)
+        return this.db.delete(k)
     }
 }

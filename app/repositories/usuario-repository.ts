@@ -16,9 +16,8 @@ export default class UsuarioRepository extends RepositoryBase {
         chave: string
         novoUsuarioOperation: Deno.AtomicOperation
     }> {
-        await this.openDb()
         const usuarioIdxKey = this.getIdxKey("usuarios:usuario_idx", model.usuario)
-        const [seqRes, usuarioIdxRes] = await this.dbContext.kv.getMany<[number, number]>([
+        const [seqRes, usuarioIdxRes] = await this.db.getMany<[number, number]>([
             this.seqKey,
             usuarioIdxKey
         ])
@@ -37,7 +36,7 @@ export default class UsuarioRepository extends RepositoryBase {
             chave: await CryptService.criptografarSenha(chave)
         }
 
-        const novoUsuarioOperation = this.dbContext.kv.atomic()
+        const novoUsuarioOperation = this.db.atomic()
             .check(seqRes, usuarioIdxRes)
             .set(this.seqKey, userId) // Sequência
             .set(usuarioIdxKey, userId) // Indice campo Usuario
@@ -47,15 +46,14 @@ export default class UsuarioRepository extends RepositoryBase {
     }
 
     public async obterUsuario(usuario: string): Promise<IUsuarioValue | null> {
-        await this.openDb()
         const idxKey = this.getIdxKey("usuarios:usuario_idx", usuario)
-        const idxRes = await this.kv.get<number>(idxKey)
+        const idxRes = await this.db.get<number>(idxKey)
         if (idxRes.value === null) {
             return null
         }
         const userId = idxRes.value
         const key = this.getKey(userId)
-        const res = await this.kv.get<IUsuarioValue>(key)
+        const res = await this.db.get<IUsuarioValue>(key)
         return res.value
     }
 
@@ -71,8 +69,7 @@ export default class UsuarioRepository extends RepositoryBase {
         usuarioValue.chave = await CryptService.criptografarSenha(chave)
         usuarioValue.senha = await CryptService.criptografarSenha(senha)
 
-        await this.openDb()
-        const redefinirSenhaOperation = this.dbContext.kv.atomic()
+        const redefinirSenhaOperation = this.db.atomic()
             .set(key, usuarioValue)
 
         return { chave, redefinirSenhaOperation }

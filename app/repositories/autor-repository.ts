@@ -10,15 +10,13 @@ export default class AutorRepository extends RepositoryBase {
 
     public async obterAutorPorId(id: number): Promise<IAutorValue | null> {
         const key = this.getKey(id)
-        const kv = await this.getKv()
-        const res = await kv.get<IAutorValue>(key)
+        const res = await this.db.get<IAutorValue>(key)
         return res.value
     }
 
     public async obterAutores(): Promise<IAutorModel[]> {
         const key = this.getKey()
-        const kv = await this.getKv()
-        const entries = kv.list<IAutorValue>({ prefix: key })
+        const entries = this.db.list<IAutorValue>({ prefix: key })
         const result: IAutorModel[] = []
         for await (const entry of entries) {
             result.push({

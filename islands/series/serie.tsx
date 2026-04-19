@@ -7,7 +7,7 @@ import PesquisaAutor from "../../components/pesquisa-autor.tsx"
 import { ILivroModel, livroModelValidator } from "../../app/domain/models/livro-model.ts"
 import InputDate from "../../components/input-date.tsx"
 import Validations from "../../components/Validations.tsx"
-import Msgbox, { MsgboxOptions } from "../msgbox.tsx"
+import Msgbox, { MsgboxOptions } from "@/islands/msgboxOld.tsx"
 import PageService from "@/app/services/page-service.ts"
 
 export default function Serie(props: {

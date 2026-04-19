@@ -33,7 +33,7 @@ export default function RedefinirSenha(props: { model: IRedefinirSenhaModel }) {
 
         await PageService.requestPost<IRedefinirSenhaModel, IRedefinirSenhaData>(
             model.value,
-            (data) => chave.value = data.chave,
+            (data) => chave.value = data?.chave,
             (errors) => errMsgs.value = errors
         )
     }

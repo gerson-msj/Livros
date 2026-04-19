@@ -1,10 +1,14 @@
 import { DbContext, DbIdx, DbPrefix } from "@/app/data-context/db-context.ts"
 
 export default abstract class RepositoryBase {
-    protected dbContext: DbContext
     protected prefix: DbPrefix
     protected seqKey: Deno.KvKey
     protected userId: number
+    protected get db() {
+        return this.dbContext.db
+    }
+
+    private dbContext: DbContext
 
     constructor(
         dbContext: DbContext,
@@ -27,14 +31,5 @@ export default abstract class RepositoryBase {
 
     protected getIdxKey(idx: DbIdx, value: Deno.KvKeyPart): Deno.KvKey {
         return this.userId > 0 ? [idx, this.userId, value] : [idx, value]
-    }
-
-    protected async getKv(): Promise<Deno.Kv> {
-        await this.openDb()
-        return this.dbContext.kv
-    }
-
-    protected openDb(): Promise<void> {
-        return this.dbContext.openDb()
     }
 }

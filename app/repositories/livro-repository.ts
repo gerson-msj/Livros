@@ -9,8 +9,7 @@ export default class LivroRepository extends RepositoryBase {
 
     public async obterLivroPorId(id: number): Promise<ILivroValue | null> {
         const key = this.getKey(id)
-        const kv = await this.getKv()
-        const res = await kv.get<ILivroValue>(key)
+        const res = await this.db.get<ILivroValue>(key)
         return res.value
     }
 }

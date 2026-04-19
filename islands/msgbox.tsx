@@ -1,83 +1,94 @@
-import { Signal, useSignal, useSignalEffect } from "@preact/signals"
-import Modal, { ModalOptions } from "./modal.tsx"
+import { Signal, useSignal } from "@preact/signals"
+import { createDeferred, Deferred } from "@/app/domain/deferred.ts"
 import { useEffect } from "preact/hooks"
 
-export interface MsgboxOptions {
-    isActive?: boolean
-    result?: "ok" | "cancel"
+type MsgboxResult = "ok" | "cancel"
+
+interface MsgboxOptions {
     title?: string
     msg?: string
     ok?: string
     cancel?: string
-    key?: string
+}
+
+interface MsgboxData {
+    isActive: boolean
+    options: MsgboxOptions
+}
+
+export class MsgboxController {
+    public data?: Signal<MsgboxData>
+    private deferred?: Deferred<MsgboxResult>
+
+    public get isActive(): boolean {
+        return this.data!.value.isActive === true
+    }
+
+    public open(options: MsgboxOptions): Promise<MsgboxResult> {
+        if (this.isActive) {
+            return Promise.reject("A msgbox já está aberta.")
+        }
+
+        this.data!.value = { ...this.data!.value, options, isActive: true }
+        this.deferred = createDeferred<MsgboxResult>()
+        return this.deferred.promise
+    }
+
+    public close(result: MsgboxResult) {
+        if (this.isActive) {
+            this.data!.value = { ...this.data!.value, isActive: false }
+        }
+
+        this.deferred?.resolve(result)
+        this.deferred = undefined
+    }
 }
 
 interface MsgboxProps {
-    options: Signal<MsgboxOptions>
+    controller: MsgboxController
 }
 
-export default function Msgbox(props: MsgboxProps) {
-    const { options } = props
-    const modalOptions = useSignal<ModalOptions>({})
+export function Msgbox(props: MsgboxProps) {
+    const { controller } = props
+    controller.data = useSignal<MsgboxData>({ isActive: false, options: {} })
+    const { options } = controller.data.value
 
-    useSignalEffect(() => { // By Modal
-        console.log("byModal")
-        const msgIsActive = options.peek().isActive ?? false
-        const modalIsActive = modalOptions.value.isActive ?? false
-
-        if (!modalIsActive && msgIsActive) {
-            options.value = { ...options.peek(), isActive: false, result: "cancel" }
+    useEffect(() => {
+        return () => {
+            controller.close("cancel")
         }
-    })
-
-    /**
-     * value assina o signal effect para leitura de alterações do signal
-     * peek() não assina
-     */
-    useSignalEffect(() => { // By Msg
-        console.log("byMsg")
-        const msgIsActive = options.value.isActive ?? false
-        const modalIsActive = modalOptions.peek().isActive ?? false
-        if (msgIsActive !== modalIsActive) {
-            modalOptions.value = { ...modalOptions.peek(), isActive: msgIsActive }
-        }
-    })
-
-    const onOk = () => {
-        options.value = { ...options.value, isActive: false, result: "ok" }
-    }
-
-    const onCancel = () => {
-        options.value = { ...options.value, isActive: false, result: "cancel" }
-    }
+    }, [])
 
     return (
-        <Modal options={modalOptions}>
-            <div class="card">
-                {options.value.title !== undefined &&
-                    (
-                        <header class="card-header">
-                            <p class="card-header-title">{options.value.title}</p>
-                        </header>
-                    )}
-                {options.value.msg !== undefined &&
-                    (
-                        <div class="card-content">
-                            <div class="content">
-                                <p>{options.value.msg}</p>
+        <div class={` modal ${controller.isActive ? "is-active" : ""}`}>
+            <div class="modal-background is-clickable" onClick={() => controller.close("cancel")}></div>
+            <div class="modal-content">
+                <div class="card">
+                    {options.title !== undefined &&
+                        (
+                            <header class="card-header">
+                                <p class="card-header-title">{options.title}</p>
+                            </header>
+                        )}
+                    {options.msg !== undefined &&
+                        (
+                            <div class="card-content">
+                                <div class="content">
+                                    <p>{options.msg}</p>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                {(options.value.ok !== undefined || options.value.cancel !== undefined) &&
-                    (
-                        <footer class="card-footer">
-                            {options.value.ok !== undefined &&
-                                <a href="#" class="card-footer-item" onClick={() => onOk()}>{options.value.ok}</a>}
-                            {options.value.cancel !== undefined &&
-                                <a href="#" class="card-footer-item" onClick={() => onCancel()}>{options.value.cancel}</a>}
-                        </footer>
-                    )}
+                        )}
+                    {(options.ok !== undefined || options.cancel !== undefined) &&
+                        (
+                            <footer class="card-footer">
+                                {options.ok !== undefined &&
+                                    <a href="#" class="card-footer-item" onClick={() => controller.close("ok")}>{options.ok}</a>}
+                                {options.cancel !== undefined &&
+                                    <a href="#" class="card-footer-item" onClick={() => controller.close("cancel")}>{options.cancel}</a>}
+                            </footer>
+                        )}
+                </div>
             </div>
-        </Modal>
+        </div>
     )
 }

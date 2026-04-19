@@ -24,17 +24,21 @@ export type DbSeq = typeof seqs[number]
 export type DbIdx = typeof idxs[number]
 
 export class DbContext {
-    private _kv: Deno.Kv | undefined = undefined
-    public get kv() {
-        return this._kv!
+    private _db: Deno.Kv | undefined = undefined
+    public get db(): Deno.Kv {
+        if (this._db === undefined) {
+            throw new Error("Abra o banco de dados antes de sua utilização!")
+        }
+
+        return this._db
     }
 
     public async openDb() {
-        this._kv ??= await Deno.openKv(Deno.env.get("DBPATH")) // Temporário em dev.
+        this._db ??= await Deno.openKv(Deno.env.get("DBPATH")) // Temporário em dev.
     }
 
     public closeDb(): void {
-        this._kv?.close()
+        this._db?.close()
     }
 
     [Symbol.dispose]() {

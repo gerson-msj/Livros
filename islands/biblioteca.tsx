@@ -1,20 +1,13 @@
 import { ILivroModel } from "@/app/domain/models/livro-model.ts"
-import { useSignal, useSignalEffect } from "@preact/signals"
-import Msgbox, { MsgboxOptions } from "@/islands/msgbox.tsx"
+import { Msgbox, MsgboxController } from "@/islands/msgbox.tsx"
 
 export default function Biblioteca(props: { model: ILivroModel[] }) {
     const { model } = props
-    const msgbox = useSignal<MsgboxOptions>({})
+    const msgbox = new MsgboxController()
 
-    useSignalEffect(() => {
-        if (msgbox.value.result === "ok") {
-            sair(true)
-        }
-    })
-
-    const sair = async (confirmado: boolean) => {
-        if (!confirmado) {
-            msgbox.value = { title: "Deseja realmente sair?", ok: "Sim", cancel: "Não", isActive: true }
+    const sair = async () => {
+        const result = await msgbox.open({ title: "Deseja realmente sair?", ok: "Sim", cancel: "Não" })
+        if (result === "cancel") {
             return
         }
 
@@ -31,7 +24,7 @@ export default function Biblioteca(props: { model: ILivroModel[] }) {
             <div class="buttons">
                 <a href="/biblioteca/livros" class="button is-dark is-responsive">Livros</a>
                 <a href="/biblioteca/series" class="button is-dark is-responsive">Séries</a>
-                <button type="button" class="button is-dark is-danger" onClick={() => sair(false)}>Sair</button>
+                <button type="button" class="button is-dark is-danger" onClick={() => sair()}>Sair</button>
             </div>
             <h3 class="subtitle">Leituras mais recentes</h3>
             <table class="table is-fullwidth">
@@ -52,7 +45,7 @@ export default function Biblioteca(props: { model: ILivroModel[] }) {
                     ))}
                 </tbody>
             </table>
-            <Msgbox options={msgbox} />
+            <Msgbox controller={msgbox} />
         </>
     )
 }

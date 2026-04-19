@@ -16,6 +16,7 @@ export const handler = define.handlers({
     async GET(ctx) {
         const id = PageService.getId(ctx.params.livro)
 
+        await ctx.state.sp.get("dbContext").openDb()
         const livroService = ctx.state.sp.get("livroService")
         const autorRepository = ctx.state.sp.get("autorRepository")
 

@@ -76,6 +76,7 @@ const session = define.middleware(async (ctx) => {
     const sessionId: string | undefined = cookies["session"]
     ctx.state.sessionData = undefined
     if (sessionId) {
+        await ctx.state.sp.get("dbContext").openDb()
         const loginService: LoginService = ctx.state.sp.get("loginService")
         ctx.state.sessionData = await loginService.validateSession(sessionId)
         if (ctx.state.sessionData !== undefined && !ctx.req.url.includes("biblioteca")) {

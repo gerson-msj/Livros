@@ -3,9 +3,9 @@ import { IErrorData } from "../domain/data/error-data.ts"
 export default class PageService {
     public static getId = (parameter: string) => !isNaN(parseInt(parameter)) && isFinite(parseInt(parameter)) ? parseInt(parameter) : 0
 
-    public static requestPost = <TModel>(
+    public static requestPost = <TModel, TData>(
         model: TModel,
-        handleSuccess: <TData extends IErrorData>(data?: TData) => void,
+        handleSuccess: (data?: TData) => void,
         handleError: (errors: string[]) => void
     ) => {
         const request: RequestInit = {
@@ -17,7 +17,7 @@ export default class PageService {
         return this.requestServer(request, handleSuccess, handleError)
     }
 
-    public static requestServer = async <TData extends IErrorData>(
+    public static requestServer = async <TData>(
         request: RequestInit,
         handleSuccess: (data?: TData) => void,
         handleError: (errors: string[]) => void

@@ -1,54 +1,58 @@
 import { ComponentChild } from "preact"
-import { Signal, useSignalEffect } from "@preact/signals"
+import { Signal, useSignal } from "@preact/signals"
+import { createDeferred, Deferred } from "@/app/domain/deferred.ts"
 import { useEffect } from "preact/hooks"
 
-export interface ModalOptions {
+export interface ModalData {
     isActive?: boolean
-    action?: "opened" | "closed"
+}
+
+export class ModalController {
+    public data?: Signal<ModalData>
+    private deferred?: Deferred<void>
+
+    public get isActive(): boolean {
+        return this.data!.value.isActive === true
+    }
+
+    public open(): Promise<void> {
+        if (this.isActive) {
+            return Promise.reject("A modal já está aberta.")
+        }
+
+        this.deferred = createDeferred()
+        this.data!.value = { isActive: true }
+        return this.deferred.promise
+    }
+
+    public close() {
+        if (this.isActive) {
+            this.data!.value = { isActive: false }
+        }
+
+        this.deferred?.resolve()
+        this.deferred = undefined
+    }
 }
 
 interface ModalProps {
     children: ComponentChild
-    options: Signal<ModalOptions>
+    controller: ModalController
 }
 
 export default function Modal(props: ModalProps) {
-    const { options } = props
+    const { controller } = props
+    controller.data = useSignal({})
 
-    const close = () => {
-        if (options.value.isActive == true) {
-            options.value = { isActive: false, action: "closed" }
+    useEffect(() => {
+        return () => {
+            controller.close()
         }
-    }
-
-    useSignalEffect(() => { // Mantém action em acordo com active
-        if (options.value.isActive === true && options.value.action !== "opened") {
-            options.value = { ...options.value, action: "opened" }
-        }
-
-        if (options.value.isActive === false && options.value.action !== "closed") {
-            options.value = { ...options.value, action: "closed" }
-        }
-
-        if (options.value.isActive == undefined && options.value.action !== undefined) {
-            options.value = { ...options.value, action: undefined }
-        }
-    })
-
-    // useEffect(() => {
-    //     const handleKeyDown = (event: KeyboardEvent) => {
-    //         if (event.key === "Escape" && options.value.isActive) {
-    //             close()
-    //         }
-    //     }
-
-    //     document.addEventListener("keydown", handleKeyDown)
-    //     return () => document.removeEventListener("keydown", handleKeyDown)
-    // }, [])
+    }, [])
 
     return (
-        <div class={` modal ${options.value.isActive ? "is-active" : ""}`}>
-            <div class="modal-background is-clickable" onClick={() => close()}></div>
+        <div class={` modal ${controller.isActive ? "is-active" : ""}`}>
+            <div class="modal-background is-clickable" onClick={() => controller.close()}></div>
             <div class="modal-content">
                 {props.children}
             </div>

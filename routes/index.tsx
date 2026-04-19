@@ -28,6 +28,8 @@ export const handler = define.handlers<ILoginData>({
         }
 
         try {
+            const dbContext = ctx.state.sp.get("dbContext")
+            await dbContext.openDb()
             const service = ctx.state.sp.get("loginService")
             const cookie = await service.login(model)
             const headers = new Headers()

@@ -7,9 +7,7 @@ interface ILivroData {
     model: ILivroModel[]
 }
 
-export default define.page<typeof handler>((props) => {
-    return <Livros model={props.data.model} />
-})
+export default define.page<typeof handler>((props) => <Livros model={props.data.model} />)
 
 export const handler = define.handlers<ILivroData>({
     GET() {

@@ -1,6 +1,6 @@
 import { useSignal } from "@preact/signals"
 import { createAutor, IAutorModel } from "../app/domain/models/autor-model.ts"
-import Modal, { ModalOptions } from "../islands/modal.tsx"
+import Modal, { ModalOptions } from "@/islands/modalOld.tsx"
 import Input from "./input.tsx"
 
 interface IPesquisaAutorProps {
