@@ -36,6 +36,7 @@ export const handler = define.handlers({
         const id = PageService.getId(ctx.params.livro)
 
         const model: ILivroModel = await ctx.req.json()
+
         model.ordem = undefined
 
         const data: ILivroData = {
@@ -47,22 +48,35 @@ export const handler = define.handlers({
         }
 
         try {
-            await ctx.state.sp.get("dbContext").openDb()
-            const service = ctx.state.sp.get("livroService")
-            await service.incluirLivro(model)
-            return Response.json(data, { status: 200 })
+            const service = await PageService.getService(ctx.state.sp, "livroService")
+            if (id === 0) {
+                await service.incluirLivro(model)
+            } else {
+                await service.atualizarDataConclusao(id, model.dataConclusao)
+            }
+            return Response.json(null, { status: 201 })
         } catch (error) {
             data.errors = PageService.handleError(error)
             return Response.json(data, { status: 400 })
         }
     },
-    DELETE(ctx) {
-        const id = PageService.getId(ctx.params.id)
-        console.log(id)
+    async DELETE(ctx) {
+        const id = PageService.getId(ctx.params.livro)
+        const data: ILivroData = {
+            errors: id === 0 ? ["Dados inválidos"] : undefined
+        }
 
-        // Realiza a exclusõe e retorna erros
-        const data: ILivroData = {}
+        if (data.errors) {
+            return Response.json(data, { status: 400 })
+        }
 
-        return { data }
+        try {
+            const service = await PageService.getService(ctx.state.sp, "livroService")
+            await service.excluirLivro(id)
+            return new Response(null, { status: 204 })
+        } catch (error) {
+            data.errors = PageService.handleError(error)
+            return Response.json(data, { status: 400 })
+        }
     }
 })

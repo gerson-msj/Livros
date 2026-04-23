@@ -8,14 +8,17 @@ export default class SessionRepository extends RepositoryBase {
         super(dbContext, "sessions")
     }
 
-    public sessionSetOperation(sessionData: ISessionData): Deno.AtomicOperation {
+    public createSession(
+        sessionData: ISessionData,
+        operation?: Deno.AtomicOperation
+    ): Deno.AtomicOperation {
         const k = [this.prefix, sessionData.sessionId]
         const v: ISessionValue = {
             userId: sessionData.userId,
             expiresTime: sessionData.expiresTime
         }
 
-        return this.db.atomic()
+        return (operation ?? this.db.atomic())
             .set(k, v, { expireIn: sessionData.expireIn })
     }
 

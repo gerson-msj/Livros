@@ -13,7 +13,10 @@
     "exclude": ["**/_fresh/*"],
     "imports": {
         "@/": "./",
+        "@std/expect": "jsr:@std/expect@^1.0.19",
+        "@std/fs": "jsr:@std/fs@^1.0.23",
         "@std/http": "jsr:@std/http@^1.0.25",
+        "@std/testing": "jsr:@std/testing@^1.0.18",
         "fresh": "jsr:@fresh/core@^2.2.2",
         "preact": "npm:preact@^10.28.3",
         "@preact/signals": "npm:@preact/signals@^2.7.1",

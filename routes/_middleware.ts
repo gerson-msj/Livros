@@ -10,6 +10,7 @@ import AutorRepository from "@/app/repositories/autor-repository.ts"
 import SerieRepository from "@/app/repositories/serie-repository.ts"
 import LivroService from "@/app/services/livro-service.ts"
 import SerieService from "@/app/services/serie-service.ts"
+import DbOperation from "@/app/data-context/db-operation.ts"
 
 /**
  * ### Configura a injeção de dependência
@@ -17,9 +18,16 @@ import SerieService from "@/app/services/serie-service.ts"
  */
 const dependencyInjection = define.middleware(async (ctx) => {
     const sp = new ServiceProvider()
-    using dbContext = new DbContext()
+
+    const path = Deno.env.get("DBPATH")
+
+    using dbContext = new DbContext(path)
 
     sp.registerInstance("dbContext", dbContext)
+    sp.register("dbOperation", () =>
+        new DbOperation(
+            sp.get("dbContext")
+        ))
     sp.register("sessionRepository", () =>
         new SessionRepository(
             sp.get("dbContext")
@@ -56,11 +64,13 @@ const userDependencyInjection = (sp: ServiceProvider, userId: number) => {
         ))
     sp.register("livroService", () =>
         new LivroService(
+            sp.get("dbOperation"),
             sp.get("autorRepository"),
             sp.get("livroRepository")
         ))
     sp.register("serieService", () =>
         new SerieService(
+            sp.get("dbOperation"),
             sp.get("autorRepository"),
             sp.get("livroRepository"),
             sp.get("serieRepository")

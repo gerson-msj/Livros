@@ -5,11 +5,14 @@ import Senha from "../../components/login/Senha.tsx"
 import Validations from "../../components/Validations.tsx"
 import ValidatorService from "../../app/services/validator-service.ts"
 import PageService from "@/app/services/page-service.ts"
+import { useRef } from "preact/hooks"
 
 export default function Login(props: { model: ILoginModel }) {
     const model = useSignal(props.model)
     const errMsgs = useSignal<string[]>([])
-    const validator = new ValidatorService<ILoginModel>(loginModelValidator, model.value)
+    const validatorRef = useRef(new ValidatorService<ILoginModel>(loginModelValidator, model))
+
+    const validator = validatorRef.current
 
     const onChange = <k extends keyof ILoginModel>(key: k, value: ILoginModel[k]) => {
         const changed = { ...model.value, [key]: value }
@@ -27,11 +30,12 @@ export default function Login(props: { model: ILoginModel }) {
         updateErrMsgs()
         if (model.value.validationResults !== undefined) return
 
-        await PageService.requestPost(
-            model.value,
-            () => globalThis.location.href = "/biblioteca",
-            (errors) => errMsgs.value = errors
-        )
+        try {
+            await PageService.requestServerPost(model.value)
+            globalThis.location.href = "/biblioteca"
+        } catch (error) {
+            errMsgs.value = PageService.handleError(error)
+        }
     }
 
     return (

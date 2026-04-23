@@ -8,6 +8,10 @@ export default abstract class RepositoryBase {
         return this.dbContext.db
     }
 
+    public get operation(): Deno.AtomicOperation {
+        return this.dbContext.operation
+    }
+
     private dbContext: DbContext
 
     constructor(
@@ -17,7 +21,7 @@ export default abstract class RepositoryBase {
     ) {
         this.dbContext = dbContext
         this.prefix = prefix
-        this.seqKey = [`${prefix}:seq`]
+        this.seqKey = userId > 0 ? [`${prefix}:seq`, userId] : [`${prefix}:seq`]
         this.userId = userId
     }
 
@@ -31,5 +35,15 @@ export default abstract class RepositoryBase {
 
     protected getIdxKey(idx: DbIdx, value: Deno.KvKeyPart): Deno.KvKey {
         return this.userId > 0 ? [idx, this.userId, value] : [idx, value]
+    }
+
+    protected commit(operation?: Deno.AtomicOperation) {
+        return this.dbContext.commitOperation(operation)
+    }
+
+    protected async getNextId(): Promise<{ nextId: number; seq: Deno.KvEntryMaybe<number> }> {
+        const seq = await this.db.get<number>(this.seqKey)
+        const nextId = (seq.value ?? 0) + 1
+        return { nextId, seq }
     }
 }

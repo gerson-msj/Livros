@@ -1,14 +1,15 @@
-import { useSignal, useSignalEffect } from "@preact/signals"
+import { useSignal } from "@preact/signals"
 import { autorModelValidator, IAutorModel } from "../../app/domain/models/autor-model.ts"
 import { ISerieModel, serieModelValidator, serieModelValidatorFull } from "../../app/domain/models/serie-model.ts"
 import Input from "../../components/input.tsx"
-import { getModelValidated, getValidationClass, modelToErrors } from "../../app/domain/validation/model-validation.ts"
 import PesquisaAutor from "../../components/pesquisa-autor.tsx"
 import { ILivroModel, livroModelValidator } from "../../app/domain/models/livro-model.ts"
 import InputDate from "../../components/input-date.tsx"
 import Validations from "../../components/Validations.tsx"
-import Msgbox, { MsgboxOptions } from "@/islands/msgboxOld.tsx"
 import PageService from "@/app/services/page-service.ts"
+import { useRef } from "preact/hooks"
+import { Msgbox, MsgboxController } from "@/islands/msgbox.tsx"
+import ValidatorService from "@/app/services/validator-service.ts"
 
 export default function Serie(props: {
     serie: ISerieModel
@@ -16,17 +17,19 @@ export default function Serie(props: {
 }) {
     const model = useSignal(props.serie)
     const errMsgs = useSignal<string[]>([])
-    const msgbox = useSignal<MsgboxOptions>({})
+    const msgboxRef = useRef(new MsgboxController())
+
+    const msgbox = msgboxRef.current
     const isEdit = model.value.id > 0
 
     const onChangeSerie = <k extends keyof ISerieModel>(key: k, value: ISerieModel[k]) => {
         const changed = { ...model.value, [key]: value }
-        model.value = getModelValidated(serieModelValidator, changed, key)
+        model.value = ValidatorService.validateChanged(serieModelValidator, changed, key)
         updateErrMsgs()
     }
 
     const onChangeAutor = (autor: IAutorModel) => {
-        autor = getModelValidated(autorModelValidator, autor, "nomeAutor")
+        autor = ValidatorService.validateChanged(autorModelValidator, autor, "nomeAutor")
         model.value = { ...model.value, autor }
         updateErrMsgs()
     }
@@ -35,7 +38,7 @@ export default function Serie(props: {
         let livros = model.value.livros ?? []
         const livro = livros[index]
         livro[key] = value
-        const livroValidated = getModelValidated(livroModelValidator, livro, key)
+        const livroValidated = ValidatorService.validateChanged(livroModelValidator, livro, key)
         livroValidated.validationResults?.forEach((v) => v.index = index)
         livros = [
             ...livros.slice(0, index),
@@ -47,9 +50,9 @@ export default function Serie(props: {
     }
 
     const updateErrMsgs = () => {
-        const serieErrMsgs = modelToErrors(model.value)
-        const autorErrMsgs = model.value.autor !== undefined ? modelToErrors(model.value.autor) : []
-        const livrosErrMsgs = model.value.livros?.map<string[]>((livro) => modelToErrors(livro))?.flat() ?? []
+        const serieErrMsgs = ValidatorService.modelToErrors(model.value)
+        const autorErrMsgs = model.value.autor !== undefined ? ValidatorService.modelToErrors(model.value.autor) : []
+        const livrosErrMsgs = model.value.livros?.map<string[]>((livro) => ValidatorService.modelToErrors(livro))?.flat() ?? []
         errMsgs.value = [...serieErrMsgs, ...autorErrMsgs, ...livrosErrMsgs]
     }
 
@@ -78,54 +81,39 @@ export default function Serie(props: {
         errMsgs.value = serieModelValidatorFull(model.value) ?? []
         if (errMsgs.value.length > 0) return
 
-        const request: RequestInit = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(model.value)
+        try {
+            await PageService.requestServerPost(model.value)
+            const title = isEdit ? "Série atualizada com sucesso" : "Série adicionada com sucesso"
+            await msgbox.open({ title, ok: "Ok" })
+            voltar()
+        } catch (error) {
+            errMsgs.value = PageService.handleError(error)
         }
-
-        await PageService.requestServer(
-            request,
-            () => {
-                const title = isEdit ? "Série atualizada com sucesso" : "Série adicionada com sucesso"
-                msgbox.value = { title, key: "salvar", isActive: true, ok: "Ok" }
-            },
-            (errors) => errMsgs.value = errors
-        )
     }
 
     const voltar = () => {
         globalThis.location.href = "/biblioteca/series"
     }
 
-    const excluir = async (confirmado: boolean = false) => {
-        if (!confirmado) {
-            msgbox.value = {
-                title: "Deseja realmente excluir esta série?",
-                ok: "Sim",
-                cancel: "Não",
-                key: "excluir",
-                isActive: true
-            }
+    const excluir = async () => {
+        const msgboxResult = await msgbox.open({
+            title: "Deseja realmente excluir esta série?",
+            ok: "Sim",
+            cancel: "Não"
+        })
+
+        if (msgboxResult === "cancel") {
             return
         }
 
-        await PageService.requestServer(
-            { method: "DELETE" },
-            voltar,
-            (errors) => errMsgs.value = errors
-        )
-    }
-
-    useSignalEffect(() => {
-        const ok = (msgbox.value.result !== undefined && msgbox.value.key === "salvar") ||
-            (msgbox.value.result === "ok" && msgbox.value.key === "excluir")
-
-        if (ok) {
-            msgbox.value = { ...msgbox.value, result: undefined }
+        try {
+            await PageService.requestServer({ method: "DELETE" })
+            await msgbox.open({ title: "Série excluída com sucesso.", ok: "Ok" })
             voltar()
+        } catch (error) {
+            errMsgs.value = PageService.handleError(error)
         }
-    })
+    }
 
     return (
         <>
@@ -142,7 +130,7 @@ export default function Serie(props: {
                 value={model.value.nomeSerie}
                 onChange={({ currentTarget: { value } }) => onChangeSerie("nomeSerie", value)}
                 placeholder="Informe o nome da série"
-                class={`input ${getValidationClass(model.value, "nomeSerie")}`}
+                class={`input ${ValidatorService.class(model.value, "nomeSerie")}`}
                 disabled={isEdit}
             />
 
@@ -150,7 +138,7 @@ export default function Serie(props: {
                 autor={model.value.autor}
                 autores={props.autores ?? []}
                 onChange={(autor) => onChangeAutor(autor)}
-                class={getValidationClass(model.value, "autor")}
+                class={ValidatorService.class(model.value, "autor")}
                 disabled={isEdit}
             />
 
@@ -179,14 +167,14 @@ export default function Serie(props: {
                                     value={livro.titulo}
                                     onChange={({ currentTarget: { value } }) => onChangeLivro(index, "titulo", value)}
                                     placeholder="Informe o título do livro"
-                                    class={`input ${getValidationClass(livro, "titulo")}`}
+                                    class={`input ${ValidatorService.class(livro, "titulo")}`}
                                     disabled={isEdit}
                                 />
                             </td>
                             <td>
                                 <InputDate
                                     label=""
-                                    class={`input ${getValidationClass(livro, "dataConclusao")} ${
+                                    class={`input ${ValidatorService.class(livro, "dataConclusao")} ${
                                         livro.dataConclusao ? "" : "is-placeholder"
                                     }`}
                                     onChange={({ currentTarget: { value } }) =>
@@ -205,7 +193,7 @@ export default function Serie(props: {
             )}
 
             <Validations errMsgs={errMsgs.value} />
-            <Msgbox options={msgbox} />
+            <Msgbox controller={msgbox} />
         </>
     )
 }

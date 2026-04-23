@@ -82,9 +82,17 @@ export function Msgbox(props: MsgboxProps) {
                         (
                             <footer class="card-footer">
                                 {options.ok !== undefined &&
-                                    <a href="#" class="card-footer-item" onClick={() => controller.close("ok")}>{options.ok}</a>}
+                                    (
+                                        <button type="button" class="card-footer-item" onClick={() => controller.close("ok")}>
+                                            {options.ok}
+                                        </button>
+                                    )}
                                 {options.cancel !== undefined &&
-                                    <a href="#" class="card-footer-item" onClick={() => controller.close("cancel")}>{options.cancel}</a>}
+                                    (
+                                        <button type="button" class="card-footer-item" onClick={() => controller.close("cancel")}>
+                                            {options.cancel}
+                                        </button>
+                                    )}
                             </footer>
                         )}
                 </div>

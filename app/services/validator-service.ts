@@ -1,29 +1,28 @@
+import { Signal } from "@preact/signals"
 import { IModelValidation, IValidationResult } from "../domain/validation/model-validation.ts"
 
 export default class ValidatorService<TModel extends IModelValidation<TModel>> {
     private _validator: (model: TModel, key?: keyof TModel) => IValidationResult<TModel>[]
-    private _model: TModel
+    private _model: Signal<TModel>
 
     constructor(
         validator: (model: TModel, key?: keyof TModel) => IValidationResult<TModel>[],
-        model: TModel
+        model: Signal<TModel>
     ) {
         this._validator = validator
         this._model = model
     }
 
     public validateModel(): TModel {
-        return this.validateChanged(this._model)
+        return ValidatorService.validateModel(this._validator, this._model.value)
     }
 
-    public validateChanged(changed: TModel, key?: keyof TModel): TModel {
-        const newValidations = this._validator(changed, key)
-        const results = [...changed.validationResults?.filter((r) => r.key !== key) ?? [], ...newValidations]
-        return { ...changed, validationResults: results.length === 0 ? undefined : results }
+    public validateChanged(changed: TModel, key: keyof TModel): TModel {
+        return ValidatorService.validateChanged(this._validator, changed, key)
     }
 
     public class(key: keyof TModel) {
-        return this._model.validationResults?.some((v) => v.key === key) ? "is-danger" : ""
+        return ValidatorService.class(this._model.value, key)
     }
 
     /**
@@ -65,17 +64,25 @@ export default class ValidatorService<TModel extends IModelValidation<TModel>> {
         )
     }
 
-    static getModelValidated = <TModel extends IModelValidation<TModel>>(
+    static validateChanged<TModel extends IModelValidation<TModel>>(
         validator: (model: TModel, key?: keyof TModel) => IValidationResult<TModel>[],
-        model: TModel,
-        key?: keyof TModel
-    ): TModel => {
-        const newValidations = validator(model, key)
-        const validationResults = [...model.validationResults?.filter((r) => r.key !== key) ?? [], ...newValidations]
-        return { ...model, validationResults }
+        changed: TModel,
+        key: keyof TModel
+    ): TModel {
+        const newValidations = validator(changed, key)
+        const results = [...changed.validationResults?.filter((r) => r.key !== key) ?? [], ...newValidations]
+        return { ...changed, validationResults: results.length === 0 ? undefined : results }
     }
 
-    static getValidationClass = <TModel extends IModelValidation<TModel>>(
+    static validateModel<TModel extends IModelValidation<TModel>>(
+        validator: (model: TModel, key?: keyof TModel) => IValidationResult<TModel>[],
+        model: TModel
+    ): TModel {
+        const newValidations = validator(model)
+        return { ...model, validationResults: newValidations.length === 0 ? undefined : newValidations }
+    }
+
+    static class = <TModel extends IModelValidation<TModel>>(
         model: TModel,
         key: keyof TModel
     ) => {

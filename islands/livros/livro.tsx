@@ -8,18 +8,18 @@ import PageService from "@/app/services/page-service.ts"
 import ValidatorService from "@/app/services/validator-service.ts"
 import { ILivroData } from "@/routes/biblioteca/livros/[livro].tsx"
 import { Msgbox, MsgboxController } from "@/islands/msgbox.tsx"
-import { useEffect } from "preact/hooks"
+import { useEffect, useRef } from "preact/hooks"
 
 export default function Livro(props: { data: ILivroData }) {
     const model = useSignal<ILivroModel>(props.data.livro ?? createLivro())
     const errMsgs = useSignal<string[]>([])
+    const validator = useRef(new ValidatorService(livroModelValidator, model))
+    const msgbox = useRef(new MsgboxController())
     const isEdit = model.value.id > 0
-    const validator = new ValidatorService(livroModelValidator, model.value)
-    const msgbox = new MsgboxController()
 
     const onChange = <k extends keyof ILivroModel>(key: k, value: ILivroModel[k]) => {
         const changed = { ...model.value, [key]: value }
-        model.value = validator.validateChanged(changed, key)
+        model.value = validator.current.validateChanged(changed, key)
         updateErrMsgs()
     }
 
@@ -28,25 +28,24 @@ export default function Livro(props: { data: ILivroData }) {
     }
 
     const salvar = async () => {
-        model.value = validator.validateModel()
+        model.value = validator.current.validateModel()
         updateErrMsgs()
         if (model.value.validationResults !== undefined) {
             return
         }
 
-        await PageService.requestPost(
-            model.value,
-            async () => {
-                const title = isEdit ? "Livro atualizado com sucesso" : "Livro adicionado com sucesso"
-                await msgbox.open({ title, ok: "Ok" })
-                voltar()
-            },
-            (errors) => errMsgs.value = errors
-        )
+        try {
+            await PageService.requestServerPost(model.value)
+            const title = isEdit ? "Livro atualizado com sucesso" : "Livro adicionado com sucesso"
+            await msgbox.current.open({ title, ok: "Ok" })
+            voltar()
+        } catch (error) {
+            errMsgs.value = PageService.handleError(error)
+        }
     }
 
     const excluir = async () => {
-        const result = await msgbox.open({
+        const result = await msgbox.current.open({
             title: "Deseja realmente excluir este livro?",
             ok: "Sim",
             cancel: "Não"
@@ -56,11 +55,13 @@ export default function Livro(props: { data: ILivroData }) {
             return
         }
 
-        await PageService.requestServer(
-            { method: "DELETE" },
-            voltar,
-            (errors) => errMsgs.value = errors
-        )
+        try {
+            await PageService.requestServer({ method: "DELETE" })
+            await msgbox.current.open({ title: "Livro excluído com sucesso.", ok: "Ok" })
+            voltar()
+        } catch (error) {
+            errMsgs.value = PageService.handleError(error)
+        }
     }
 
     const voltar = () => {
@@ -69,7 +70,7 @@ export default function Livro(props: { data: ILivroData }) {
 
     useEffect(() => {
         if (props.data.errors !== undefined) {
-            msgbox.open({ title: props.data.errors![0], ok: "Ok" }).finally(() => voltar())
+            msgbox.current.open({ title: props.data.errors![0], ok: "Ok" }).finally(() => voltar())
         }
     }, [props.data.errors])
 
@@ -88,7 +89,7 @@ export default function Livro(props: { data: ILivroData }) {
                 value={model.value.titulo}
                 onChange={({ currentTarget: { value } }) => onChange("titulo", value)}
                 placeholder="Informe o título do livro"
-                class={`input ${validator.class("titulo")}`}
+                class={`input ${validator.current.class("titulo")}`}
                 disabled={isEdit}
             />
 
@@ -96,19 +97,20 @@ export default function Livro(props: { data: ILivroData }) {
                 autor={model.value.autor}
                 autores={props.data.autores ?? []}
                 onChange={(autor) => onChange("autor", autor)}
-                class={validator.class("autor")}
+                class={validator.current.class("autor")}
                 disabled={isEdit}
             />
 
             <InputDate
                 label="Data de conclusão"
-                class={`input ${validator.class("dataConclusao")} ${model.value.dataConclusao ? "" : "is-placeholder"}`}
-                onChange={({ currentTarget: { value } }) => onChange("dataConclusao", value == "" ? undefined : value)}
+                value={model.value.dataConclusao}
+                class={`input ${validator.current.class("dataConclusao")} ${model.value.dataConclusao ? "" : "is-placeholder"}`}
+                onChange={({ currentTarget: { value } }) => onChange("dataConclusao", value === "" ? undefined : value)}
             />
 
             <Validations errMsgs={errMsgs.value} />
 
-            <Msgbox controller={msgbox} />
+            <Msgbox controller={msgbox.current} />
         </>
     )
 }

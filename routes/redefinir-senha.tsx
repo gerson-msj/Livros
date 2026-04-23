@@ -31,7 +31,7 @@ export const handler = define.handlers<IRedefinirSenhaData>({
         }
 
         try {
-            const service = ctx.state.sp.get("loginService")
+            const service = await PageService.getService(ctx.state.sp, "loginService")
             const { cookie, chave } = await service.redefinirSenha(model)
             const headers = new Headers()
             setCookie(headers, cookie)

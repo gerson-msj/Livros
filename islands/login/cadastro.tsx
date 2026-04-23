@@ -6,12 +6,15 @@ import Validations from "../../components/Validations.tsx"
 import ValidatorService from "../../app/services/validator-service.ts"
 import PageService from "@/app/services/page-service.ts"
 import { ICadastroData } from "../../app/domain/data/cadastro-data.ts"
+import { useRef } from "preact/hooks"
 
 export default function Cadastro(props: { model: ICadastroModel }) {
     const model = useSignal(props.model)
     const errMsgs = useSignal<string[]>([])
-    const validator = new ValidatorService<ICadastroModel>(cadastroModelValidator, model.value)
+    const validatorRef = useRef(new ValidatorService<ICadastroModel>(cadastroModelValidator, model))
     const chave = useSignal<string | undefined>(undefined)
+
+    const validator = validatorRef.current
     const possuiChave = chave.value !== undefined
 
     const onChange = <k extends keyof ICadastroModel>(key: k, value: ICadastroModel[k]) => {
@@ -32,19 +35,12 @@ export default function Cadastro(props: { model: ICadastroModel }) {
             return
         }
 
-        const request: RequestInit = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(model.value)
+        try {
+            const data = await PageService.requestServerPost<ICadastroData>(model.value)
+            chave.value = data?.chave
+        } catch (error) {
+            errMsgs.value = PageService.handleError(error)
         }
-
-        await PageService.requestServer<ICadastroData>(
-            request,
-            (data) => chave.value = data?.chave,
-            (errors) => errMsgs.value = errors
-        )
     }
 
     return (

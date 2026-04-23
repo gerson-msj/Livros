@@ -7,10 +7,12 @@ import AutorRepository from "@/app/repositories/autor-repository.ts"
 import LivroRepository from "@/app/repositories/livro-repository.ts"
 import SerieService from "@/app/services/serie-service.ts"
 import SerieRepository from "@/app/repositories/serie-repository.ts"
+import DbOperation from "@/app/data-context/db-operation.ts"
 
-type ServiceMap = {
+export type ServiceMap = {
     /** Dados */
     dbContext: DbContext
+    dbOperation: DbOperation
 
     /** Repositories */
     sessionRepository: SessionRepository

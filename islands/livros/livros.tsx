@@ -25,7 +25,7 @@ export default function Livros(props: { model: ILivroModel[] }) {
                         >
                             <td>{m.titulo}</td>
                             <td>{m.autor?.nomeAutor}</td>
-                            <td>{m.dataConclusao}</td>
+                            <td>{m.dataConclusao?.split("-").reverse().join("/")}</td>
                         </tr>
                     ))}
                 </tbody>

@@ -28,13 +28,11 @@ export const handler = define.handlers<ILoginData>({
         }
 
         try {
-            const dbContext = ctx.state.sp.get("dbContext")
-            await dbContext.openDb()
-            const service = ctx.state.sp.get("loginService")
+            const service = await PageService.getService(ctx.state.sp, "loginService")
             const cookie = await service.login(model)
             const headers = new Headers()
             setCookie(headers, cookie)
-            return new Response(null, { status: 200, headers })
+            return new Response(null, { status: 201, headers })
         } catch (error) {
             data.errors = PageService.handleError(error)
             return Response.json(data, { status: 400 })

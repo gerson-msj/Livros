@@ -1,7 +1,7 @@
 import { useSignal } from "@preact/signals"
 import { createAutor, IAutorModel } from "../app/domain/models/autor-model.ts"
-import Modal, { ModalOptions } from "@/islands/modalOld.tsx"
 import Input from "./input.tsx"
+import Modal, { ModalController } from "@/islands/modal.tsx"
 
 interface IPesquisaAutorProps {
     autor?: IAutorModel
@@ -13,10 +13,10 @@ interface IPesquisaAutorProps {
 
 export default function PesquisaAutor(props: IPesquisaAutorProps) {
     const autor = useSignal(props.autor ?? createAutor())
-    const modalOptions = useSignal<ModalOptions>({ isActive: false })
     const autoresFiltrados = useSignal(props.autores)
     const pesquisa = useSignal("")
     const disabled = props.disabled ?? false
+    const modal = new ModalController()
 
     const pesquisar = (value: string) => {
         pesquisa.value = value
@@ -34,15 +34,15 @@ export default function PesquisaAutor(props: IPesquisaAutorProps) {
     const selecionar = (autorSelecionado: IAutorModel) => {
         autor.value = autorSelecionado
         props.onChange(autorSelecionado)
-        modalOptions.value = { ...modalOptions.value, isActive: false }
+        modal.close()
         pesquisa.value = ""
     }
 
-    const abrirPesquisa = () => {
+    const abrirPesquisa = async () => {
         if (disabled) return
         pesquisa.value = ""
         autoresFiltrados.value = props.autores
-        modalOptions.value = { ...modalOptions.value, isActive: true }
+        await modal.open()
     }
 
     const teclasPermitidas = [
@@ -92,7 +92,7 @@ export default function PesquisaAutor(props: IPesquisaAutorProps) {
                 </div>
             )}
 
-            <Modal options={modalOptions}>
+            <Modal controller={modal}>
                 <div class="card m-6">
                     <div class="card-content">
                         <div class="field">

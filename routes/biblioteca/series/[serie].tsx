@@ -60,7 +60,6 @@ export const handler = define.handlers({
     },
     DELETE(ctx) {
         const id = PageService.getId(ctx.params.serie)
-        console.log(id)
 
         // Realiza a exclusõe e retorna erros
         const data: ISerieData = {}

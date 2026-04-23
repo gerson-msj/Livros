@@ -9,8 +9,9 @@ export default class UsuarioRepository extends RepositoryBase {
         super(dbContext, "usuarios")
     }
 
-    public async novoUsuarioSetOperation(
-        model: ICadastroModel
+    public async novoUsuario(
+        model: ICadastroModel,
+        operation?: Deno.AtomicOperation
     ): Promise<{
         userId: number
         chave: string
@@ -36,7 +37,7 @@ export default class UsuarioRepository extends RepositoryBase {
             chave: await CryptService.criptografarSenha(chave)
         }
 
-        const novoUsuarioOperation = this.db.atomic()
+        const novoUsuarioOperation = (operation ?? this.db.atomic())
             .check(seqRes, usuarioIdxRes)
             .set(this.seqKey, userId) // Sequência
             .set(usuarioIdxKey, userId) // Indice campo Usuario

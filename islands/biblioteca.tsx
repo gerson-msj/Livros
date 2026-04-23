@@ -1,9 +1,11 @@
 import { ILivroModel } from "@/app/domain/models/livro-model.ts"
 import { Msgbox, MsgboxController } from "@/islands/msgbox.tsx"
+import { useRef } from "preact/hooks"
 
 export default function Biblioteca(props: { model: ILivroModel[] }) {
     const { model } = props
-    const msgbox = new MsgboxController()
+    const msgboxRef = useRef(new MsgboxController())
+    const msgbox = msgboxRef.current
 
     const sair = async () => {
         const result = await msgbox.open({ title: "Deseja realmente sair?", ok: "Sim", cancel: "Não" })

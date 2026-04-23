@@ -25,10 +25,9 @@ export default class LoginService extends ServiceBase {
     public async novoUsuarioLogado(
         model: ICadastroModel
     ): Promise<{ cookie: Cookie; chave: string }> {
-        const { userId, chave, novoUsuarioOperation } = await this.usuarioRepository.novoUsuarioSetOperation(model)
-        const { sessionData, sessionOperation } = this.createSession(userId)
+        const { userId, chave, novoUsuarioOperation } = await this.usuarioRepository.novoUsuario(model)
+        const { sessionData, createSessionOperation: operation } = this.createSession(userId, novoUsuarioOperation)
 
-        const operation = novoUsuarioOperation.enqueue(sessionOperation)
         const res = await operation.commit()
         if (!res.ok) {
             throw new Error("Não foi possível criar seu usuário, Tente Novamente.")
@@ -68,9 +67,9 @@ export default class LoginService extends ServiceBase {
             throw new Error("A senha informada é inválida.")
         }
 
-        const { sessionData, sessionOperation } = this.createSession(usuarioValue.id)
+        const { sessionData, createSessionOperation: operation } = this.createSession(usuarioValue.id)
 
-        const res = await sessionOperation.commit()
+        const res = await operation.commit()
         if (!res.ok) {
             throw new Error("Não foi possível criar a sessão para este login, tente novamente.")
         }
@@ -87,9 +86,8 @@ export default class LoginService extends ServiceBase {
         }
 
         const { chave, redefinirSenhaOperation } = await this.usuarioRepository.redefinirSenhaSetOperation(usuarioValue, model.senha)
-        const { sessionData, sessionOperation } = this.createSession(usuarioValue.id)
+        const { sessionData, createSessionOperation: operation } = this.createSession(usuarioValue.id, redefinirSenhaOperation)
 
-        const operation = redefinirSenhaOperation.enqueue(sessionOperation)
         const res = await operation.commit()
         if (!res.ok) {
             throw new Error("Não foi possível redefinir a senha, Tente Novamente.")
@@ -117,10 +115,13 @@ export default class LoginService extends ServiceBase {
         return usuarioValue
     }
 
-    private createSession(userId: number): { sessionData: ISessionData; sessionOperation: Deno.AtomicOperation } {
+    private createSession(
+        userId: number,
+        operation?: Deno.AtomicOperation
+    ): { sessionData: ISessionData; createSessionOperation: Deno.AtomicOperation } {
         const sessionId = crypto.randomUUID()
         const sessionData: ISessionData = createSessionData(sessionId, userId)
-        const sessionOperation = this.sessionRepository.sessionSetOperation(sessionData)
-        return { sessionData, sessionOperation }
+        const createSessionOperation = this.sessionRepository.createSession(sessionData, operation)
+        return { sessionData, createSessionOperation }
     }
 }

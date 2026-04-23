@@ -8,6 +8,22 @@
             "address": "127.0.0.1",
             "port": 9229,
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug Deno Tests",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "deno",
+            "runtimeArgs": [
+                "test",
+                "-A",
+                "--inspect-brk",
+                "--unstable-kv",
+                "--env-file=.env.test",
+                "tests/serie-service-test.ts"
+            ],
+            "attachSimplePort": 9229
         }
     ]
 }

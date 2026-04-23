@@ -26,4 +26,21 @@ export default class AutorRepository extends RepositoryBase {
         }
         return result
     }
+
+    public async criarAutor(model: IAutorModel): Promise<IAutorValue> {
+        const seqRes = await this.db.get<number>(this.seqKey)
+        const id = (seqRes.value ?? 0) + 1
+        const key = this.getKey(id)
+        const autorValue: IAutorValue = {
+            id,
+            nomeAutor: model.nomeAutor
+        }
+
+        this.operation
+            .check(seqRes)
+            .set(this.seqKey, id)
+            .set(key, autorValue)
+
+        return autorValue
+    }
 }

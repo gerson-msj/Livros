@@ -7,13 +7,16 @@ import Chave from "../../components/login/Chave.tsx"
 import ValidatorService from "@/app/services/validator-service.ts"
 import PageService from "@/app/services/page-service.ts"
 import { IRedefinirSenhaData } from "@/app/domain/data/redefinir-senha-data.ts"
+import { useRef } from "preact/hooks"
 
 export default function RedefinirSenha(props: { model: IRedefinirSenhaModel }) {
     const model = useSignal(props.model)
     const errMsgs = useSignal<string[]>([])
     const chave = useSignal<string | undefined>(undefined)
+    const validatorRef = useRef(new ValidatorService<IRedefinirSenhaModel>(redefinirSenhaModelValidator, model))
+
     const possuiChave = chave.value !== undefined
-    const validator = new ValidatorService<IRedefinirSenhaModel>(redefinirSenhaModelValidator, model.value)
+    const validator = validatorRef.current
 
     const onChange = <k extends keyof IRedefinirSenhaModel>(key: k, value: IRedefinirSenhaModel[k]) => {
         const changed = { ...model.value, [key]: value }
@@ -31,11 +34,12 @@ export default function RedefinirSenha(props: { model: IRedefinirSenhaModel }) {
         updateErrMsgs()
         if (model.value.validationResults !== undefined) return
 
-        await PageService.requestPost<IRedefinirSenhaModel, IRedefinirSenhaData>(
-            model.value,
-            (data) => chave.value = data?.chave,
-            (errors) => errMsgs.value = errors
-        )
+        try {
+            const data = await PageService.requestServerPost<IRedefinirSenhaData>(model.value)
+            chave.value = data?.chave
+        } catch (error) {
+            errMsgs.value = PageService.handleError(error)
+        }
     }
 
     return (
