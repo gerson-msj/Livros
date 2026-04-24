@@ -62,6 +62,42 @@ export default class SerieService extends ServiceBase {
         return seriesModel
     }
 
+    public async obterSerie(id: number): Promise<ISerieModel> {
+        const [serieValue, livrosValue] = await Promise.all([
+            this.serieRepository.obterSerie(id),
+            this.livroRepository.obterLivros(id)
+        ])
+
+        if (serieValue === null) {
+            throw new Error("Série inexistente.")
+        }
+
+        const autorValue = await this.autorRepository.obterAutorPorId(serieValue.idAutor)
+        if (autorValue === null || livrosValue.length === 0) {
+            throw new Error("Série inválida.")
+        }
+
+        const model: ISerieModel = {
+            id: serieValue.id,
+            nomeSerie: serieValue.nomeSerie,
+            autor: {
+                id: autorValue.id,
+                nomeAutor: autorValue.nomeAutor
+            },
+            livros: livrosValue.map<ILivroValue>((v) => {
+                return {
+                    id: v.id,
+                    titulo: v.titulo,
+                    ordem: v.ordem,
+                    dataConclusao: v.dataConclusao,
+                    idSerie: serieValue.id
+                }
+            })
+        }
+
+        return model
+    }
+
     public async incluirSerie(model: ISerieModel): Promise<number> {
         /**
          * O autor pode ser novo ou existente
@@ -120,5 +156,15 @@ export default class SerieService extends ServiceBase {
         }
 
         await this.livroRepository.atualizarDataConclusao(data)
+    }
+
+    public async excluirSerie(id: number): Promise<void> {
+        const model = await this.obterSerie(id)
+        await this.serieRepository.excluirSerie(model.id)
+        const livrosId = model.livros?.map((livro) => livro.id) ?? []
+        if (livrosId.length > 0) {
+            await this.livroRepository.excluirLivros(livrosId)
+        }
+        await this.commit()
     }
 }

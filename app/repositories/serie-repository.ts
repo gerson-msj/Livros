@@ -17,6 +17,11 @@ export default class SerieRepository extends RepositoryBase {
         return values
     }
 
+    public async obterSerie(id: number): Promise<ISerieValue | null> {
+        const entry = await this.db.get<ISerieValue>(this.getKey(id))
+        return entry.value
+    }
+
     public async incluirSerie(value: ISerieValue): Promise<number> {
         const { nextId: idSerie, seq } = await this.getNextId()
         value.id = idSerie
@@ -24,5 +29,16 @@ export default class SerieRepository extends RepositoryBase {
             .check(seq)
             .set(this.getKey(idSerie), value)
         return idSerie
+    }
+
+    public async excluirSerie(id: number): Promise<void> {
+        const entry = await this.db.get(this.getKey(id))
+        if (entry.value === null) {
+            throw new Error("Série inexistente.")
+        }
+
+        this.operation
+            .check(entry)
+            .delete(entry.key)
     }
 }

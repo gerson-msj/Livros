@@ -94,11 +94,13 @@ export default class LivroService extends ServiceBase {
         await this.commit()
     }
 
-    public atualizarDataConclusao(id: number, dataConclusao?: string): Promise<void> {
-        return this.livroRepository.atualizarDataConclusao({ [id]: dataConclusao })
+    public async atualizarDataConclusao(id: number, dataConclusao?: string): Promise<void> {
+        await this.livroRepository.atualizarDataConclusao({ [id]: dataConclusao })
+        await this.commit()
     }
 
-    public excluirLivro(id: number): Promise<void> {
-        return this.livroRepository.excluirLivro(id)
+    public async excluirLivro(id: number): Promise<void> {
+        await this.livroRepository.excluirLivros([id])
+        await this.commit()
     }
 }

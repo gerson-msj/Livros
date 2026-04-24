@@ -51,19 +51,30 @@ export const handler = define.handlers({
             errors: model.id !== id ? ["Dados inválidos"] : serieModelValidatorFull(model)
         }
 
-        if (data.errors === undefined) {
-            // Realiza a gravação e retorna erros
+        if (data.errors !== undefined) {
+            return Response.json(data, { status: 400 })
         }
 
-        const status = data.errors === undefined ? 200 : 400
-        return Response.json(data, { status })
+        try {
+            const service = await PageService.getService(ctx.state.sp, "serieService")
+            await service.incluirSerie(model)
+            return new Response(null, { status: 201 })
+        } catch (error) {
+            data.errors = PageService.handleError(error)
+            return Response.json(data, { status: 400 })
+        }
     },
-    DELETE(ctx) {
+    async DELETE(ctx) {
         const id = PageService.getId(ctx.params.serie)
-
-        // Realiza a exclusõe e retorna erros
-        const data: ISerieData = {}
-
-        return { data }
+        try {
+            const service = await PageService.getService(ctx.state.sp, "serieService")
+            await service.excluirSerie(id)
+            return new Response(null, { status: 201 })
+        } catch (error) {
+            const data: ISerieData = {
+                errors: PageService.handleError(error)
+            }
+            return Response.json(data, { status: 400 })
+        }
     }
 })
