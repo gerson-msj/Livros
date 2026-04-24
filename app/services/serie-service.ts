@@ -7,7 +7,6 @@ import { ILivroModel } from "@/app/domain/models/livro-model.ts"
 import { ISerieValue } from "@/app/domain/values/serie-value.ts"
 import { ILivroValue } from "@/app/domain/values/livro-value.ts"
 import DbOperation from "@/app/data-context/db-operation.ts"
-import LivroService from "@/app/services/livro-service.ts"
 
 export default class SerieService extends ServiceBase {
     private autorRepository: AutorRepository
