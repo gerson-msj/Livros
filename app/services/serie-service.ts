@@ -7,6 +7,7 @@ import { ILivroModel } from "@/app/domain/models/livro-model.ts"
 import { ISerieValue } from "@/app/domain/values/serie-value.ts"
 import { ILivroValue } from "@/app/domain/values/livro-value.ts"
 import DbOperation from "@/app/data-context/db-operation.ts"
+import LivroService from "@/app/services/livro-service.ts"
 
 export default class SerieService extends ServiceBase {
     private autorRepository: AutorRepository
@@ -107,5 +108,17 @@ export default class SerieService extends ServiceBase {
         await this.commit()
 
         return idSerie
+    }
+
+    public async atualizarLivros(model: ISerieModel): Promise<void> {
+        if ((model.livros?.length ?? 0) === 0) {
+            throw new Error("Livros não informados.")
+        }
+        const data: Record<number, string | undefined> = {}
+        for (const livro of model.livros!) {
+            data[livro.id] = livro.dataConclusao
+        }
+
+        await this.livroRepository.atualizarDataConclusao(data)
     }
 }

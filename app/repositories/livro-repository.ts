@@ -1,6 +1,7 @@
 import RepositoryBase from "@/app/repositories/repository-base.ts"
 import { DbContext } from "@/app/data-context/db-context.ts"
 import { ILivroValue } from "@/app/domain/values/livro-value.ts"
+import { objectExpression } from "@/node_modules/.deno/@babel+types@7.29.0/node_modules/@babel/types/lib/index.d.ts"
 
 export default class LivroRepository extends RepositoryBase {
     constructor(dbContext: DbContext, userId: number) {
@@ -36,24 +37,19 @@ export default class LivroRepository extends RepositoryBase {
         return id
     }
 
-    public async atualizarDataConclusao(id: number, dataConclusao?: string): Promise<void> {
-        const key = this.getKey(id)
-        const livroRes = await this.db.get<ILivroValue>(key)
-        if (livroRes.value === null) {
-            throw new Error("Livro inexistente")
+    public async atualizarDataConclusao(data: Record<number, string | undefined>): Promise<void> {
+        const ids = Object.keys(data).map((k) => Number(k))
+        const keys = ids.map<Deno.KvKey>((id) => {
+            return this.getKey(id)
+        })
+
+        const entries = await this.db.getMany<ILivroValue[]>(keys)
+        for await (const entry of entries) {
+            if (entry.value === null) continue
+            entry.value.dataConclusao = data[entry.value.id]
+            this.operation.check(entry)
+            this.operation.set(entry.key, entry.value)
         }
-
-        const livro = livroRes.value
-
-        if (livro.dataConclusao === dataConclusao) {
-            return
-        }
-
-        livro.dataConclusao = dataConclusao
-        const operation = this.db.atomic()
-            .check(livroRes)
-            .set(key, livro)
-        await this.commit(operation)
     }
 
     public async excluirLivro(id: number): Promise<void> {

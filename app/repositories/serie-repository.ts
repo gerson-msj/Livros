@@ -4,7 +4,7 @@ import { ISerieValue } from "@/app/domain/values/serie-value.ts"
 
 export default class SerieRepository extends RepositoryBase {
     constructor(dbContext: DbContext, userId: number) {
-        super(dbContext, "sessions", userId)
+        super(dbContext, "series", userId)
     }
 
     public async obterSeries(): Promise<ISerieValue[]> {

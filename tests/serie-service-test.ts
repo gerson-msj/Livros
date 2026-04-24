@@ -8,6 +8,7 @@ import LivroRepository from "@/app/repositories/livro-repository.ts"
 import SerieRepository from "@/app/repositories/serie-repository.ts"
 import SerieService from "@/app/services/serie-service.ts"
 import { ISerieModel } from "@/app/domain/models/serie-model.ts"
+import DbOperation from "@/app/data-context/db-operation.ts"
 
 Deno.test("SerieServiceTest", async (t) => {
     const path = "./livros_test.db"
@@ -17,10 +18,11 @@ Deno.test("SerieServiceTest", async (t) => {
     }
 
     using dbContext = new DbContext(path)
+    const dbOperation = new DbOperation(dbContext)
     const autorRepository = new AutorRepository(dbContext, 1)
     const livroRepository = new LivroRepository(dbContext, 1)
     const serieRepository = new SerieRepository(dbContext, 1)
-    const serieService = new SerieService(autorRepository, livroRepository, serieRepository)
+    const serieService = new SerieService(dbOperation, autorRepository, livroRepository, serieRepository)
     let idSerie: number = 0
 
     await t.step("incluirSerie", async () => {

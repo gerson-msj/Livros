@@ -95,7 +95,7 @@ export default class LivroService extends ServiceBase {
     }
 
     public atualizarDataConclusao(id: number, dataConclusao?: string): Promise<void> {
-        return this.livroRepository.atualizarDataConclusao(id, dataConclusao)
+        return this.livroRepository.atualizarDataConclusao({ [id]: dataConclusao })
     }
 
     public excluirLivro(id: number): Promise<void> {
