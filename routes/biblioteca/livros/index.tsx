@@ -17,7 +17,7 @@ export const handler = define.handlers<ILivroData>({
 
         try {
             const service = await PageService.getService(ctx.state.sp, "livroService")
-            data.model = await service.obterLivros()
+            data.model = await service.obterLivrosAvulsos()
         } catch (error) {
             PageService.handleError(error)
         }

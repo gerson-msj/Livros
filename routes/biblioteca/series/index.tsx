@@ -4,7 +4,7 @@ import Series from "../../../islands/series/series.tsx"
 import { define } from "../../../utils.ts"
 
 interface ISerieData {
-    model?: ISerieModel[]
+    model: ISerieModel[]
 }
 
 export default define.page<typeof handler>((props) => <Series model={props.data.model} />)

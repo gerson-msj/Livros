@@ -11,6 +11,7 @@ import SerieRepository from "@/app/repositories/serie-repository.ts"
 import LivroService from "@/app/services/livro-service.ts"
 import SerieService from "@/app/services/serie-service.ts"
 import DbOperation from "@/app/data-context/db-operation.ts"
+import AutorService from "@/app/services/autor-service.ts"
 
 /**
  * ### Configura a injeção de dependência
@@ -62,11 +63,17 @@ const userDependencyInjection = (sp: ServiceProvider, userId: number) => {
             sp.get("dbContext"),
             userId
         ))
+    sp.register("autorService", () =>
+        new AutorService(
+            sp.get("dbOperation"),
+            sp.get("autorRepository")
+        ))
     sp.register("livroService", () =>
         new LivroService(
             sp.get("dbOperation"),
             sp.get("autorRepository"),
-            sp.get("livroRepository")
+            sp.get("livroRepository"),
+            sp.get("serieRepository")
         ))
     sp.register("serieService", () =>
         new SerieService(

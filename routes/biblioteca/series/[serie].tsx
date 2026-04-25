@@ -1,44 +1,34 @@
-import { IErrorData } from "../../../app/domain/data/error-data.ts"
-import { createAutor, IAutorModel } from "../../../app/domain/models/autor-model.ts"
 import { ISerieModel, serieModelValidatorFull } from "../../../app/domain/models/serie-model.ts"
 import PageService from "@/app/services/page-service.ts"
 import Serie from "../../../islands/series/serie.tsx"
 import { define } from "../../../utils.ts"
+import { ISerieData } from "@/app/domain/data/serie-data.ts"
 
-interface ISerieData extends IErrorData {
-    serie?: ISerieModel
-    autores?: IAutorModel[]
-}
-
-export default define.page<typeof handler>((props) => <Serie serie={props.data.serie!} autores={props.data.autores} />)
+export default define.page<typeof handler>((props) => <Serie {...props.data} />)
 
 export const handler = define.handlers({
-    GET(ctx) {
+    async GET(ctx) {
         const id = PageService.getId(ctx.params.serie)
 
-        // Obter serie nova ou existente
-        const serie: ISerieModel = {
-            id,
-            nomeSerie: "Série",
-            autor: id === 0 ? undefined : { id: 1, nomeAutor: "Autor" },
-            livros: id === 0 ? undefined : [
-                { id: 1, ordem: 1, titulo: "Livro 1", dataConclusao: "2026-01-01" },
-                { id: 2, ordem: 2, titulo: "Livro 2" }
-            ]
+        const data: ISerieData = {}
+
+        try {
+            if (id === 0) {
+                const service = await PageService.getService(ctx.state.sp, "autorService")
+                data.serie = {
+                    id,
+                    nomeSerie: "",
+                    autor: undefined,
+                    livros: undefined
+                }
+                data.autores = await service.obterAutores()
+            } else {
+                const service = await PageService.getService(ctx.state.sp, "serieService")
+                data.serie = await service.obterSerie(id)
+            }
+        } catch (error) {
+            data.errors = PageService.handleError(error)
         }
-
-        // Obter autores somente para nova serie
-        const autores: IAutorModel[] | undefined = id === 0
-            ? [
-                createAutor(1, "Ana"),
-                createAutor(2, "Beto"),
-                createAutor(3, "Carla"),
-                createAutor(4, "Denis"),
-                createAutor(5, "Edna")
-            ]
-            : undefined
-
-        const data: ISerieData = { serie, autores }
 
         return { data }
     },
@@ -57,7 +47,11 @@ export const handler = define.handlers({
 
         try {
             const service = await PageService.getService(ctx.state.sp, "serieService")
-            await service.incluirSerie(model)
+            if (id === 0) {
+                await service.incluirSerie(model)
+            } else {
+                await service.atualizarLivros(model)
+            }
             return new Response(null, { status: 201 })
         } catch (error) {
             data.errors = PageService.handleError(error)

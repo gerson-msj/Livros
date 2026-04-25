@@ -68,8 +68,6 @@ export class DbContext {
             throw new Error("Houve uma falha de banco de dados, a operação não foi realizada.")
         }
 
-        console.log("DbContext.commitOperation", op)
-
         if (operation === undefined) {
             this.startOperation()
         }

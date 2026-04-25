@@ -1,25 +1,32 @@
 import { define } from "@/utils.ts"
-import { ILivroModel } from "@/app/domain/models/livro-model.ts"
-import { IAutorModel } from "@/app/domain/models/autor-model.ts"
-import { ISerieModel } from "@/app/domain/models/serie-model.ts"
 import Biblioteca from "@/islands/biblioteca.tsx"
 import { IBibliotecaData } from "@/app/domain/data/biblioteca-data.ts"
 import { deleteCookie } from "@std/http/cookie"
+import PageService from "@/app/services/page-service.ts"
 
-export default define.page<typeof handler>((props) => <Biblioteca model={props.data.model!} />)
+export default define.page<typeof handler>((props) => <Biblioteca {...props.data} />)
 
 export const handler = define.handlers<IBibliotecaData>({
-    GET() {
-        const autor0: IAutorModel = { id: 0, nomeAutor: "Autor A" }
-        const autor1: IAutorModel = { id: 1, nomeAutor: "Autor B" }
-        const serie0: ISerieModel = { id: 0, nomeSerie: "Série C", autor: autor0 }
-        const livros: ILivroModel[] = [
-            { id: 0, titulo: "Livro D", serie: serie0, dataConclusao: "01/01/2026" },
-            { id: 1, titulo: "Livro E", autor: autor1, dataConclusao: "01/01/2025" }
-        ]
-
+    async GET(ctx) {
         const data: IBibliotecaData = {
-            model: livros
+            model: [],
+            livrosCadastrados: 0,
+            livrosLidos: 0
+        }
+
+        try {
+            const service = await PageService.getService(ctx.state.sp, "livroService")
+            const livros = await service.obterLivros()
+            const livrosLidos = livros
+                .filter((l) => l.dataConclusao !== undefined)
+                .sort((a, b) => b.dataConclusao!.localeCompare(a.dataConclusao!))
+            const livrosRecentes = livrosLidos.slice(0, 10)
+
+            data.model = livrosRecentes
+            data.livrosCadastrados = livros.length
+            data.livrosLidos = livrosLidos.length
+        } catch (error) {
+            data.errors = PageService.handleError(error)
         }
 
         return { data }

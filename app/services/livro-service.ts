@@ -4,22 +4,31 @@ import LivroRepository from "@/app/repositories/livro-repository.ts"
 import { ILivroModel } from "@/app/domain/models/livro-model.ts"
 import { ILivroValue } from "@/app/domain/values/livro-value.ts"
 import DbOperation from "@/app/data-context/db-operation.ts"
+import serieRepository from "@/app/repositories/serie-repository.ts"
+import { ISerieModel } from "@/app/domain/models/serie-model.ts"
 
 export default class LivroService extends ServiceBase {
     private autorRepository: AutorRepository
     private livroRepository: LivroRepository
+    private serieRepository: serieRepository
 
     constructor(
         dbOperation: DbOperation,
         autorRepository: AutorRepository,
-        livroRepository: LivroRepository
+        livroRepository: LivroRepository,
+        serieRepository: serieRepository
     ) {
         super(dbOperation)
         this.autorRepository = autorRepository
         this.livroRepository = livroRepository
+        this.serieRepository = serieRepository
     }
 
-    public async obterLivros(): Promise<ILivroModel[]> {
+    /**
+     * ### Retorna livros que não pertencem a uma série
+     * @returns Livros
+     */
+    public async obterLivrosAvulsos(): Promise<ILivroModel[]> {
         const [livrosValue, autoresModel] = await Promise.all([
             this.livroRepository.obterLivros(),
             this.autorRepository.obterAutores()
@@ -31,6 +40,38 @@ export default class LivroService extends ServiceBase {
             const { id, titulo, dataConclusao } = livroValue
             const autor = autoresModel.find((a) => a.id === livroValue.idAutor)
             const livroModel: ILivroModel = { id, titulo, dataConclusao, autor }
+            livrosModel.push(livroModel)
+        }
+
+        return livrosModel
+    }
+
+    /**
+     * ### Retorna todos os livros
+     * @returns Livros
+     */
+    public async obterLivros(): Promise<ILivroModel[]> {
+        const [livrosValue, autoresModel, seriesValue] = await Promise.all([
+            this.livroRepository.obterLivros(),
+            this.autorRepository.obterAutores(),
+            this.serieRepository.obterSeries()
+        ])
+
+        const livrosModel: ILivroModel[] = []
+
+        for (const livroValue of livrosValue) {
+            const { id, titulo, dataConclusao, idAutor, idSerie } = livroValue
+            const autor = idAutor === undefined ? undefined : autoresModel.find((a) => a.id === idAutor)
+
+            const serieValue = idSerie === undefined ? undefined : seriesValue.find((s) => s.id === idSerie)
+
+            const serie: ISerieModel | undefined = serieValue === undefined ? undefined : {
+                id: serieValue.id,
+                nomeSerie: serieValue.nomeSerie,
+                autor: autoresModel.find((a) => a.id === serieValue.idAutor)
+            }
+
+            const livroModel: ILivroModel = { id, titulo, dataConclusao, autor, serie }
             livrosModel.push(livroModel)
         }
 

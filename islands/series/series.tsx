@@ -1,6 +1,6 @@
 import { ISerieModel } from "../../app/domain/models/serie-model.ts"
 
-export default function Series(props: { model?: ISerieModel[] }) {
+export default function Series(props: { model: ISerieModel[] }) {
     return (
         <>
             <h1 class="title">Séries</h1>
@@ -11,6 +11,13 @@ export default function Series(props: { model?: ISerieModel[] }) {
 
             <table class="table is-fullwidth is-hoverable">
                 <tbody>
+                    {props.model.length === 0 && (
+                        <tr>
+                            <td>
+                                <p class="has-text-grey">Não existem séries cadastradas</p>
+                            </td>
+                        </tr>
+                    )}
                     {props.model?.map((serie, serieIndex) => (
                         <>
                             <tr
@@ -31,7 +38,6 @@ export default function Series(props: { model?: ISerieModel[] }) {
                                             </p>
                                         </div>
                                     </div>
-
                                     {serie.livros?.map((livro, livroIndex) => (
                                         <div
                                             key={`serie_${serieIndex}_livro_${livroIndex}`}

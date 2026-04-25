@@ -155,6 +155,7 @@ export default class SerieService extends ServiceBase {
         }
 
         await this.livroRepository.atualizarDataConclusao(data)
+        await this.commit()
     }
 
     public async excluirSerie(id: number): Promise<void> {

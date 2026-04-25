@@ -1,21 +1,19 @@
 import { useSignal } from "@preact/signals"
 import { autorModelValidator, IAutorModel } from "../../app/domain/models/autor-model.ts"
-import { ISerieModel, serieModelValidator, serieModelValidatorFull } from "../../app/domain/models/serie-model.ts"
+import { createSerieModel, ISerieModel, serieModelValidator, serieModelValidatorFull } from "../../app/domain/models/serie-model.ts"
 import Input from "../../components/input.tsx"
 import PesquisaAutor from "../../components/pesquisa-autor.tsx"
 import { ILivroModel, livroModelValidator } from "../../app/domain/models/livro-model.ts"
 import InputDate from "../../components/input-date.tsx"
 import Validations from "../../components/Validations.tsx"
 import PageService from "@/app/services/page-service.ts"
-import { useRef } from "preact/hooks"
+import { useEffect, useRef } from "preact/hooks"
 import { Msgbox, MsgboxController } from "@/islands/msgbox.tsx"
 import ValidatorService from "@/app/services/validator-service.ts"
+import { ISerieData } from "@/app/domain/data/serie-data.ts"
 
-export default function Serie(props: {
-    serie: ISerieModel
-    autores?: IAutorModel[]
-}) {
-    const model = useSignal(props.serie)
+export default function Serie(props: ISerieData) {
+    const model = useSignal(props.serie ?? createSerieModel())
     const errMsgs = useSignal<string[]>([])
     const msgboxRef = useRef(new MsgboxController())
 
@@ -115,6 +113,12 @@ export default function Serie(props: {
         }
     }
 
+    useEffect(() => {
+        if (props.errors !== undefined) {
+            voltar()
+        }
+    }, [props.errors])
+
     return (
         <>
             <p class="title is-3">{isEdit ? "Editar" : "Adicionar"} Série</p>
@@ -153,7 +157,7 @@ export default function Serie(props: {
                 <tbody>
                     {(model.value.livros ?? []).length === 0 && (
                         <tr>
-                            <td colSpan={2}>
+                            <td colSpan={2} class="has-text-grey">
                                 Nenhum livro foi adicionado
                             </td>
                         </tr>
@@ -174,6 +178,7 @@ export default function Serie(props: {
                             <td>
                                 <InputDate
                                     label=""
+                                    value={livro.dataConclusao}
                                     class={`input ${ValidatorService.class(livro, "dataConclusao")} ${
                                         livro.dataConclusao ? "" : "is-placeholder"
                                     }`}

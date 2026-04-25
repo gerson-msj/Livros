@@ -8,6 +8,7 @@ import LivroRepository from "@/app/repositories/livro-repository.ts"
 import SerieService from "@/app/services/serie-service.ts"
 import SerieRepository from "@/app/repositories/serie-repository.ts"
 import DbOperation from "@/app/data-context/db-operation.ts"
+import AutorService from "@/app/services/autor-service.ts"
 
 export type ServiceMap = {
     /** Dados */
@@ -23,6 +24,7 @@ export type ServiceMap = {
 
     /** Services */
     loginService: LoginService
+    autorService: AutorService
     livroService: LivroService
     serieService: SerieService
 }
