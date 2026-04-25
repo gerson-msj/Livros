@@ -20,9 +20,9 @@ import AutorService from "@/app/services/autor-service.ts"
 const dependencyInjection = define.middleware(async (ctx) => {
     const sp = new ServiceProvider()
 
-    const path = Deno.env.get("DBPATH")
+    // const path = Deno.env.get("DBPATH")
 
-    using dbContext = new DbContext(path)
+    using dbContext = new DbContext()
 
     sp.registerInstance("dbContext", dbContext)
     sp.register("dbOperation", () =>
