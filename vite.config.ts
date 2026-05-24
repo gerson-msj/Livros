@@ -1,14 +1,6 @@
-import { defineConfig } from "vite"
-import { fresh } from "@fresh/plugin-vite"
+import { defineConfig } from "vite";
+import { fresh } from "@fresh/plugin-vite";
 
 export default defineConfig({
-    plugins: [fresh()],
-    server: {
-        watch: {
-            ignored: [
-                "**/livros.db",
-                "**/livros.db-*"
-            ]
-        }
-    }
-})
+  plugins: [fresh()],
+});

@@ -1,41 +1,33 @@
-import ILoginData from "../app/domain/data/login-data.ts"
-import { createLoginModel, ILoginModel, loginModelValidator } from "../app/domain/models/login-model.ts"
-import PageService from "@/app/services/page-service.ts"
-import ValidatorService from "../app/services/validator-service.ts"
-import Login from "../islands/login/login.tsx"
-import { define } from "../utils.ts"
-import { setCookie } from "@std/http/cookie"
+import { useSignal } from "@preact/signals";
+import { Head } from "fresh/runtime";
+import { define } from "../utils.ts";
+import Counter from "../islands/Counter.tsx";
 
-export default define.page<typeof handler>((props) => <Login model={props.data.model!} />)
+export default define.page(function Home(ctx) {
+  const count = useSignal(3);
 
-export const handler = define.handlers<ILoginData>({
-    GET() {
-        const data: ILoginData = {
-            model: createLoginModel()
-        }
+  console.log("Shared value " + ctx.state.shared);
 
-        return { data }
-    },
-    async POST(ctx) {
-        const model: ILoginModel = await ctx.req.json()
-
-        const data: ILoginData = {
-            errors: ValidatorService.getValidationErrors(loginModelValidator, model)
-        }
-
-        if (data.errors) {
-            return Response.json(data, { status: 400 })
-        }
-
-        try {
-            const service = await PageService.getService(ctx.state.sp, "loginService")
-            const cookie = await service.login(model)
-            const headers = new Headers()
-            setCookie(headers, cookie)
-            return new Response(null, { status: 201, headers })
-        } catch (error) {
-            data.errors = PageService.handleError(error)
-            return Response.json(data, { status: 400 })
-        }
-    }
-})
+  return (
+    <div class="px-4 py-8 mx-auto fresh-gradient min-h-screen">
+      <Head>
+        <title>Fresh counter</title>
+      </Head>
+      <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center">
+        <img
+          class="my-6"
+          src="/logo.svg"
+          width="128"
+          height="128"
+          alt="the Fresh logo: a sliced lemon dripping with juice"
+        />
+        <h1 class="text-4xl font-bold">Welcome to Fresh</h1>
+        <p class="my-4">
+          Try updating this message in the
+          <code class="mx-2">./routes/index.tsx</code> file, and refresh.
+        </p>
+        <Counter count={count} />
+      </div>
+    </div>
+  );
+});
