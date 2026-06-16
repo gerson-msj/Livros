@@ -1,41 +1,16 @@
-import ILoginData from "../app/domain/data/login-data.ts"
-import { createLoginModel, ILoginModel, loginModelValidator } from "../app/domain/models/login-model.ts"
-import PageService from "@/app/services/page-service.ts"
-import ValidatorService from "../app/services/validator-service.ts"
-import Login from "../islands/login/login.tsx"
+import { Head } from "fresh/runtime"
 import { define } from "../utils.ts"
-import { setCookie } from "@std/http/cookie"
 
-export default define.page<typeof handler>((props) => <Login model={props.data.model!} />)
-
-export const handler = define.handlers<ILoginData>({
-    GET() {
-        const data: ILoginData = {
-            model: createLoginModel()
-        }
-
-        return { data }
-    },
-    async POST(ctx) {
-        const model: ILoginModel = await ctx.req.json()
-
-        const data: ILoginData = {
-            errors: ValidatorService.getValidationErrors(loginModelValidator, model)
-        }
-
-        if (data.errors) {
-            return Response.json(data, { status: 400 })
-        }
-
-        try {
-            const service = await PageService.getService(ctx.state.sp, "loginService")
-            const cookie = await service.login(model)
-            const headers = new Headers()
-            setCookie(headers, cookie)
-            return new Response(null, { status: 201, headers })
-        } catch (error) {
-            data.errors = PageService.handleError(error)
-            return Response.json(data, { status: 400 })
-        }
-    }
+export default define.page(function Home() {
+    return (
+        <section class="section">
+            <Head>
+                <title>Livros</title>
+            </Head>
+            <div class="container">
+                <h1 class="title">Livros</h1>
+                <p class="subtitle">Controle simples de leituras e series.</p>
+            </div>
+        </section>
+    )
 })

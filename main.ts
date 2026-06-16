@@ -1,32 +1,15 @@
 import { App, staticFiles } from "fresh"
 import { type State } from "./utils.ts"
+import { createRequestServices } from "./infraestrutura/provider.ts"
 
 export const app = new App<State>()
 
 app.use(staticFiles())
 
-// // Pass a shared value from a middleware
-// app.use(async (ctx) => {
-//     //console.info("URL:", ctx.req.url)
-//     return await ctx.next()
-// })
-
-/*
-// this is the same as the /api/:name route defined via a file. feel free to delete this!
-app.get("/api2/:name", (ctx) => {
-    const name = ctx.params.name
-    return new Response(
-        `Hello, ${name.charAt(0).toUpperCase() + name.slice(1)}!`
-    )
+app.use(async (ctx) => {
+    ctx.state.services = createRequestServices()
+    return await ctx.next()
 })
-
-// this can also be defined via a file. feel free to delete this!
-const exampleLoggerMiddleware = define.middleware((ctx) => {
-    console.log(`${ctx.req.method} ${ctx.req.url}`)
-    return ctx.next()
-})
-app.use(exampleLoggerMiddleware)
-*/
 
 // Include file-system based routes here
 app.fsRoutes()

@@ -1,10 +1,10 @@
 import { createDefine } from "fresh"
-import { ServiceProvider } from "@/app/services/service-provider.ts"
-import { ISessionData } from "@/app/domain/data/session-data.ts"
+import type { RequestServices } from "./infraestrutura/provider.ts"
 
+// This specifies the type of "ctx.state" which is used to share
+// data among middlewares, layouts and routes.
 export interface State {
-    sessionData?: ISessionData
-    sp: ServiceProvider
+    services: RequestServices
 }
 
 export const define = createDefine<State>()
