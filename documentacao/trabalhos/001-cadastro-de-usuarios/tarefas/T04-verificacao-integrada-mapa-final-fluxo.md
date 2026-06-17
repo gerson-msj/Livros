@@ -39,3 +39,4 @@ final do trabalho.
 **Evolucao**
 
 - Planejada para validacao humana junto das demais tarefas restantes.
+- Validada pelo usuario em 2026-06-17; permanece planejada por depender da conclusao da T03.

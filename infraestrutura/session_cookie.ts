@@ -31,3 +31,17 @@ export function setSessionCookie(headers: Headers, sessionId: string, expiresAt:
         ].join("; ")
     )
 }
+
+export function clearSessionCookie(headers: Headers): void {
+    headers.append(
+        "set-cookie",
+        [
+            `${SESSION_COOKIE_NAME}=`,
+            "Path=/",
+            "HttpOnly",
+            "SameSite=Lax",
+            "Expires=Thu, 01 Jan 1970 00:00:00 GMT",
+            "Max-Age=0"
+        ].join("; ")
+    )
+}

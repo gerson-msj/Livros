@@ -73,7 +73,7 @@ Nenhuma.
 
 ## Plano
 
-**Revisao:** 3 **Proxima tarefa:** Aguardando liberacao da T03
+**Revisao:** 4 **Proxima tarefa:** Aguardando checkpoint da T03
 
 ### Estrategia
 
@@ -92,6 +92,7 @@ Ao final das tarefas funcionais, a verificacao integrada deve consolidar um mapa
 
 ### Historico do plano
 
+- 2026-06-17: T03 e T04 validadas pelo usuario; T03 liberada e iniciada para desenvolvimento.
 - 2026-06-17: Revisao 3 adapta o TR-001 ao formato com `trabalho.md` central e arquivos proprios por tarefa.
 - 2026-06-16: Revisao 2 reorganiza o plano para manter T02, T03 e T04 escritas em bloco antes da validacao e registra que o mapa completo
   sera consolidado ao final do trabalho.
@@ -103,5 +104,5 @@ Ao final das tarefas funcionais, a verificacao integrada deve consolidar um mapa
 | ------ | --------- | ---------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | T01    | Concluida | Nenhuma    | Base de dominio e persistencia de autenticacao              | [T01 - Base de dominio e persistencia de autenticacao](tarefas/T01-base-dominio-persistencia-autenticacao.md)                           |
 | T02    | Concluida | T01        | Cadastro na rota /cadastro com handlers proprios            | [T02 - Cadastro na rota /cadastro com handlers proprios](tarefas/T02-cadastro-rota-cadastro-handlers-proprios.md)                       |
-| T03    | Planejada | T02        | Biblioteca segura na rota /biblioteca com handlers proprios | [T03 - Biblioteca segura na rota /biblioteca com handlers proprios](tarefas/T03-biblioteca-segura-rota-biblioteca-handlers-proprios.md) |
+| T03    | Concluida | T02        | Biblioteca segura na rota /biblioteca com handlers proprios | [T03 - Biblioteca segura na rota /biblioteca com handlers proprios](tarefas/T03-biblioteca-segura-rota-biblioteca-handlers-proprios.md) |
 | T04    | Planejada | T03        | Verificacao integrada e mapa final do fluxo                 | [T04 - Verificacao integrada e mapa final do fluxo](tarefas/T04-verificacao-integrada-mapa-final-fluxo.md)                              |
