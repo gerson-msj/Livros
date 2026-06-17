@@ -72,8 +72,7 @@ Nenhuma.
 
 ## Plano
 
-**Revisao:** 2
-**Proxima tarefa:** Aguardando validacao do plano restante
+**Revisao:** 2 **Proxima tarefa:** T02
 
 ### Estrategia
 
@@ -94,11 +93,11 @@ Ao final das tarefas funcionais, a verificacao integrada deve consolidar um mapa
 
 - 2026-06-16: Revisao 2 reorganiza o plano para manter T02, T03 e T04 escritas em bloco antes da validacao e registra que o mapa completo
   sera consolidado ao final do trabalho.
+- 2026-06-16: Plano restante aprovado pelo usuario; T02 liberada para desenvolvimento futuro, sem inicio imediato da execucao.
 
 ### T01 - Base de dominio e persistencia de autenticacao
 
-**Estado:** Concluida
-**Depende de:** Nenhuma
+**Estado:** Concluida **Depende de:** Nenhuma
 
 **Objetivo tecnico**
 
@@ -156,8 +155,7 @@ validar/encerrar sessoes.
 
 ### T02 - Cadastro na rota /cadastro com handlers proprios
 
-**Estado:** Planejada
-**Depende de:** T01
+**Estado:** Concluida **Depende de:** T01
 
 **Objetivo tecnico**
 
@@ -200,11 +198,120 @@ cookie HTTP e apresentar a chave de redefinicao antes de encaminhar o usuario pa
 **Evolucao**
 
 - Planejada para validacao humana junto das demais tarefas restantes.
+- Plano restante aprovado pelo usuario; tarefa liberada para desenvolvimento futuro, sem inicio imediato.
+- Iniciada a execucao da rota `/cadastro` com handlers proprios.
+- Verificacao focada concluida com lint, check, testes automatizados e validacao HTTP local da rota `/cadastro`.
+- Enviada para auditoria tecnica.
+- Auditoria tecnica aprovada e validacao humana registrada; conclusao confirmada.
+
+## Evidencias da T02
+
+### Mapa de fluxo - T02
+
+**Fluxo:** cadastro inicial pela rota `/cadastro`. **Resultado produzido:** formulario responsivo, validacao de campos, criacao de usuario e
+sessao, cookie HTTP e exibicao da chave de redefinicao. **Exemplo acompanhado:** nome `Gerson` e senha `senhaboa` chegam pelo formulario; o
+usuario `gerson` e cadastrado, recebe a chave UUID e o cookie `livros_session`, podendo seguir para `/biblioteca`. **Resumo:** a rota
+concentra `GET` e `POST`, o formulario interativo coleta os dados, o servico de autenticacao cria usuario/sessao e o helper de cookie grava
+a sessao no navegador.
+
+### 1. Abrir a tela de cadastro
+
+**Componente:** [Handler GET de cadastro](../../routes/cadastro.tsx:25) - ðŸŸ¢ **Criado**
+
+**Entra:** request `GET /cadastro`, possivelmente com cookie `livros_session`. **Faz:** le a sessao do cookie e consulta o servico de
+autenticacao quando houver identificador. **Sai:** formulario vazio para visitante sem sessao, ou redirecionamento `303` para `/biblioteca`
+quando a sessao esta ativa.
+
+### 2. Preencher o formulario
+
+**Componente:** [Formulario de cadastro](../../islands/CadastroForm.tsx:12) - ðŸŸ¢ **Criado**
+
+**Entra:** nome de usuario inicial e erros retornados pelo handler. **Faz:** renderiza campos Bulma para nome e senha, aplica `is-danger`
+nos campos invalidos e alterna a senha entre texto e senha pela acao "Mostrar senha". **Sai:** submissao `POST /cadastro` com `username` e
+`password`.
+
+### 3. Processar o cadastro
+
+**Componente:** [Handler POST de cadastro](../../routes/cadastro.tsx:35) - ðŸŸ¢ **Criado**
+
+**Entra:** dados do formulario, como `Gerson` e `senhaboa`. **Faz:** envia os valores ao `AuthenticationService`, reaproveitando as regras
+de normalizacao, validacao, hash, geracao da chave e criacao de sessao da T01. **Sai:** em sucesso, dados da pagina com usuario normalizado
+e chave de redefinicao; em erro de validacao ou duplicidade, formulario com mensagens e `is-danger`.
+
+### 4. Gravar cookie de sessao
+
+**Componente:** [Helper de cookie de sessao](../../infraestrutura/session_cookie.ts:22) - ðŸŸ¢ **Criado**
+
+**Entra:** identificador e expiracao da sessao criada. **Faz:** monta `Set-Cookie` para `livros_session` com `Path=/`, `HttpOnly`,
+`SameSite=Lax` e `Expires` alinhado a expiracao da sessao. **Sai:** resposta HTML da tela de chave com cookie HTTP gravado.
+
+### 5. Apresentar a chave e proximo passo
+
+**Componente:** [Painel da chave de redefinicao](../../routes/cadastro.tsx:100) - ðŸŸ¢ **Criado**
+
+**Entra:** chave UUID retornada pelo cadastro. **Faz:** mostra a chave em campo somente leitura e oferece a acao para seguir ate
+`/biblioteca`. **Sai:** usuario consegue sair da tela de cadastro carregando a sessao criada no cookie.
+
+| Estacao   | Componente          | Impacto     | Entra -> Sai                                |
+| --------- | ------------------- | ----------- | ------------------------------------------- |
+| Abrir     | `GET /cadastro`     | ðŸŸ¢ Criado | Request -> formulario ou redirect           |
+| Preencher | `CadastroForm`      | ðŸŸ¢ Criado | Dados digitados -> POST do formulario       |
+| Processar | `POST /cadastro`    | ðŸŸ¢ Criado | Formulario -> usuario/sessao/chave ou erros |
+| Cookie    | `session_cookie.ts` | ðŸŸ¢ Criado | Sessao criada -> `Set-Cookie`               |
+| Chave     | `ResetKeyPanel`     | ðŸŸ¢ Criado | Chave UUID -> link para `/biblioteca`       |
+
+Aspectos relevantes:
+
+- A T02 nao cria a tela final de `/biblioteca`; ela apenas aponta para essa rota apos a exibicao da chave, como planejado para a T03.
+- A leitura e escrita do cookie ficaram em helper de infraestrutura pequeno para reutilizacao posterior pela biblioteca segura.
+- O Browser interno nao estava disponivel na sessao; a validacao local da tela foi feita por servidor Fresh/Vite e requisicoes HTTP.
+
+## Verificacoes - T02
+
+- `deno lint` focado em `routes/cadastro.tsx`, `routes/cadastro_test.ts`, `islands/CadastroForm.tsx`, `infraestrutura/session_cookie.ts`,
+  arquivos de autenticacao da T01, `main.ts` e `utils.ts`: aprovado.
+- `deno check` focado em `routes/cadastro.tsx`, `routes/cadastro_test.ts`, `islands/CadastroForm.tsx`, `infraestrutura/session_cookie.ts` e
+  `main.ts`: aprovado.
+- `deno test -A routes/cadastro_test.ts aplicacao/autenticacao_service_test.ts infraestrutura/auth_repositories_test.ts`: 8 testes
+  aprovados.
+- Validacao HTTP local em `http://127.0.0.1:5174/cadastro`: `GET` retornou `200`; `POST` invalido retornou pagina com `is-danger` e mensagem
+  de validacao; `POST` valido retornou a chave de redefinicao e `Set-Cookie` `livros_session`; `GET /cadastro` com sessao ativa retornou
+  `303` para `/biblioteca`.
+
+## Auditoria - T02
+
+**Resultado:** Aprovada
+
+### Achados
+
+- Nenhum.
+
+### Verificacoes
+
+- Leitura do escopo, criterios, evolucao, verificacoes e mapa de fluxo da T02.
+- Revisao de `routes/cadastro.tsx`, `islands/CadastroForm.tsx`, `infraestrutura/session_cookie.ts` e `routes/cadastro_test.ts`.
+- Confirmado que a rota `/cadastro` usa handler `GET` e `POST` proprios, sem API separada.
+- Confirmado que o formulario usa Bulma, `is-danger` em campos invalidos e `defaultValue` no nome de usuario para nao perder dados ao
+  alternar a visualizacao da senha.
+- Confirmado que o cookie `livros_session` usa `HttpOnly`, `SameSite=Lax`, `Path=/` e expiracao da sessao.
+- `deno lint` focado nos arquivos relacionados da T02 e base de autenticacao: aprovado.
+- `deno check` focado em rota, teste, island, cookie e `main.ts`: aprovado.
+- `deno test -A routes/cadastro_test.ts aplicacao/autenticacao_service_test.ts infraestrutura/auth_repositories_test.ts`: 8 testes
+  aprovados.
+- Validacao HTTP local de `GET`, `POST` invalido, `POST` valido com cookie e redirecionamento de usuario logado: aprovada.
+
+### Mapa de fluxo
+
+- Correto para a T02. O mapa representa o fluxo real de abertura da tela, envio do formulario, criacao de sessao, gravacao do cookie e
+  apresentacao da chave.
+
+## Validacao humana - T02
+
+**Resultado:** Aprovado **Retorno:** T02 aprovada.
 
 ### T03 - Biblioteca segura na rota /biblioteca com handlers proprios
 
-**Estado:** Planejada
-**Depende de:** T02
+**Estado:** Planejada **Depende de:** T02
 
 **Objetivo tecnico**
 
@@ -243,8 +350,7 @@ handler `POST`.
 
 ### T04 - Verificacao integrada e mapa final do fluxo
 
-**Estado:** Planejada
-**Depende de:** T03
+**Estado:** Planejada **Depende de:** T03
 
 **Objetivo tecnico**
 
@@ -402,5 +508,4 @@ Aspectos relevantes:
 
 ## Validacao humana - T01
 
-**Resultado:** Aprovado
-**Retorno:** Resultado aprovado com o ajuste de Vite para ignorar alteracoes em `Livros.db`.
+**Resultado:** Aprovado **Retorno:** Resultado aprovado com o ajuste de Vite para ignorar alteracoes em `Livros.db`.
