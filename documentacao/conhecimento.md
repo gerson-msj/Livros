@@ -147,6 +147,8 @@ consumo por componentes interativos ou reutilizacao entre fluxos.
 O projeto deve favorecer DDD de forma pragmatica para o MVP. Regras de negocio e conceitos do dominio devem ficar separados de detalhes de
 interface, framework e persistencia, sem criar complexidade preventiva.
 
+Essa diretriz e permanente e deve orientar novos trabalhos por padrao, sem precisar ser redefinida em cada proposta ou plano.
+
 ### Formatacao do codigo
 
 O projeto define em `deno.json` seu padrao de formatacao para o `deno fmt`, com linhas de ate 140 caracteres, indentacao de quatro espacos,
@@ -181,4 +183,5 @@ O projeto comeca como um MVP simples. Novos recursos e complexidade devem ser ad
 
 ## Estado do trabalho
 
-A inicializacao do projeto Fresh esta concluida. Nao ha trabalho ativo registrado no momento.
+A inicializacao do projeto Fresh esta concluida. O trabalho ativo registrado e o
+[TR-001 - Cadastro de usuarios](trabalhos/001-cadastro-de-usuarios/trabalho.md).
