@@ -1,7 +1,7 @@
 # Conhecimento do projeto
 
-Livros e um MVP para controlar leituras e organizar series de livros. O projeto esta apenas inicializado com o esqueleto padrao do Fresh e
-com a base visual configurada; os recursos do produto e o banco de dados ainda nao foram implementados.
+Livros e um MVP para controlar leituras e organizar series de livros. O projeto usa Fresh, Deno e Bulma, possui cadastro inicial de
+usuarios, sessao HTTP persistida em libSQL local e uma area segura minima em `/biblioteca`.
 
 ## Visao
 
@@ -19,11 +19,12 @@ O primeiro objetivo e entregar um MVP simples. Expansoes serao consideradas depo
 
 Pessoa que se cadastra no sistema com nome de usuario e senha e mantem seu proprio controle de leitura.
 
-No cadastro, o sistema gera uma chave de redefinicao que deve ser anotada pelo usuario. Depois da apresentacao dessa chave, o usuario entra
-diretamente na area segura, sem precisar realizar um novo login.
+No cadastro existente, o sistema remove espacos ao redor do nome de usuario e da senha, exige ao menos 5 caracteres para ambos, armazena o
+nome de usuario em minusculas e recusa nomes duplicados. Depois de um cadastro valido, gera uma chave UUID de redefinicao que deve ser
+anotada pelo usuario, cria uma sessao com validade de uma semana e permite entrada direta na area segura sem novo login.
 
-O login exige nome de usuario e senha. A redefinicao de senha exige nome de usuario, chave de redefinicao e uma nova senha. Depois da
-redefinicao, o sistema invalida a chave utilizada e apresenta uma nova chave para redefinicoes futuras.
+Login separado ainda nao foi implementado. A redefinicao de senha permanece planejada e deve exigir nome de usuario, chave de redefinicao e
+uma nova senha. Depois da redefinicao, o sistema devera invalidar a chave utilizada e apresentar uma nova chave para redefinicoes futuras.
 
 Os dados de livros, series e autores pertencem somente ao usuario que os cadastrou. Nao existe compartilhamento entre usuarios.
 
@@ -68,13 +69,20 @@ serie inteira.
 
 - Projeto Fresh inicializado com Deno, Vite e Preact.
 - Bulma e Font Awesome configurados para a interface.
-- Pagina, contador e rotas de API de exemplo do template Fresh.
-- Nenhum recurso de negocio implementado.
-- Nenhum banco de dados configurado.
+- Cadastro de usuarios em `/cadastro` com nome de usuario, senha, visualizacao opcional da senha digitada e indicacao `is-danger` para
+  campos invalidos.
+- Cadastro bem-sucedido apresenta uma chave UUID de redefinicao e cria uma sessao inicial por cookie HTTP.
+- Persistencia local com libSQL em `Livros.db` para usuarios e sessoes.
+- Senhas e chaves de redefinicao sao armazenadas por hash, nao em texto puro.
+- Sessao inicial tem validade de uma semana.
+- `/biblioteca` existe como area segura minima contendo somente a opcao de saida.
+- Visitantes sem sessao ativa sao redirecionados de `/biblioteca` para `/cadastro`; usuarios ja logados sao redirecionados de `/cadastro`
+  para `/biblioteca`.
+- Logout encerra a sessao persistida, limpa o cookie e impede novo acesso seguro com a mesma sessao.
+- Alteracoes em `Livros.db` sao ignoradas pelo watcher do Vite para evitar refresh durante o desenvolvimento local.
 
 ### Escopo inicial planejado
 
-- Cadastro de usuarios aberto a qualquer pessoa.
 - Login com nome de usuario e senha.
 - Redefinicao de senha com nome de usuario, chave de redefinicao e nova senha.
 - Cadastro de livros.
@@ -106,14 +114,17 @@ localmente quanto com Turso.
 
 O sistema nao exige email. Cada conta usa nome de usuario e senha.
 
-No cadastro, uma chave de redefinicao e gerada e apresentada ao usuario. Essa chave, junto do nome de usuario, permite definir uma nova
-senha. Depois do cadastro, o usuario entra diretamente na area segura.
+No cadastro implementado, uma chave de redefinicao em formato UUID e gerada e apresentada ao usuario. Depois do cadastro, o usuario entra
+diretamente na area segura por uma sessao inicial registrada no banco e representada no navegador pelo cookie `livros_session`.
 
-Cada redefinicao de senha invalida a chave utilizada e gera uma nova chave de redefinicao, que deve ser apresentada ao usuario para uso
-futuro.
+Senha e chave de redefinicao sao persistidas somente como hashes PBKDF2 com SHA-256, salt aleatorio e 210000 iteracoes. A chave em texto
+claro aparece apenas no resultado do cadastro.
 
-Os requisitos de armazenamento seguro de senhas e chaves, formato da chave, limites de tentativas e gerenciamento de sessao devem ser
-tratados na definicao tecnica da autenticacao.
+Cada sessao criada no cadastro tem validade de uma semana. O cookie de sessao usa `HttpOnly`, `SameSite=Lax`, `Path=/` e expiracao alinhada
+a sessao persistida. O logout encerra a sessao no banco e limpa o cookie.
+
+A redefinicao de senha ainda nao foi implementada. Quando for entregue, devera invalidar a chave utilizada e gerar uma nova chave de
+redefinicao, que deve ser apresentada ao usuario para uso futuro.
 
 ### Privacidade
 
@@ -183,5 +194,5 @@ O projeto comeca como um MVP simples. Novos recursos e complexidade devem ser ad
 
 ## Estado do trabalho
 
-A inicializacao do projeto Fresh esta concluida. O trabalho ativo registrado e o
-[TR-001 - Cadastro de usuarios](trabalhos/001-cadastro-de-usuarios/trabalho.md).
+A inicializacao do projeto Fresh esta concluida. O trabalho [TR-001 - Cadastro de usuarios](trabalhos/001-cadastro-de-usuarios/trabalho.md)
+esta em encerramento apos implementar e validar cadastro, sessao inicial e biblioteca segura minima.
