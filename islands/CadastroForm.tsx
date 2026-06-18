@@ -1,58 +1,69 @@
-import { useState } from "preact/hooks"
+import { useEffect, useState } from "preact/hooks"
 
 export interface CadastroFormProps {
     username: string
-    errors: {
-        username?: string
-        password?: string
-        general?: string
-    }
+    errors: CadastroFormErrors
 }
+
+export interface CadastroFormErrors {
+    username?: string
+    password?: string
+    general?: string
+}
+
+type FieldName = "username" | "password"
 
 export default function CadastroForm({ username, errors }: CadastroFormProps) {
     const [showPassword, setShowPassword] = useState(false)
+    const [visibleErrors, setVisibleErrors] = useState(errors)
+
+    useEffect(() => {
+        setVisibleErrors(errors)
+    }, [errors])
 
     return (
         <form method="post" class="box">
-            {errors.general && <div class="notification is-danger is-light">{errors.general}</div>}
+            {visibleErrors.general && <div class="notification is-danger is-light">{visibleErrors.general}</div>}
 
             <div class="field">
                 <label class="label" for="username">Nome de usuario</label>
                 <div class="control has-icons-left">
                     <input
-                        class={`input ${errors.username ? "is-danger" : ""}`}
+                        class={`input ${visibleErrors.username ? "is-danger" : ""}`}
                         id="username"
                         name="username"
                         type="text"
                         autocomplete="username"
                         defaultValue={username}
-                        aria-invalid={errors.username ? "true" : "false"}
-                        aria-describedby={errors.username ? "username-error" : undefined}
+                        aria-invalid={visibleErrors.username ? "true" : "false"}
+                        aria-describedby={visibleErrors.username ? "username-error" : undefined}
+                        onInput={() => setVisibleErrors((current) => clearFieldError(current, "username"))}
                     />
                     <span class="icon is-small is-left">
                         <i class="fas fa-user" aria-hidden="true"></i>
                     </span>
                 </div>
-                {errors.username && <p class="help is-danger" id="username-error">{errors.username}</p>}
+                {visibleErrors.username && <p class="help is-danger" id="username-error">{visibleErrors.username}</p>}
             </div>
 
             <div class="field">
                 <label class="label" for="password">Senha</label>
                 <div class="control has-icons-left">
                     <input
-                        class={`input ${errors.password ? "is-danger" : ""}`}
+                        class={`input ${visibleErrors.password ? "is-danger" : ""}`}
                         id="password"
                         name="password"
                         type={showPassword ? "text" : "password"}
                         autocomplete="new-password"
-                        aria-invalid={errors.password ? "true" : "false"}
-                        aria-describedby={errors.password ? "password-error" : undefined}
+                        aria-invalid={visibleErrors.password ? "true" : "false"}
+                        aria-describedby={visibleErrors.password ? "password-error" : undefined}
+                        onInput={() => setVisibleErrors((current) => clearFieldError(current, "password"))}
                     />
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock" aria-hidden="true"></i>
                     </span>
                 </div>
-                {errors.password && <p class="help is-danger" id="password-error">{errors.password}</p>}
+                {visibleErrors.password && <p class="help is-danger" id="password-error">{visibleErrors.password}</p>}
             </div>
 
             <div class="field">
@@ -76,4 +87,10 @@ export default function CadastroForm({ username, errors }: CadastroFormProps) {
             </div>
         </form>
     )
+}
+
+export function clearFieldError(errors: CadastroFormErrors, field: FieldName): CadastroFormErrors {
+    const nextErrors = { ...errors }
+    delete nextErrors[field]
+    return nextErrors
 }

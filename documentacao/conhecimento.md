@@ -69,9 +69,10 @@ serie inteira.
 
 - Projeto Fresh inicializado com Deno, Vite e Preact.
 - Bulma e Font Awesome configurados para a interface.
-- Cadastro de usuarios em `/cadastro` com nome de usuario, senha, visualizacao opcional da senha digitada e indicacao `is-danger` para
-  campos invalidos.
-- Cadastro bem-sucedido apresenta uma chave UUID de redefinicao e cria uma sessao inicial por cookie HTTP.
+- Cadastro de usuarios em `/cadastro` com nome de usuario, senha, visualizacao opcional da senha digitada, indicacao `is-danger` para campos
+  invalidos e limpeza do erro visual de um campo quando o usuario volta a digitar nele.
+- Cadastro bem-sucedido apresenta uma chave UUID de redefinicao, permite copiar a chave para a area de transferencia quando o navegador
+  suporta a Clipboard API e cria uma sessao inicial por cookie HTTP.
 - Persistencia local com libSQL em `Livros.db` para usuarios e sessoes.
 - Senhas e chaves de redefinicao sao armazenadas por hash, nao em texto puro.
 - Sessao inicial tem validade de uma semana.
@@ -114,8 +115,10 @@ localmente quanto com Turso.
 
 O sistema nao exige email. Cada conta usa nome de usuario e senha.
 
-No cadastro implementado, uma chave de redefinicao em formato UUID e gerada e apresentada ao usuario. Depois do cadastro, o usuario entra
-diretamente na area segura por uma sessao inicial registrada no banco e representada no navegador pelo cookie `livros_session`.
+No cadastro implementado, uma chave de redefinicao em formato UUID e gerada e apresentada ao usuario. A tela permite copiar a chave para a
+area de transferencia quando o navegador suporta a Clipboard API e mantem a chave visivel para copia manual quando a copia automatica falha
+ou nao esta disponivel. Depois do cadastro, o usuario entra diretamente na area segura por uma sessao inicial registrada no banco e
+representada no navegador pelo cookie `livros_session`.
 
 Senha e chave de redefinicao sao persistidas somente como hashes PBKDF2 com SHA-256, salt aleatorio e 210000 iteracoes. A chave em texto
 claro aparece apenas no resultado do cadastro.
@@ -195,4 +198,4 @@ O projeto comeca como um MVP simples. Novos recursos e complexidade devem ser ad
 ## Estado do trabalho
 
 A inicializacao do projeto Fresh esta concluida. O trabalho [TR-001 - Cadastro de usuarios](trabalhos/001-cadastro-de-usuarios/trabalho.md)
-esta em encerramento apos implementar e validar cadastro, sessao inicial e biblioteca segura minima.
+esta concluido apos implementar e validar cadastro, sessao inicial, biblioteca segura minima e ajustes de experiencia do cadastro.

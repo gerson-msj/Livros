@@ -2,7 +2,7 @@
 
 **Trabalho:** [TR-001 - Cadastro de usuarios](../trabalho.md)
 
-**Estado:** Planejada **Depende de:** T05
+**Estado:** Concluida **Depende de:** T05
 
 **Objetivo tecnico**
 
@@ -39,4 +39,98 @@ Adicionar ao painel de chave de redefinicao uma acao para copiar a chave UUID pa
 
 **Evolucao**
 
-- Planejada em 2026-06-17 apos retorno de validacao final do TR-001; aguarda conclusao da T05.
+- Planejada em 2026-06-17 apos retorno de validacao final do TR-001.
+- Liberada em 2026-06-17 para desenvolvimento conjunto com T05 por aprovacao explicita do usuario.
+- Iniciada em 2026-06-17 em desenvolvimento conjunto com T05.
+- Implementada com island dedicada para o painel da chave e acao de copia via Clipboard API.
+- Verificacao focada concluida com testes automatizados, lint e check.
+- Enviada para auditoria tecnica.
+- Validada pelo usuario em 2026-06-18.
+- Conclusao confirmada pela auditoria em 2026-06-18.
+
+## Evidencias da T06
+
+### Mapa de fluxo - T06
+
+**Fluxo:** copia da chave de redefinicao apos cadastro. **Resultado produzido:** o painel da chave passa a oferecer botao "Copiar chave"
+antes da acao de seguir para `/biblioteca`. **Exemplo acompanhado:** depois do cadastro, a chave UUID exibida no campo somente leitura e
+enviada para a area de transferencia ao acionar o botao. **Resumo:** a rota passa a renderizar uma island para o painel da chave; a island
+usa a Clipboard API quando disponivel e mantem a chave visivel para copia manual quando nao for possivel copiar automaticamente.
+
+### 1. Renderizar painel interativo da chave
+
+**Componente:** [Rota de cadastro](../../../../routes/cadastro.tsx:92) e [ResetKeyPanel](../../../../islands/ResetKeyPanel.tsx:9) - 🟡
+**Modificado** / 🟢 **Criado**
+
+**Entra:** `resetKey` retornada pelo cadastro bem-sucedido. **Faz:** renderiza o campo somente leitura com a chave, o botao "Copiar chave" e
+o link "Ir para biblioteca". **Sai:** usuario visualiza a chave e possui acao direta para copia.
+
+### 2. Copiar para a area de transferencia
+
+**Componente:** [Acao de copia](../../../../islands/ResetKeyPanel.tsx:12) e [copyResetKey](../../../../islands/ResetKeyPanel.tsx:58) - 🟢
+**Criado**
+
+**Entra:** clique no botao e chave UUID exibida. **Faz:** chama `navigator.clipboard.writeText(resetKey)` quando a Clipboard API esta
+disponivel. **Sai:** estado `copied` e mensagem discreta "Chave copiada.".
+
+### 3. Preservar copia manual em falha
+
+**Componente:** [copyResetKey](../../../../islands/ResetKeyPanel.tsx:58) - 🟢 **Criado**
+
+**Entra:** ambiente sem Clipboard API ou erro ao chamar `writeText`. **Faz:** retorna `unavailable` ou `failed` sem ocultar o campo da
+chave. **Sai:** usuario recebe orientacao para copiar manualmente e a chave continua acessivel.
+
+| Estacao | Componente        | Impacto   | Entra -> Sai                             |
+| ------- | ----------------- | --------- | ---------------------------------------- |
+| Painel  | `ResetKeyPanel`   | 🟢 Criado | Chave -> campo, copiar e seguir          |
+| Copiar  | Clipboard API     | 🟢 Criado | Clique -> chave na area de transferencia |
+| Falha   | Fallback de copia | 🟢 Criado | Sem suporte/falha -> copia manual        |
+
+Aspectos relevantes:
+
+- A T06 nao altera a geracao, o formato nem a persistencia da chave de redefinicao.
+- A chave continua visivel em campo somente leitura, entao o usuario nao fica bloqueado se o navegador negar acesso ao clipboard.
+
+## Verificacoes - T06
+
+- `deno test -A islands\cadastro_interactions_test.ts routes\cadastro_test.ts`: testes de copia e cadastro aprovados.
+- `deno test -A islands\cadastro_interactions_test.ts routes\cadastro_test.ts routes\fluxo_cadastro_biblioteca_test.ts`: 7 testes aprovados.
+- `deno lint` focado em islands de cadastro, rota e testes relacionados: aprovado.
+- `deno check` focado em islands de cadastro, rota e testes relacionados: aprovado.
+
+## Auditoria - T06
+
+**Resultado:** Aprovada
+
+### Achados
+
+- Nenhum.
+
+### Verificacoes
+
+- Revisado `routes/cadastro.tsx`, confirmando que o painel de chave passou a usar a island `ResetKeyPanel`.
+- Revisado `islands/ResetKeyPanel.tsx`, confirmando botao de copia, uso da Clipboard API e fallback sem ocultar a chave.
+- Revisado `islands/cadastro_interactions_test.ts`, confirmando cobertura para copia com sucesso, indisponibilidade e falha.
+- Confirmado que geracao, formato, persistencia da chave e fluxo para `/biblioteca` nao foram alterados.
+- `deno test -A islands\cadastro_interactions_test.ts routes\cadastro_test.ts routes\fluxo_cadastro_biblioteca_test.ts`: aprovado.
+- `deno lint` e `deno check` focados em islands, rota e testes relacionados: aprovados.
+
+### Mapa de fluxo
+
+- Correto para a T06.
+
+## Validacao humana - T06
+
+**Resultado:** Aprovado **Retorno:** Tudo ok, pode finalizar tudo, realizar o commit e o push.
+
+## Confirmacao de conclusao - T06
+
+**Resultado:** Conclusao confirmada
+
+### Verificacoes
+
+- Auditoria tecnica aprovada sem achados.
+- Validacao humana registrada como aprovada.
+- Mapa, verificacoes e evolucao estao atualizados.
+- Tabela de controle em `trabalho.md` sincronizada com o estado `Concluida`.
+- Nenhuma falha conhecida relacionada a T06 permanece aberta.

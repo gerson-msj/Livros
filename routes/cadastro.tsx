@@ -2,6 +2,7 @@ import { Head } from "fresh/runtime"
 import { RegistrationValidationError, UsernameAlreadyExistsError, type ValidationIssue } from "../dominio/autenticacao.ts"
 import { getSessionIdFromCookie, setSessionCookie } from "../infraestrutura/session_cookie.ts"
 import CadastroForm from "../islands/CadastroForm.tsx"
+import ResetKeyPanel from "../islands/ResetKeyPanel.tsx"
 import { define } from "../utils.ts"
 
 interface CadastroPageData {
@@ -96,34 +97,6 @@ export default define.page<typeof handler>(function Cadastro({ data }) {
         </section>
     )
 })
-
-function ResetKeyPanel({ resetKey }: { resetKey: string }) {
-    return (
-        <div class="box">
-            <div class="notification is-success is-light">
-                <p class="has-text-weight-semibold">Conta criada.</p>
-                <p>Guarde sua chave de redefinicao de senha.</p>
-            </div>
-
-            <div class="field">
-                <label class="label" for="reset-key">Chave de redefinicao</label>
-                <div class="control has-icons-left">
-                    <input class="input is-family-monospace" id="reset-key" type="text" value={resetKey} readonly />
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-key" aria-hidden="true"></i>
-                    </span>
-                </div>
-            </div>
-
-            <a class="button is-primary is-fullwidth" href="/biblioteca">
-                <span class="icon">
-                    <i class="fas fa-book-open" aria-hidden="true"></i>
-                </span>
-                <span>Ir para biblioteca</span>
-            </a>
-        </div>
-    )
-}
 
 function redirectToBiblioteca(): Response {
     return new Response(null, {

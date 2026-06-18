@@ -1,6 +1,6 @@
 # TR-001 - Cadastro de usuarios
 
-**Estado:** Em desenvolvimento **Tipo:** Nova capacidade
+**Estado:** Concluido **Tipo:** Nova capacidade
 
 ## Resumo
 
@@ -73,29 +73,31 @@ Nenhuma.
 
 ## Plano
 
-**Revisao:** 6 **Proxima tarefa:** T05
+**Revisao:** 6 **Proxima tarefa:** checkpoint final
 
 ### Estrategia
 
-Entregar o cadastro em fatias verticais, mantendo todas as tarefas restantes visiveis para validacao humana antes de liberar o proximo
-desenvolvimento. A execucao continuara faseada: cada tarefa sera desenvolvida, auditada e validada separadamente.
+Entregar o cadastro em fatias verticais, mantendo todas as tarefas visiveis para validacao humana antes de liberar o proximo
+desenvolvimento. A execucao foi faseada: cada tarefa foi desenvolvida, auditada e validada separadamente.
 
-A implementacao deve seguir DDD de forma pragmatica, separando regras de usuario e sessao dos detalhes de Fresh, cookies e banco. As rotas
-Fresh devem preferir pagina e handlers proprios: `/cadastro` usando `GET` e `POST` da propria rota, e `/biblioteca` fazendo o mesmo para
-acesso seguro e saida.
+A implementacao segue DDD de forma pragmatica, separando regras de usuario e sessao dos detalhes de Fresh, cookies e banco. As rotas Fresh
+preferem pagina e handlers proprios: `/cadastro` usando `GET` e `POST` da propria rota, e `/biblioteca` fazendo o mesmo para acesso seguro e
+saida.
 
-O banco local sera `Livros.db`, com libSQL como direcao da aplicacao. O `sqlite3.exe` disponivel no diretorio do projeto pode ser usado como
-apoio de verificacao direta da base, sem virar dependencia da aplicacao. O Vite deve ignorar alteracoes em `Livros.db` para evitar refresh
-durante o desenvolvimento.
+O banco local e `Livros.db`, com libSQL como direcao da aplicacao. O `sqlite3.exe` disponivel no diretorio do projeto pode ser usado como
+apoio de verificacao direta da base, sem virar dependencia da aplicacao. O Vite ignora alteracoes em `Livros.db` para evitar refresh durante
+o desenvolvimento.
 
-Ao final das tarefas funcionais, a verificacao integrada deve consolidar um mapa de fluxo completo do cadastro ate a saida da area segura.
-Depois do retorno da validacao final, os ajustes de experiencia no formulario e na chave serao tratados em tarefas pequenas antes do
-encerramento definitivo do trabalho.
+Ao final das tarefas funcionais, a verificacao integrada consolidou um mapa de fluxo completo do cadastro ate a saida da area segura. Depois
+do retorno da validacao final, ajustes de experiencia no formulario e na chave foram tratados em tarefas pequenas antes do encerramento.
 
 ### Historico do plano
 
 - 2026-06-17: Revisao 6 reabre o TR-001 apos retorno de validacao final, adicionando T05 para limpar erro ao editar campo invalido e T06
   para copiar a chave de redefinicao.
+- 2026-06-17: T06 liberada para desenvolvimento conjunto com T05 por aprovacao explicita do usuario.
+- 2026-06-18: T05 e T06 validadas pelo usuario e confirmadas como concluidas.
+- 2026-06-18: TR-001 concluido apos consolidacao arquitetural e confirmacao de encerramento.
 - 2026-06-17: Checkpoint da T03 confirmado; T04 liberada para desenvolvimento.
 - 2026-06-17: Todas as tarefas concluidas; TR-001 movido para encerramento.
 - 2026-06-17: Conhecimento permanente consolidado apos conclusao das tarefas.
@@ -114,20 +116,21 @@ encerramento definitivo do trabalho.
 | T02    | Concluida | T01        | Cadastro na rota /cadastro com handlers proprios            | [T02 - Cadastro na rota /cadastro com handlers proprios](tarefas/T02-cadastro-rota-cadastro-handlers-proprios.md)                       |
 | T03    | Concluida | T02        | Biblioteca segura na rota /biblioteca com handlers proprios | [T03 - Biblioteca segura na rota /biblioteca com handlers proprios](tarefas/T03-biblioteca-segura-rota-biblioteca-handlers-proprios.md) |
 | T04    | Concluida | T03        | Verificacao integrada e mapa final do fluxo                 | [T04 - Verificacao integrada e mapa final do fluxo](tarefas/T04-verificacao-integrada-mapa-final-fluxo.md)                              |
-| T05    | Pronta    | T02        | Limpar erro do campo ao editar cadastro                     | [T05 - Limpar erro do campo ao editar cadastro](tarefas/T05-limpar-erro-campo-editar-cadastro.md)                                       |
-| T06    | Planejada | T05        | Copiar chave de redefinicao para area de transferencia      | [T06 - Copiar chave de redefinicao para area de transferencia](tarefas/T06-copiar-chave-redefinicao-area-transferencia.md)              |
+| T05    | Concluida | T02        | Limpar erro do campo ao editar cadastro                     | [T05 - Limpar erro do campo ao editar cadastro](tarefas/T05-limpar-erro-campo-editar-cadastro.md)                                       |
+| T06    | Concluida | T05        | Copiar chave de redefinicao para area de transferencia      | [T06 - Copiar chave de redefinicao para area de transferencia](tarefas/T06-copiar-chave-redefinicao-area-transferencia.md)              |
 
-## Mapa de fluxo macro ate T04
+## Mapa de fluxo macro do TR-001
 
 **Fluxo agregado:** cadastro aberto, entrada direta na area segura e saida da sessao. **Resultado produzido:** usuario persistido com senha
-e chave protegidas, sessao inicial em cookie HTTP, rota `/biblioteca` protegida e logout que encerra a sessao. **Exemplo acompanhado:** o
-visitante informa `Gerson` e `senha-secreta` em `/cadastro`; o sistema grava `gerson`, mostra a chave UUID, cria o cookie `livros_session`,
-libera `/biblioteca` e, ao acionar "Sair", encerra a sessao e redireciona para `/cadastro`.
+e chave protegidas, sessao inicial em cookie HTTP, rota `/biblioteca` protegida, formulario com limpeza local de erros e painel de chave com
+acao de copia. **Exemplo acompanhado:** o visitante corrige campos invalidos em `/cadastro`, informa `Gerson` e `senha-secreta`; o sistema
+grava `gerson`, mostra a chave UUID com botao "Copiar chave", cria o cookie `livros_session`, libera `/biblioteca` e, ao acionar "Sair",
+encerra a sessao e redireciona para `/cadastro`.
 
 ### 1. Preparar autenticacao e persistencia
 
 **Componentes principais:** dominio de autenticacao, `AuthenticationService`, hasher WebCrypto, repositorios libSQL e provider por request -
-🟢 **Criado** / 🟡 **Modificado**
+Criado/Modificado
 
 **Entra:** dados de cadastro e necessidade de sessao. **Faz:** normaliza nome, valida minimo de 5 caracteres, protege senha/chave por hash,
 persiste usuario e sessao em libSQL e disponibiliza o servico para as rotas. **Sai:** base de autenticacao pronta para uso HTTP.
@@ -136,17 +139,19 @@ Detalhes: [T01 - Base de dominio e persistencia de autenticacao](tarefas/T01-bas
 
 ### 2. Cadastrar usuario em `/cadastro`
 
-**Componentes principais:** rota `/cadastro`, `CadastroForm`, painel da chave e helper de cookie - 🟢 **Criado**
+**Componentes principais:** rota `/cadastro`, `CadastroForm`, painel da chave e helper de cookie - Criado/Modificado
 
-**Entra:** nome e senha enviados pelo formulario. **Faz:** renderiza formulario Bulma, indica campos invalidos com `is-danger`, permite
-mostrar a senha, cria usuario/sessao e grava cookie `livros_session` com `HttpOnly`, `SameSite=Lax`, `Path=/` e expiracao da sessao.
-**Sai:** chave UUID exibida ao usuario e link para `/biblioteca`.
+**Entra:** nome e senha enviados pelo formulario. **Faz:** renderiza formulario Bulma, indica campos invalidos com `is-danger`, limpa o erro
+do campo editado, permite mostrar a senha, cria usuario/sessao e grava cookie `livros_session` com `HttpOnly`, `SameSite=Lax`, `Path=/` e
+expiracao da sessao. **Sai:** chave UUID exibida ao usuario com botao de copia e link para `/biblioteca`.
 
-Detalhes: [T02 - Cadastro na rota /cadastro com handlers proprios](tarefas/T02-cadastro-rota-cadastro-handlers-proprios.md).
+Detalhes: [T02 - Cadastro na rota /cadastro com handlers proprios](tarefas/T02-cadastro-rota-cadastro-handlers-proprios.md),
+[T05 - Limpar erro do campo ao editar cadastro](tarefas/T05-limpar-erro-campo-editar-cadastro.md) e
+[T06 - Copiar chave de redefinicao para area de transferencia](tarefas/T06-copiar-chave-redefinicao-area-transferencia.md).
 
 ### 3. Proteger e encerrar a area segura
 
-**Componentes principais:** rota `/biblioteca`, validacao de sessao, logout e limpeza de cookie - 🟢 **Criado** / 🟡 **Modificado**
+**Componentes principais:** rota `/biblioteca`, validacao de sessao, logout e limpeza de cookie - Criado/Modificado
 
 **Entra:** acesso a `/biblioteca` com ou sem cookie de sessao. **Faz:** redireciona visitante sem sessao ativa para `/cadastro`, renderiza a
 biblioteca minima para sessao valida e encerra a sessao no logout. **Sai:** area segura com somente a opcao "Sair" ou retorno a `/cadastro`
@@ -157,34 +162,38 @@ Detalhes:
 
 ### 4. Verificar o fluxo completo
 
-**Componentes principais:** teste integrado, validacao HTTP local e inspecao do banco temporario - 🟢 **Criado**
+**Componentes principais:** teste integrado, testes de interacao, validacao HTTP local e inspecao do banco temporario - Criado
 
-**Entra:** fluxo completo de cadastro ate logout. **Faz:** confirma redirecionamentos, persistencia segura, expiracao de uma semana, cookie
-HTTP, logout e recusa de sessao encerrada. **Sai:** evidencia integrada de que os criterios do TR-001 foram atendidos.
+**Entra:** fluxo completo de cadastro ate logout e interacoes do cadastro. **Faz:** confirma redirecionamentos, persistencia segura,
+expiracao de uma semana, cookie HTTP, logout, recusa de sessao encerrada, limpeza de erro por campo e copia da chave. **Sai:** evidencia de
+que os criterios do TR-001 foram atendidos.
 
 Detalhes: [T04 - Verificacao integrada e mapa final do fluxo](tarefas/T04-verificacao-integrada-mapa-final-fluxo.md).
 
-| Estacao     | Componentes                    | Impacto                 | Entra -> Sai                         |
-| ----------- | ------------------------------ | ----------------------- | ------------------------------------ |
-| Base        | Dominio, servico, repositorios | 🟢/🟡 Criado/Modificado | Dados -> usuario/sessao persistidos  |
-| Cadastro    | `/cadastro` + formulario       | 🟢 Criado               | Formulario -> chave e cookie         |
-| Biblioteca  | `/biblioteca` + logout         | 🟢/🟡 Criado/Modificado | Cookie -> area segura ou saida       |
-| Verificacao | Teste integrado + HTTP + banco | 🟢 Criado               | Fluxo completo -> evidencia validada |
+| Estacao     | Componentes                    | Impacto           | Entra -> Sai                         |
+| ----------- | ------------------------------ | ----------------- | ------------------------------------ |
+| Base        | Dominio, servico, repositorios | Criado/Modificado | Dados -> usuario/sessao persistidos  |
+| Cadastro    | `/cadastro` + islands          | Criado/Modificado | Formulario -> chave, copia e cookie  |
+| Biblioteca  | `/biblioteca` + logout         | Criado/Modificado | Cookie -> area segura ou saida       |
+| Verificacao | Testes + HTTP + banco          | Criado            | Fluxo completo -> evidencia validada |
 
-## Resumo consolidado ate T04
+## Resumo final do trabalho
 
 ### Fonte da verdade
 
-O TR-001 implementou, ate a T04, o cadastro inicial de usuarios e a entrada direta na area segura. O sistema possui base persistente de
-usuarios e sessoes, tela `/cadastro`, apresentacao de chave UUID de redefinicao, cookie de sessao HTTP, rota `/biblioteca` protegida e
-logout. A revisao 6 adicionou ajustes de experiencia ainda pendentes antes do encerramento definitivo.
+O TR-001 implementou o cadastro inicial de usuarios e a entrada direta na area segura. O sistema possui base persistente de usuarios e
+sessoes, tela `/cadastro`, validacao visual com limpeza local de erros ao editar campos, apresentacao de chave UUID de redefinicao com botao
+de copia, cookie de sessao HTTP, rota `/biblioteca` protegida e logout.
 
 ### Regras de negocio implementadas
 
 - Nome de usuario e senha exigem ao menos 5 caracteres depois de remover espacos ao redor.
+- Campo invalido no cadastro perde o erro visual quando o usuario volta a digitar naquele campo, sem limpar erros dos demais campos.
 - Nome de usuario e armazenado em letras minusculas.
 - Nome de usuario duplicado e recusado.
 - Cadastro bem-sucedido gera uma chave UUID de redefinicao e a apresenta ao usuario.
+- Chave de redefinicao pode ser copiada para a area de transferencia quando o navegador suporta a Clipboard API; em falha, permanece
+  acessivel para copia manual.
 - Senha e chave de redefinicao sao persistidas apenas como hashes, nunca em texto puro.
 - Cadastro bem-sucedido cria uma sessao inicial com validade de uma semana.
 - Usuario com sessao ativa que acessa `/cadastro` e redirecionado para `/biblioteca`.
@@ -197,6 +206,7 @@ logout. A revisao 6 adicionou ajustes de experiencia ainda pendentes antes do en
   composicao em provider por request.
 - Senha e chave usam PBKDF2 com SHA-256, salt aleatorio e 210000 iteracoes.
 - As rotas `/cadastro` e `/biblioteca` concentram pagina e handlers `GET`/`POST`, sem APIs separadas.
+- Interacoes de cliente do formulario e do painel da chave ficam em islands Preact pequenas e testaveis.
 - O cookie `livros_session` usa `HttpOnly`, `SameSite=Lax`, `Path=/` e expiracao alinhada a sessao.
 - `Livros.db` e ignorado pelo watcher do Vite para evitar refresh durante uso local do banco.
 
@@ -206,17 +216,19 @@ logout. A revisao 6 adicionou ajustes de experiencia ainda pendentes antes do en
 - A biblioteca ainda nao possui recursos de livros, autores ou series; a tela segura contem apenas a opcao de saida.
 - `GET /biblioteca` redireciona sessao ausente, invalida, expirada ou encerrada para `/cadastro`, mas nao limpa cookies invalidos nessa
   resposta.
-- A validacao visual real em Browser desktop/mobile nao foi executada porque o Browser interno nao estava disponivel; o fluxo foi validado
-  por testes, HTTP local e estrutura responsiva Bulma.
+- Validacao Playwright local nao executou porque o navegador do Playwright nao esta instalado; o fluxo foi validado por testes
+  automatizados, HTTP local, estrutura responsiva Bulma e teste ao vivo do usuario.
 - `deno task check` global ainda falha por formatacao preexistente fora do escopo do trabalho; verificacoes focadas dos arquivos afetados
   passaram.
 
 ### Como validar
 
 - Executar o teste integrado `deno test -A routes\fluxo_cadastro_biblioteca_test.ts`.
-- Executar a suite focada de autenticacao, cadastro e biblioteca registrada na T04.
-- Em servidor local, abrir `/cadastro`, criar usuario valido, guardar a chave, seguir para `/biblioteca`, acionar "Sair" e confirmar retorno
-  para `/cadastro`.
+- Executar a suite focada
+  `deno test -A islands\cadastro_interactions_test.ts routes\cadastro_test.ts
+  routes\fluxo_cadastro_biblioteca_test.ts`.
+- Em servidor local, abrir `/cadastro`, tentar cadastro invalido, editar cada campo invalido, confirmar que o erro do campo editado some,
+  criar usuario valido, copiar/guardar a chave, seguir para `/biblioteca`, acionar "Sair" e confirmar retorno para `/cadastro`.
 
 ### Referencias
 
@@ -228,21 +240,25 @@ logout. A revisao 6 adicionou ajustes de experiencia ainda pendentes antes do en
   protecao da rota e logout.
 - [T04 - Verificacao integrada e mapa final do fluxo](tarefas/T04-verificacao-integrada-mapa-final-fluxo.md): verificacao integrada e mapa
   final do fluxo.
+- [T05 - Limpar erro do campo ao editar cadastro](tarefas/T05-limpar-erro-campo-editar-cadastro.md): limpeza local de erros por campo.
+- [T06 - Copiar chave de redefinicao para area de transferencia](tarefas/T06-copiar-chave-redefinicao-area-transferencia.md): copia da chave
+  e fallback manual.
 
-## Consolidacao arquitetural ate T04
+## Consolidacao arquitetural
 
 **Modo:** Consolidar **Impacto permanente:** Sim
 
 **Conhecimento afetado**
 
-- [Conhecimento do projeto](../../conhecimento.md): recursos existentes, dominio de usuario, autenticacao, sessoes, persistencia local e
-  estado do trabalho.
+- [Conhecimento do projeto](../../conhecimento.md): recursos existentes, dominio de usuario, autenticacao, sessoes, persistencia local,
+  interacoes do cadastro e estado do trabalho.
 
 **Atualizacoes**
 
 - Cadastro de usuarios, sessao inicial, `/biblioteca` protegida e logout foram registrados como capacidades existentes.
+- Limpeza local de erros no cadastro e botao para copiar a chave de redefinicao foram registrados como capacidades existentes.
 - Login separado, redefinicao de senha e recursos de livros/autores/series permaneceram registrados como planejados.
-- Regras de senha, chave UUID, hash, cookie HTTP e validade de sessao foram consolidadas como estado atual.
+- Regras de senha, chave UUID, hash, cookie HTTP, validade de sessao e fallback de copia manual foram consolidadas como estado atual.
 
 **Decisoes pendentes**
 
@@ -251,3 +267,20 @@ logout. A revisao 6 adicionou ajustes de experiencia ainda pendentes antes do en
 **Riscos ou inconsistencias**
 
 - Nenhum bloqueante. Permanece registrado que login separado e redefinicao de senha ainda nao foram implementados.
+
+## Validacao final do trabalho
+
+**Resultado:** Aprovado **Retorno:** Tudo ok, pode finalizar tudo, realizar o commit e o push.
+
+## Auditoria de encerramento
+
+**Resultado:** Encerramento confirmado
+
+### Verificacoes
+
+- Todas as tarefas estao em estado terminal `Concluida`.
+- Expectativas de aceite do trabalho foram atendidas por tarefas, mapas e verificacoes registradas.
+- Validacao humana final do trabalho foi registrada.
+- Mapa de fluxo macro e resumo final representam o comportamento implementado, incluindo T05 e T06.
+- Conhecimento permanente foi consolidado em `documentacao/conhecimento.md`.
+- Nao existem pendencias bloqueantes conhecidas relacionadas ao TR-001.
