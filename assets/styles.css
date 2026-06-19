@@ -155,32 +155,11 @@ html {
 }
 
 .livros-popup-message-card {
-  border-top: 0.35rem solid #3e8ed0;
   max-width: min(92vw, 40rem);
 }
 
-.livros-popup-message-card-primary {
-  border-top-color: #00d1b2;
-}
-
-.livros-popup-message-card-info {
-  border-top-color: #3e8ed0;
-}
-
-.livros-popup-message-card-success {
-  border-top-color: #48c78e;
-}
-
-.livros-popup-message-card-warning {
-  border-top-color: #ffe08a;
-}
-
-.livros-popup-message-card-danger {
-  border-top-color: #f14668;
-}
-
 .livros-popup-message-text {
-  color: #363636;
+  color: inherit;
   font-size: 1.05rem;
   white-space: normal;
 }

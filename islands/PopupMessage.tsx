@@ -2,7 +2,7 @@ import type { ComponentChild } from "preact"
 import { useEffect, useMemo, useState } from "preact/hooks"
 
 export type PopupMessageResult = "ok" | "cancel"
-export type PopupMessageTheme = "primary" | "info" | "success" | "warning" | "danger"
+export type PopupMessageTheme = "primary" | "info" | "success" | "warning" | "danger" | "dark"
 
 export interface PopupMessageOptions {
     message: string
@@ -104,7 +104,6 @@ export function createPopupMessageSession(resolve: (result: PopupMessageResult) 
 function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage }) {
     const { options } = activeMessage
     const themeClass = getPopupMessageThemeClass(options.theme)
-    const themeAccentClass = `livros-popup-message-card-${options.theme}`
 
     return (
         <div
@@ -120,7 +119,7 @@ function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage })
                 onClick={() => activeMessage.finish("cancel")}
             >
             </button>
-            <div class={`modal-card livros-popup-message-card ${themeAccentClass}`}>
+            <div class="modal-card livros-popup-message-card">
                 {options.title && (
                     <header class={`modal-card-head has-background-${options.theme}-light`}>
                         <p class={`modal-card-title has-text-${options.theme}`} id="popup-message-title">{options.title}</p>
@@ -140,7 +139,7 @@ function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage })
                     <footer class="modal-card-foot livros-popup-message-actions">
                         {options.showNegativeButton && (
                             <button
-                                class="button livros-popup-message-button"
+                                class="button is-dark is-outlined livros-popup-message-button"
                                 type="button"
                                 onClick={() => activeMessage.finish("cancel")}
                             >

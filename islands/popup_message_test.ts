@@ -44,6 +44,7 @@ Deno.test("getPopupMessageThemeClass mapeia temas para classes Bulma", () => {
     assertEquals(getPopupMessageThemeClass("success"), "is-success")
     assertEquals(getPopupMessageThemeClass("warning"), "is-warning")
     assertEquals(getPopupMessageThemeClass("danger"), "is-danger")
+    assertEquals(getPopupMessageThemeClass("dark"), "is-dark")
 })
 
 Deno.test("createPopupMessageSession resolve apenas a primeira escolha", () => {

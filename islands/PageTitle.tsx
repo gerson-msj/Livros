@@ -21,7 +21,7 @@ export default function PageTitle({ title, leftMode = "icon", showLogout = false
     async function confirmLogout() {
         const result = await showMessage({
             message: "Deseja sair da biblioteca?",
-            theme: "warning",
+            theme: "dark",
             positiveText: "Sair",
             negativeText: "Cancelar",
             showPositiveButton: true,
