@@ -142,3 +142,21 @@ html {
     rgb(254, 249, 195)
   );
 }
+
+.livros-popup-message {
+  align-items: flex-start;
+  padding-top: clamp(100px, 18vh, 150px);
+}
+
+.livros-popup-message .modal-background {
+  border: 0;
+  width: 100%;
+}
+
+.livros-popup-message-card {
+  max-width: min(92vw, 40rem);
+}
+
+.livros-popup-message-text {
+  white-space: normal;
+}

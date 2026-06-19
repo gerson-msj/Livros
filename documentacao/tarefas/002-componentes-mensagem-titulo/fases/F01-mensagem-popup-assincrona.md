@@ -2,7 +2,7 @@
 
 **Tarefa:** [TF-002 - Componentes de mensagem e titulo](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
 **Depende de:** Nenhuma
 
 ## Objetivo tecnico
@@ -39,3 +39,10 @@ Permitir que componentes interativos exibam um popup de mensagem configuravel e 
 - Criar o componente de titulo.
 - Aplicar o popup nas paginas de cadastro e biblioteca.
 - Alterar fluxo de logout.
+
+## Resultado
+
+- Entregue hook reutilizavel `usePopupMessage` com chamada assincrona, retorno `ok` ou `cancel`, configuracao de tema Bulma, textos e exibicao dos botoes.
+- O popup preserva quebras de linha como texto, fecha com `cancel` por tecla `Esc` ou clique fora e aceita configuracao com ambos, um ou nenhum botao visivel.
+- Verificacoes realizadas: `deno test islands\popup_message_test.ts`, `deno lint islands\PopupMessage.tsx islands\popup_message_test.ts`, `deno check islands\PopupMessage.tsx islands\popup_message_test.ts`, `deno lint .`, `deno check` e `deno test -A`.
+- `deno task check` foi executado e falhou no `deno fmt --check .` por arquivos preexistentes fora da fase, incluindo arquivos do esqueleto Fresh e CSS de terceiros; lint e typecheck passaram separadamente.
