@@ -119,44 +119,43 @@ function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage })
                 onClick={() => activeMessage.finish("cancel")}
             >
             </button>
-            <div class="modal-card livros-popup-message-card">
-                {options.title && (
-                    <header class={`modal-card-head has-background-${options.theme}-light`}>
-                        <p class={`modal-card-title has-text-${options.theme}`} id="popup-message-title">{options.title}</p>
-                    </header>
-                )}
-                <section class="modal-card-body">
-                    <div class="livros-popup-message-text">
-                        {options.message.split(/\r?\n/).map((line, index) => (
-                            <>
-                                {index > 0 && <br />}
-                                {line}
-                            </>
-                        ))}
-                    </div>
-                </section>
-                {(options.showPositiveButton || options.showNegativeButton) && (
-                    <footer class="modal-card-foot livros-popup-message-actions">
-                        {options.showNegativeButton && (
-                            <button
-                                class="button is-dark is-outlined livros-popup-message-button"
-                                type="button"
-                                onClick={() => activeMessage.finish("cancel")}
-                            >
-                                {options.negativeText}
-                            </button>
-                        )}
-                        {options.showPositiveButton && (
-                            <button
-                                class={`button ${themeClass} livros-popup-message-button`}
-                                type="button"
-                                onClick={() => activeMessage.finish("ok")}
-                            >
-                                {options.positiveText}
-                            </button>
-                        )}
-                    </footer>
-                )}
+            <div class="modal-content livros-popup-message-content">
+                <article class={`message ${themeClass} livros-popup-message-panel`}>
+                    {options.title && (
+                        <header class="message-header">
+                            <p id="popup-message-title">{options.title}</p>
+                        </header>
+                    )}
+                    <section class="message-body livros-popup-message-body">
+                        <div class="livros-popup-message-layout">
+                            <div class="livros-popup-message-text">
+                                {options.message}
+                            </div>
+                            {(options.showPositiveButton || options.showNegativeButton) && (
+                                <div class="livros-popup-message-actions">
+                                    {options.showNegativeButton && (
+                                        <button
+                                            class="button is-dark is-outlined livros-popup-message-button"
+                                            type="button"
+                                            onClick={() => activeMessage.finish("cancel")}
+                                        >
+                                            {options.negativeText}
+                                        </button>
+                                    )}
+                                    {options.showPositiveButton && (
+                                        <button
+                                            class={`button ${themeClass} livros-popup-message-button`}
+                                            type="button"
+                                            onClick={() => activeMessage.finish("ok")}
+                                        >
+                                            {options.positiveText}
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                </article>
             </div>
         </div>
     )

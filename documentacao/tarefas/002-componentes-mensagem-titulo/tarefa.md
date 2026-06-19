@@ -58,7 +58,7 @@ Nenhuma.
 
 ## Plano
 
-**Revisao:** 3
+**Revisao:** 4
 **Proxima acao:** Validar projeto
 
 ### Estrategia
@@ -73,6 +73,7 @@ quebras de linha, temas Bulma e integracao nas paginas.
 
 - 2026-06-19: revisao 2 adiciona F04 para ajustes visuais solicitados na validacao do titulo e do popup.
 - 2026-06-19: revisao 3 adiciona F05 para corrigir contraste do popup no tema escuro apos validacao com Chrome.
+- 2026-06-19: revisao 4 adiciona F06 para aproveitar o layout Bulma `message` do componente antigo no popup atual.
 
 ## Controle de fases
 
@@ -83,6 +84,7 @@ quebras de linha, temas Bulma e integracao nas paginas.
 | F03 | Concluida | F02 | Aplicar o titulo em cadastro e biblioteca mantendo logout funcional. | [F03 - Aplicacao em cadastro e biblioteca](fases/F03-aplicacao-cadastro-biblioteca.md) |
 | F04 | Concluida | F03 | Ajustar layout visual do titulo e do popup apos validacao. | [F04 - Ajuste visual titulo popup](fases/F04-ajuste-visual-titulo-popup.md) |
 | F05 | Concluida | F04 | Ajustar contraste do popup no tema escuro. | [F05 - Contraste popup tema escuro](fases/F05-contraste-popup-tema-escuro.md) |
+| F06 | Concluida | F05 | Refinar layout do popup com painel Bulma message. | [F06 - Layout popup bulma message](fases/F06-layout-popup-bulma-message.md) |
 
 ## Resumo final da tarefa
 
