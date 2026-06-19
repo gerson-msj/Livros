@@ -2,7 +2,7 @@
 
 **Tarefa:** [TF-002 - Componentes de mensagem e titulo](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
 **Depende de:** F01
 
 ## Objetivo tecnico
@@ -39,3 +39,10 @@ opcional com confirmacao.
 - Aplicar o titulo nas paginas existentes.
 - Criar novo fluxo de autenticacao ou login.
 - Implementar regras de formulario nao salvo.
+
+## Resultado
+
+- Entregue island `PageTitle` com area esquerda configuravel como icone padrao, botao voltar ou area vazia, titulo alinhado a esquerda e botao de saida opcional.
+- O botao voltar emite o evento `livros:page-title-back-intent` com a intencao de retorno, sem decidir navegacao.
+- O botao de saida usa o popup da F01 para confirmar e, quando confirmado, aciona o formulario de logout configurado pela pagina.
+- Verificacoes realizadas: `deno test islands\page_title_test.ts`, `deno lint islands\PageTitle.tsx islands\page_title_test.ts`, `deno check islands\PageTitle.tsx islands\page_title_test.ts` e `deno test -A`.

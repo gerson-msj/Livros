@@ -160,3 +160,38 @@ html {
 .livros-popup-message-text {
   white-space: normal;
 }
+
+.livros-page-title {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  margin-bottom: 1.5rem;
+}
+
+.livros-page-title-heading {
+  margin-bottom: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.livros-page-title-left,
+.livros-page-title-right {
+  align-items: center;
+  display: flex;
+  min-height: 2.5rem;
+}
+
+.livros-page-title-icon-button,
+.livros-page-title-static-icon {
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+.livros-page-title-static-icon {
+  align-items: center;
+  color: #485fc7;
+  display: inline-flex;
+  justify-content: center;
+}

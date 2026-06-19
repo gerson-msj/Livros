@@ -73,7 +73,7 @@ Bulma e integracao nas paginas.
 | Fase | Estado | Depende de | Resumo | Arquivo |
 |---|---|---|---|---|
 | F01 | Concluida | Nenhuma | Criar mensagem popup assincrona configuravel. | [F01 - Mensagem popup assincrona](fases/F01-mensagem-popup-assincrona.md) |
-| F02 | Planejada | F01 | Criar titulo padrao reutilizavel com confirmacao de saida. | [F02 - Titulo padrao reutilizavel](fases/F02-titulo-padrao-reutilizavel.md) |
+| F02 | Concluida | F01 | Criar titulo padrao reutilizavel com confirmacao de saida. | [F02 - Titulo padrao reutilizavel](fases/F02-titulo-padrao-reutilizavel.md) |
 | F03 | Planejada | F02 | Aplicar o titulo em cadastro e biblioteca mantendo logout funcional. | [F03 - Aplicacao em cadastro e biblioteca](fases/F03-aplicacao-cadastro-biblioteca.md) |
 
 ## Resumo final da tarefa
