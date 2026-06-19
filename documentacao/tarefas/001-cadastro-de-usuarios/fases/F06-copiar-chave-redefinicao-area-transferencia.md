@@ -1,8 +1,8 @@
-# T06 - Copiar chave de redefinicao para area de transferencia
+# F06 - Copiar chave de redefinicao para area de transferencia
 
-**Trabalho:** [TR-001 - Cadastro de usuarios](../trabalho.md)
+**Tarefa:** [TF-001 - Cadastro de usuarios](../tarefa.md)
 
-**Estado:** Concluida **Depende de:** T05
+**Estado:** Concluida **Depende de:** F05
 
 **Objetivo tecnico**
 
@@ -10,7 +10,7 @@ Adicionar ao painel de chave de redefinicao uma acao para copiar a chave UUID pa
 
 **Contexto necessario**
 
-- [T02 - Cadastro na rota /cadastro com handlers proprios](T02-cadastro-rota-cadastro-handlers-proprios.md): exibicao da chave de
+- [F02 - Cadastro na rota /cadastro com handlers proprios](F02-cadastro-rota-cadastro-handlers-proprios.md): exibicao da chave de
   redefinicao apos cadastro bem-sucedido.
 - [Interface com Bulma](../../../conhecimento.md#interface-com-bulma): manter a interface simples e coerente com os controles existentes.
 
@@ -30,7 +30,7 @@ Adicionar ao painel de chave de redefinicao uma acao para copiar a chave UUID pa
 - Comportamento relevante possui verificacao automatizada ou validacao manual registrada.
 - A tela permanece utilizavel em desktop e mobile.
 
-**Fora da tarefa**
+**Fora da fase**
 
 - Alterar geracao, armazenamento ou formato da chave de redefinicao.
 - Implementar redefinicao de senha.
@@ -39,18 +39,18 @@ Adicionar ao painel de chave de redefinicao uma acao para copiar a chave UUID pa
 
 **Evolucao**
 
-- Planejada em 2026-06-17 apos retorno de validacao final do TR-001.
-- Liberada em 2026-06-17 para desenvolvimento conjunto com T05 por aprovacao explicita do usuario.
-- Iniciada em 2026-06-17 em desenvolvimento conjunto com T05.
+- Planejada em 2026-06-17 apos retorno de validacao final do TF-001.
+- Liberada em 2026-06-17 para desenvolvimento conjunto com F05 por aprovacao explicita do usuario.
+- Iniciada em 2026-06-17 em desenvolvimento conjunto com F05.
 - Implementada com island dedicada para o painel da chave e acao de copia via Clipboard API.
 - Verificacao focada concluida com testes automatizados, lint e check.
 - Enviada para auditoria tecnica.
 - Validada pelo usuario em 2026-06-18.
 - Conclusao confirmada pela auditoria em 2026-06-18.
 
-## Evidencias da T06
+## Evidencias da F06
 
-### Mapa de fluxo - T06
+### Mapa de fluxo - F06
 
 **Fluxo:** copia da chave de redefinicao apos cadastro. **Resultado produzido:** o painel da chave passa a oferecer botao "Copiar chave"
 antes da acao de seguir para `/biblioteca`. **Exemplo acompanhado:** depois do cadastro, a chave UUID exibida no campo somente leitura e
@@ -88,17 +88,17 @@ chave. **Sai:** usuario recebe orientacao para copiar manualmente e a chave cont
 
 Aspectos relevantes:
 
-- A T06 nao altera a geracao, o formato nem a persistencia da chave de redefinicao.
+- A F06 nao altera a geracao, o formato nem a persistencia da chave de redefinicao.
 - A chave continua visivel em campo somente leitura, entao o usuario nao fica bloqueado se o navegador negar acesso ao clipboard.
 
-## Verificacoes - T06
+## Verificacoes - F06
 
 - `deno test -A islands\cadastro_interactions_test.ts routes\cadastro_test.ts`: testes de copia e cadastro aprovados.
 - `deno test -A islands\cadastro_interactions_test.ts routes\cadastro_test.ts routes\fluxo_cadastro_biblioteca_test.ts`: 7 testes aprovados.
 - `deno lint` focado em islands de cadastro, rota e testes relacionados: aprovado.
 - `deno check` focado em islands de cadastro, rota e testes relacionados: aprovado.
 
-## Auditoria - T06
+## Auditoria - F06
 
 **Resultado:** Aprovada
 
@@ -117,13 +117,13 @@ Aspectos relevantes:
 
 ### Mapa de fluxo
 
-- Correto para a T06.
+- Correto para a F06.
 
-## Validacao humana - T06
+## Validacao humana - F06
 
 **Resultado:** Aprovado **Retorno:** Tudo ok, pode finalizar tudo, realizar o commit e o push.
 
-## Confirmacao de conclusao - T06
+## Confirmacao de conclusao - F06
 
 **Resultado:** Conclusao confirmada
 
@@ -132,5 +132,5 @@ Aspectos relevantes:
 - Auditoria tecnica aprovada sem achados.
 - Validacao humana registrada como aprovada.
 - Mapa, verificacoes e evolucao estao atualizados.
-- Tabela de controle em `trabalho.md` sincronizada com o estado `Concluida`.
-- Nenhuma falha conhecida relacionada a T06 permanece aberta.
+- Tabela de controle em `tarefa.md` sincronizada com o estado `Concluida`.
+- Nenhuma falha conhecida relacionada a F06 permanece aberta.

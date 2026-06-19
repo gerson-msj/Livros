@@ -1,6 +1,6 @@
-# T01 - Base de dominio e persistencia de autenticacao
+# F01 - Base de dominio e persistencia de autenticacao
 
-**Trabalho:** [TR-001 - Cadastro de usuarios](../trabalho.md)
+**Tarefa:** [TF-001 - Cadastro de usuarios](../tarefa.md)
 
 **Estado:** Concluida **Depende de:** Nenhuma
 
@@ -39,7 +39,7 @@ validar/encerrar sessoes.
 - Alteracoes em `Livros.db` nao disparam refresh do Vite.
 - Comportamentos relevantes possuem verificacao automatizada.
 
-**Fora da tarefa**
+**Fora da fase**
 
 - Tela `/cadastro`.
 - Tela `/biblioteca`.
@@ -53,14 +53,14 @@ validar/encerrar sessoes.
 - Verificacao focada concluida com lint, check e testes automatizados da base de autenticacao.
 - Enviada para auditoria tecnica.
 - Retornada ao desenvolvimento apos validacao humana apontar que o Vite deve ignorar alteracoes em `Livros.db`.
-- Configurado o Vite para ignorar alteracoes em `Livros.db`, verificacao focada refeita e tarefa reenviada para auditoria.
+- Configurado o Vite para ignorar alteracoes em `Livros.db`, verificacao focada refeita e fase reenviada para auditoria.
 - Reauditoria tecnica aprovada apos ajuste do Vite.
 - Validacao humana aprovada com o ajuste para ignorar `Livros.db`.
 - Conclusao confirmada; checkpoint por commit nao foi criado porque o projeto ainda nao esta associado a um repositorio Git.
 
-## Evidencias da T01
+## Evidencias da F01
 
-### Mapa de fluxo - T01
+### Mapa de fluxo - F01
 
 **Fluxo:** cadastro de um novo usuario e criacao da sessao inicial na base de autenticacao. **Resultado produzido:** usuario persistido com
 senha e chave protegidas, sessao persistida com validade de uma semana e operacoes para consultar/encerrar sessao. **Exemplo acompanhado:**
@@ -136,10 +136,10 @@ Aspectos relevantes:
 
 - A chave de redefinicao e retornada em texto claro apenas no resultado do cadastro; o banco recebe somente o hash.
 - O `sqlite3.exe` permanece como apoio externo de inspecao, sem ser usado pela aplicacao.
-- `deno task check` nao ficou conclusivo porque o projeto ainda contem arquivos do template fora do padrao global de formatacao; a T01 foi
+- `deno task check` nao ficou conclusivo porque o projeto ainda contem arquivos do template fora do padrao global de formatacao; a F01 foi
   validada com comandos focados nos arquivos alterados.
 
-## Verificacoes - T01
+## Verificacoes - F01
 
 - `deno lint` focado em `main.ts`, `utils.ts`, `routes/index.tsx`, `dominio/autenticacao.ts`, `aplicacao/autenticacao_service.ts`,
   `aplicacao/autenticacao_service_test.ts`, `infraestrutura/crypto.ts`, `infraestrutura/database.ts`, `infraestrutura/auth_repositories.ts`,
@@ -150,7 +150,7 @@ Aspectos relevantes:
   presentes no banco local.
 - Apos ajuste do Vite, `deno lint`, `deno check` e `deno test -A` focados foram repetidos incluindo `vite.config.ts`: aprovado.
 
-## Auditoria - T01
+## Auditoria - F01
 
 **Resultado:** Aprovada
 
@@ -160,22 +160,22 @@ Aspectos relevantes:
 
 ### Verificacoes
 
-- Leitura do escopo, criterios, evolucao, verificacoes e mapa de fluxo da T01.
+- Leitura do escopo, criterios, evolucao, verificacoes e mapa de fluxo da F01.
 - Revisao de `dominio/autenticacao.ts`, `aplicacao/autenticacao_service.ts`, `infraestrutura/crypto.ts`, `infraestrutura/database.ts`,
   `infraestrutura/auth_repositories.ts`, `infraestrutura/provider.ts`, `main.ts` e `utils.ts`.
 - Reauditoria de `vite.config.ts` apos ajuste para ignorar alteracoes em `Livros.db`.
 - Revisao dos testes `aplicacao/autenticacao_service_test.ts` e `infraestrutura/auth_repositories_test.ts`.
-- `deno lint` focado nos arquivos alterados da T01: aprovado.
-- `deno check` focado nos arquivos alterados da T01: aprovado.
+- `deno lint` focado nos arquivos alterados da F01: aprovado.
+- `deno check` focado nos arquivos alterados da F01: aprovado.
 - `deno test -A aplicacao/autenticacao_service_test.ts infraestrutura/auth_repositories_test.ts`: 5 testes aprovados.
 - `sqlite3.exe Livros.db ".schema users"` e `sqlite3.exe Livros.db ".schema sessions"`: schema esperado presente.
 - Repeticao de `deno lint`, `deno check` e `deno test -A` focados incluindo `vite.config.ts`: aprovado.
 
 ### Mapa de fluxo
 
-- Correto para a T01. O mapa representa o fluxo real implementado para dominio, servico, hashing, persistencia, sessao e configuracao do
+- Correto para a F01. O mapa representa o fluxo real implementado para dominio, servico, hashing, persistencia, sessao e configuracao do
   Vite para ignorar `Livros.db`.
 
-## Validacao humana - T01
+## Validacao humana - F01
 
 **Resultado:** Aprovado **Retorno:** Resultado aprovado com o ajuste de Vite para ignorar alteracoes em `Livros.db`.

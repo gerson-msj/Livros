@@ -1,6 +1,6 @@
 # F01 - Mensagem popup assincrona
 
-**Trabalho:** [TR-002 - Componentes de mensagem e titulo](../trabalho.md)
+**Tarefa:** [TF-002 - Componentes de mensagem e titulo](../tarefa.md)
 
 **Estado:** Planejada
 **Depende de:** Nenhuma
@@ -12,7 +12,7 @@ Permitir que componentes interativos exibam um popup de mensagem configuravel e 
 ## Contexto necessario
 
 - [Interface com Bulma](../../../conhecimento.md#interface-com-bulma): o popup deve usar Bulma como base visual.
-- [TR-002](../trabalho.md): define retorno `ok` ou `cancel`, botoes opcionais, temas, quebras de linha e cancelamento por clique fora ou
+- [TF-002](../tarefa.md): define retorno `ok` ou `cancel`, botoes opcionais, temas, quebras de linha e cancelamento por clique fora ou
   `Esc`.
 
 ## Entrega esperada

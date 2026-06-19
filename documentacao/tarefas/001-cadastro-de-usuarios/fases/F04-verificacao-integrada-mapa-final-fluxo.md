@@ -1,23 +1,23 @@
-# T04 - Verificacao integrada e mapa final do fluxo
+# F04 - Verificacao integrada e mapa final do fluxo
 
-**Trabalho:** [TR-001 - Cadastro de usuarios](../trabalho.md)
+**Tarefa:** [TF-001 - Cadastro de usuarios](../tarefa.md)
 
-**Estado:** Concluida **Depende de:** T03
+**Estado:** Concluida **Depende de:** F03
 
 **Objetivo tecnico**
 
 Validar o fluxo completo de cadastro, sessao, protecao de rota, logout, responsividade e persistencia segura, consolidando um mapa de fluxo
-final do trabalho.
+final da tarefa.
 
 **Contexto necessario**
 
-- T01, T02 e T03 concluidas.
+- F01, F02 e F03 concluidas.
 
 **Entrega esperada**
 
 - Fluxo completo verificado em desktop e mobile.
 - Banco inspecionado para confirmar sessao registrada, expiracao coerente e ausencia de senha/chave em texto puro.
-- Ajustes pequenos identificados durante a verificacao aplicados dentro do escopo do trabalho.
+- Ajustes pequenos identificados durante a verificacao aplicados dentro do escopo da tarefa.
 - Mapa de fluxo consolidado cobrindo o caminho completo de cadastro em `/cadastro`, exibicao da chave, entrada em `/biblioteca` e saida da
   sessao.
 
@@ -30,7 +30,7 @@ final do trabalho.
 - `sqlite3.exe`, quando usado, confirma que os dados sensiveis nao foram persistidos em texto puro.
 - Mapa final permite validar o fluxo completo sem depender dos mapas parciais.
 
-**Fora da tarefa**
+**Fora da fase**
 
 - Novas capacidades de autenticacao fora do cadastro inicial.
 - Recursos de livros, autores ou series.
@@ -38,18 +38,18 @@ final do trabalho.
 
 **Evolucao**
 
-- Planejada para validacao humana junto das demais tarefas restantes.
-- Validada pelo usuario em 2026-06-17; permanece planejada por depender da conclusao da T03.
-- Liberada para desenvolvimento em 2026-06-17 apos checkpoint da T03.
+- Planejada para validacao humana junto das demais fases restantes.
+- Validada pelo usuario em 2026-06-17; permanece planejada por depender da conclusao da F03.
+- Liberada para desenvolvimento em 2026-06-17 apos checkpoint da F03.
 - Iniciada a verificacao integrada do fluxo completo em 2026-06-17.
 - Verificacao integrada concluida com teste automatizado, validacao HTTP local e inspecao do banco temporario.
 - Enviada para auditoria tecnica.
 - Validada pelo usuario em 2026-06-17.
 - Conclusao confirmada pela auditoria em 2026-06-17.
 
-## Evidencias da T04
+## Evidencias da F04
 
-### Mapa de fluxo - T04
+### Mapa de fluxo - F04
 
 **Fluxo:** cadastro inicial ate saida da area segura. **Resultado produzido:** verificacao integrada do cadastro, sessao, persistencia
 segura, protecao de `/biblioteca`, logout e recusa da sessao encerrada. **Exemplo acompanhado:** nome `Gerson` e senha `senha-secreta`
@@ -134,30 +134,30 @@ expiracao futura. **Sai:** sessao nao encontrada e redirecionamento `303` para `
 
 Aspectos relevantes:
 
-- A T04 nao adiciona nova capacidade de produto; ela adiciona verificacao integrada automatizada e consolida o mapa final do fluxo.
-- A validacao HTTP local usou banco temporario `t04-http-validation.db`, removido ao fim da verificacao, para nao alterar `Livros.db`.
+- A F04 nao adiciona nova capacidade de produto; ela adiciona verificacao integrada automatizada e consolida o mapa final do fluxo.
+- A validacao HTTP local usou banco temporario `F04-http-validation.db`, removido ao fim da verificacao, para nao alterar `Livros.db`.
 - O Browser interno nao estava disponivel nesta sessao. A utilizacao em desktop/mobile foi verificada de forma indireta pela presenca de
   `meta viewport` e classes responsivas Bulma nas paginas retornadas por HTTP; validacao visual em browser permanece uma lacuna residual.
 
-## Verificacoes - T04
+## Verificacoes - F04
 
 - `deno test -A routes\fluxo_cadastro_biblioteca_test.ts`: 1 teste integrado aprovado.
 - `deno test -A routes\fluxo_cadastro_biblioteca_test.ts routes\cadastro_test.ts routes\biblioteca_test.ts
   aplicacao\autenticacao_service_test.ts infraestrutura\auth_repositories_test.ts`:
   12 testes aprovados.
-- `deno fmt --check` focado em rotas, testes, autenticacao, repositorios, cookie e documentacao da T04: aprovado.
+- `deno fmt --check` focado em rotas, testes, autenticacao, repositorios, cookie e documentacao da F04: aprovado.
 - `deno lint` focado em rotas, testes, autenticacao, repositorios e cookie: aprovado.
 - `deno check` focado em rotas, testes, autenticacao, repositorios e cookie: aprovado.
 - Validacao HTTP local em `http://127.0.0.1:5175` com banco temporario: `/biblioteca` sem sessao retornou `303` para `/cadastro`; cadastro
   invalido mostrou `is-danger`; cadastro valido mostrou chave de redefinicao e cookie `HttpOnly`; `/cadastro` com sessao ativa redirecionou
   para `/biblioteca`; `/biblioteca` autenticada retornou pagina com "Sair"; logout retornou `303` para `/cadastro`, limpou cookie com
   `Max-Age=0` e impediu novo acesso a `/biblioteca`.
-- `sqlite3.exe t04-http-validation.db` confirmou usuario normalizado, `password_hash` diferente da senha em texto puro, chave de redefinicao
+- `sqlite3.exe F04-http-validation.db` confirmou usuario normalizado, `password_hash` diferente da senha em texto puro, chave de redefinicao
   nao persistida em texto puro, expiracao de sessao em uma semana e sessao encerrada apos logout.
-- `deno task check`: falhou em `deno fmt --check .` por arquivos preexistentes fora do escopo da T04, como CSS estatico e arquivos do
+- `deno task check`: falhou em `deno fmt --check .` por arquivos preexistentes fora do escopo da F04, como CSS estatico e arquivos do
   template; as verificacoes focadas acima cobriram os arquivos relacionados.
 
-## Auditoria - T04
+## Auditoria - F04
 
 **Resultado:** Aprovada.
 
@@ -169,10 +169,10 @@ Nenhum defeito bloqueante encontrado.
 
 - Revisado o teste integrado `routes/fluxo_cadastro_biblioteca_test.ts`, incluindo cadastro, redirecionamento de usuario logado,
   persistencia segura, acesso a `/biblioteca`, logout e recusa de sessao encerrada.
-- Revisado o mapa de fluxo registrado nesta tarefa, que cobre as estacoes de cadastro, persistencia, cookie, protecao da biblioteca, saida e
+- Revisado o mapa de fluxo registrado nesta fase, que cobre as estacoes de cadastro, persistencia, cookie, protecao da biblioteca, saida e
   bloqueio posterior.
 - Confirmado que as evidencias registram as verificacoes automatizadas, a validacao HTTP local e a inspecao direta do banco temporario.
-- Confirmado que a falha de `deno task check` veio de formatacao global preexistente fora do escopo da T04; os arquivos relacionados a T04
+- Confirmado que a falha de `deno task check` veio de formatacao global preexistente fora do escopo da F04; os arquivos relacionados a F04
   foram cobertos por `deno fmt --check`, `deno lint`, `deno check` e testes focados.
 
 ### Risco residual

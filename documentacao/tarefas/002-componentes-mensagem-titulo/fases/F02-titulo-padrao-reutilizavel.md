@@ -1,6 +1,6 @@
 # F02 - Titulo padrao reutilizavel
 
-**Trabalho:** [TR-002 - Componentes de mensagem e titulo](../trabalho.md)
+**Tarefa:** [TF-002 - Componentes de mensagem e titulo](../tarefa.md)
 
 **Estado:** Planejada
 **Depende de:** F01
@@ -12,7 +12,7 @@ opcional com confirmacao.
 
 ## Contexto necessario
 
-- [TR-002](../trabalho.md): define estrutura do titulo, comportamento do botao voltar e saida encapsulada no componente.
+- [TF-002](../tarefa.md): define estrutura do titulo, comportamento do botao voltar e saida encapsulada no componente.
 - [Autenticacao e redefinicao de senha](../../../conhecimento.md#autenticacao-e-redefinicao-de-senha): o logout existente encerra sessao e
   limpa cookie.
 

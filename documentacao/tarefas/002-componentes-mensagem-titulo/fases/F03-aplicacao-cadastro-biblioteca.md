@@ -1,6 +1,6 @@
 # F03 - Aplicacao em cadastro e biblioteca
 
-**Trabalho:** [TR-002 - Componentes de mensagem e titulo](../trabalho.md)
+**Tarefa:** [TF-002 - Componentes de mensagem e titulo](../tarefa.md)
 
 **Estado:** Planejada
 **Depende de:** F02
@@ -12,7 +12,7 @@ Aplicar o componente de titulo nas paginas de cadastro de usuario e biblioteca, 
 ## Contexto necessario
 
 - [Estado atual](../../../conhecimento.md#estado-atual): cadastro de usuarios e biblioteca segura minima ja existem.
-- [TR-002](../trabalho.md): define que cadastro e biblioteca devem usar o novo titulo.
+- [TF-002](../tarefa.md): define que cadastro e biblioteca devem usar o novo titulo.
 - [F02](F02-titulo-padrao-reutilizavel.md): entrega o componente de titulo reutilizavel.
 
 ## Entrega esperada

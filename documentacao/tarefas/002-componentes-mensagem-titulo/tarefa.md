@@ -1,6 +1,6 @@
-# TR-002 - Componentes de mensagem e titulo
+# TF-002 - Componentes de mensagem e titulo
 
-**Estado:** Planejado
+**Estado:** Planejada
 **Tipo:** Nova capacidade
 
 ## Resumo
@@ -49,7 +49,7 @@ confirmacoes e avisos consistentes, alem de preparar uma estrutura comum de cabe
 
 ## Avaliacao arquitetural
 
-Impacto permanente identificado na camada de interface. O trabalho cria convencoes reutilizaveis para mensagens e titulos de paginas, mas
+Impacto permanente identificado na camada de interface. O tarefa cria convencoes reutilizaveis para mensagens e titulos de paginas, mas
 nao exige nova decisao arquitetural pesada. A direcao permanente afetada e o uso de Bulma e a padronizacao gradual da experiencia visual.
 
 ## Decisoes pendentes
@@ -76,7 +76,7 @@ Bulma e integracao nas paginas.
 | F02 | Planejada | F01 | Criar titulo padrao reutilizavel com confirmacao de saida. | [F02 - Titulo padrao reutilizavel](fases/F02-titulo-padrao-reutilizavel.md) |
 | F03 | Planejada | F02 | Aplicar o titulo em cadastro e biblioteca mantendo logout funcional. | [F03 - Aplicacao em cadastro e biblioteca](fases/F03-aplicacao-cadastro-biblioteca.md) |
 
-## Resumo final do trabalho
+## Resumo final da tarefa
 
 Aguardando encerramento.
 

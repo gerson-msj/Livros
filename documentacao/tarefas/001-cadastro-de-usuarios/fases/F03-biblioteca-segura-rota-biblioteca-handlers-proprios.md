@@ -1,8 +1,8 @@
-# T03 - Biblioteca segura na rota /biblioteca com handlers proprios
+# F03 - Biblioteca segura na rota /biblioteca com handlers proprios
 
-**Trabalho:** [TR-001 - Cadastro de usuarios](../trabalho.md)
+**Tarefa:** [TF-001 - Cadastro de usuarios](../tarefa.md)
 
-**Estado:** Concluida **Depende de:** T02
+**Estado:** Concluida **Depende de:** F02
 
 **Objetivo tecnico**
 
@@ -12,7 +12,7 @@ handler `POST`.
 **Contexto necessario**
 
 - [Rotas Fresh e handlers](../../../conhecimento.md#rotas-fresh-e-handlers): a rota deve concentrar pagina e handlers quando suficiente.
-- T02 concluida.
+- F02 concluida.
 
 **Entrega esperada**
 
@@ -29,7 +29,7 @@ handler `POST`.
 - Sessao encerrada nao autentica novo acesso a `/biblioteca`.
 - A tela permanece utilizavel em desktop e mobile.
 
-**Fora da tarefa**
+**Fora da fase**
 
 - Recursos de livros, autores ou series.
 - Login separado e redefinicao de senha.
@@ -37,16 +37,16 @@ handler `POST`.
 
 **Evolucao**
 
-- Planejada para validacao humana junto das demais tarefas restantes.
+- Planejada para validacao humana junto das demais fases restantes.
 - Validada pelo usuario, liberada e iniciada em 2026-06-17.
 - Verificacao focada concluida com formato, lint, check e testes automatizados dos handlers de `/biblioteca`.
 - Enviada para auditoria tecnica.
 - Validacao humana aprovada.
 - Conclusao confirmada pelo Auditor; checkpoint autorizado.
 
-## Evidencias da T03
+## Evidencias da F03
 
-### Mapa de fluxo - T03
+### Mapa de fluxo - F03
 
 **Fluxo:** acesso seguro e saida pela rota `/biblioteca`. **Resultado produzido:** rota protegida por sessao ativa, tela minima com opcao de
 saida e logout que encerra a sessao persistida e limpa o cookie HTTP. **Exemplo acompanhado:** o usuario `gerson` chega com cookie
@@ -102,16 +102,16 @@ formulario de saida. **Sai:** tela segura contendo somente a opcao "Sair".
 
 Aspectos relevantes:
 
-- A biblioteca nao adiciona recursos de livros, autores ou series; a tela contem apenas a opcao de saida, como definido para a T03.
+- A biblioteca nao adiciona recursos de livros, autores ou series; a tela contem apenas a opcao de saida, como definido para a F03.
 - O logout redireciona para `/cadastro` mesmo sem cookie; quando ha cookie, encerra a sessao antes de limpar o navegador.
 - `GET /biblioteca` nao limpa cookie invalido ou expirado; ele apenas redireciona para `/cadastro`, mantendo a entrega pequena e alinhada
-  aos criterios da tarefa.
+  aos criterios da fase.
 
-## Verificacoes - T03
+## Verificacoes - F03
 
 - `deno test --allow-env routes\biblioteca_test.ts routes\cadastro_test.ts`: 6 testes aprovados.
 - `deno fmt --check` focado em `infraestrutura/session_cookie.ts`, `routes/biblioteca.tsx`, `routes/biblioteca_test.ts` e documentacao do
-  trabalho: aprovado.
+  tarefa: aprovado.
 - `deno lint infraestrutura\session_cookie.ts routes\biblioteca.tsx routes\biblioteca_test.ts`: aprovado.
 - `deno check routes\biblioteca.tsx routes\biblioteca_test.ts infraestrutura\session_cookie.ts`: aprovado.
 - Validacao HTTP local em `http://127.0.0.1:5173`: `GET /biblioteca` sem sessao retornou `303` para `/cadastro`; cadastro temporario gerou
@@ -119,10 +119,10 @@ Aspectos relevantes:
   para `/cadastro`, enviou `Set-Cookie` com `Max-Age=0` e a sessao encerrada voltou a receber `303` para `/cadastro`.
 - O Browser interno nao estava disponivel na sessao; a validacao local da tela foi feita por servidor Fresh/Vite e requisicoes HTTP com
   `curl.exe`.
-- `deno task check`: falhou em `deno fmt --check .` por arquivos preexistentes fora do escopo da T03, como template Fresh e CSS estatico; a
+- `deno task check`: falhou em `deno fmt --check .` por arquivos preexistentes fora do escopo da F03, como template Fresh e CSS estatico; a
   validacao focada acima cobriu os arquivos alterados.
 
-## Auditoria - T03
+## Auditoria - F03
 
 **Resultado:** Aprovada
 
@@ -132,31 +132,31 @@ Aspectos relevantes:
 
 ### Verificacoes
 
-- Leitura do escopo, criterios, evolucao, verificacoes e mapa de fluxo da T03.
+- Leitura do escopo, criterios, evolucao, verificacoes e mapa de fluxo da F03.
 - Revisao de `routes/biblioteca.tsx`, `infraestrutura/session_cookie.ts` e `routes/biblioteca_test.ts`.
 - Confirmado que `/biblioteca` usa handlers `GET` e `POST` proprios, sem API separada.
 - Confirmado que `GET /biblioteca` redireciona visitante sem sessao ativa para `/cadastro`.
 - Confirmado que usuario com sessao ativa recebe a pagina minima contendo somente a opcao de saida.
 - Confirmado que `POST /biblioteca` encerra a sessao quando ha cookie, limpa o cookie HTTP e redireciona para `/cadastro`.
 - Confirmado que sessao encerrada nao volta a autenticar acesso seguro.
-- `deno fmt --check` focado nos arquivos alterados da T03 e documentacao relacionada: aprovado.
+- `deno fmt --check` focado nos arquivos alterados da F03 e documentacao relacionada: aprovado.
 - `deno lint infraestrutura\session_cookie.ts routes\biblioteca.tsx routes\biblioteca_test.ts`: aprovado.
 - `deno check routes\biblioteca.tsx routes\biblioteca_test.ts infraestrutura\session_cookie.ts`: aprovado.
 - `deno test --allow-env routes\biblioteca_test.ts routes\cadastro_test.ts`: 6 testes aprovados.
 - Validacao HTTP local com servidor Fresh/Vite e `curl.exe`: cadastro gerou sessao, `/biblioteca` autenticada renderizou a tela minima,
   logout limpou o cookie e a sessao encerrada foi redirecionada para `/cadastro`.
-- `deno task check`: falha na etapa global de formato por arquivos preexistentes fora do escopo, sem bloquear a T03.
+- `deno task check`: falha na etapa global de formato por arquivos preexistentes fora do escopo, sem bloquear a F03.
 
 ### Mapa de fluxo
 
-- Correto para a T03. O mapa representa o fluxo real de acesso seguro, renderizacao minima da biblioteca, logout, limpeza do cookie e recusa
+- Correto para a F03. O mapa representa o fluxo real de acesso seguro, renderizacao minima da biblioteca, logout, limpeza do cookie e recusa
   de sessao encerrada.
 
-## Validacao humana - T03
+## Validacao humana - F03
 
 **Resultado:** Aprovado **Retorno:** Ok, validado, pode seguir.
 
-## Confirmacao de conclusao - T03
+## Confirmacao de conclusao - F03
 
 **Resultado:** Conclusao confirmada
 
@@ -165,5 +165,5 @@ Aspectos relevantes:
 - Auditoria tecnica aprovada sem achados.
 - Validacao humana registrada como aprovada.
 - Mapa, verificacoes e evolucao estao atualizados.
-- Tabela de controle em `trabalho.md` sincronizada com o estado `Concluida`.
-- Nenhuma falha conhecida relacionada a T03 permanece aberta; checkpoint autorizado.
+- Tabela de controle em `tarefa.md` sincronizada com o estado `Concluida`.
+- Nenhuma falha conhecida relacionada a F03 permanece aberta; checkpoint autorizado.

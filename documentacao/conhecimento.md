@@ -82,7 +82,7 @@ serie inteira.
 - Logout encerra a sessao persistida, limpa o cookie e impede novo acesso seguro com a mesma sessao.
 - Alteracoes em `Livros.db` sao ignoradas pelo watcher do Vite para evitar refresh durante o desenvolvimento local.
 
-### Escopo inicial planejado
+### Escopo inicial planejada
 
 - Login com nome de usuario e senha.
 - Redefinicao de senha com nome de usuario, chave de redefinicao e nova senha.
@@ -161,7 +161,7 @@ consumo por componentes interativos ou reutilizacao entre fluxos.
 O projeto deve favorecer DDD de forma pragmatica para o MVP. Regras de negocio e conceitos do dominio devem ficar separados de detalhes de
 interface, framework e persistencia, sem criar complexidade preventiva.
 
-Essa diretriz e permanente e deve orientar novos trabalhos por padrao, sem precisar ser redefinida em cada proposta ou plano.
+Essa diretriz e permanente e deve orientar novos tarefas por padrao, sem precisar ser redefinida em cada proposta ou plano.
 
 ### Formatacao do codigo
 
@@ -195,7 +195,7 @@ defensiva; uma nova configuracao para a mesma chave pode substituir a anterior.
 
 O projeto comeca como um MVP simples. Novos recursos e complexidade devem ser adicionados somente quando houver necessidade validada.
 
-## Estado do trabalho
+## Estado da tarefa
 
-A inicializacao do projeto Fresh esta concluida. O trabalho [TR-001 - Cadastro de usuarios](trabalhos/001-cadastro-de-usuarios/trabalho.md)
-esta concluido apos implementar e validar cadastro, sessao inicial, biblioteca segura minima e ajustes de experiencia do cadastro.
+A inicializacao do projeto Fresh esta concluida. A tarefa [TF-001 - Cadastro de usuarios](tarefas/001-cadastro-de-usuarios/tarefa.md)
+esta concluida apos implementar e validar cadastro, sessao inicial, biblioteca segura minima e ajustes de experiencia do cadastro.

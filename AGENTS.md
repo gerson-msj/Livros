@@ -11,7 +11,7 @@ inspecione todo o projeto ou toda a documentacao sem necessidade.
 
 - [Conhecimento do produto e decisoes tecnicas](documentacao/conhecimento.md):
   visao, dominio, recursos, estado atual e decisoes permanentes.
-- [Trabalhos rastreaveis](documentacao/trabalhos.md): propostas, planos e
+- [Tarefas rastreaveis](documentacao/tarefas.md): propostas, planos e
   andamento de mudancas com resultado observavel.
 - [README do esqueleto Fresh](README.md): comandos basicos fornecidos pelo
   projeto inicial.
@@ -25,5 +25,5 @@ inspecione todo o projeto ou toda a documentacao sem necessidade.
   direcao arquitetural.
 - Diferencie capacidades existentes de recursos apenas planejados.
 - Registre novas decisoes permanentes no conhecimento local.
-- Registre trabalho ativo em `documentacao/trabalhos.md` somente quando houver
+- Registre tarefa ativa em `documentacao/tarefas.md` somente quando houver
   uma mudanca rastreavel com resultado observavel.

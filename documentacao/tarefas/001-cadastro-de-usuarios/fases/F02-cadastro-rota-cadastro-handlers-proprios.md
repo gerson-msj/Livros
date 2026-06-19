@@ -1,8 +1,8 @@
-# T02 - Cadastro na rota /cadastro com handlers proprios
+# F02 - Cadastro na rota /cadastro com handlers proprios
 
-**Trabalho:** [TR-001 - Cadastro de usuarios](../trabalho.md)
+**Tarefa:** [TF-001 - Cadastro de usuarios](../tarefa.md)
 
-**Estado:** Concluida **Depende de:** T01
+**Estado:** Concluida **Depende de:** F01
 
 **Objetivo tecnico**
 
@@ -14,7 +14,7 @@ cookie HTTP e apresentar a chave de redefinicao antes de encaminhar o usuario pa
 - [Rotas Fresh e handlers](../../../conhecimento.md#rotas-fresh-e-handlers): a rota deve preferir `GET` e `POST` proprios em vez de API
   separada.
 - [Interface com Bulma](../../../conhecimento.md#interface-com-bulma): uso visual do Bulma na tela.
-- T01 concluida.
+- F01 concluida.
 
 **Entrega esperada**
 
@@ -36,7 +36,7 @@ cookie HTTP e apresentar a chave de redefinicao antes de encaminhar o usuario pa
 - Usuario ja logado que acessa `/cadastro` e redirecionado para `/biblioteca`.
 - A tela permanece utilizavel em desktop e mobile.
 
-**Fora da tarefa**
+**Fora da fase**
 
 - Implementar o conteudo final da biblioteca alem do redirecionamento necessario.
 - Logout.
@@ -45,16 +45,16 @@ cookie HTTP e apresentar a chave de redefinicao antes de encaminhar o usuario pa
 
 **Evolucao**
 
-- Planejada para validacao humana junto das demais tarefas restantes.
-- Plano restante aprovado pelo usuario; tarefa liberada para desenvolvimento futuro, sem inicio imediato.
+- Planejada para validacao humana junto das demais fases restantes.
+- Plano restante aprovado pelo usuario; fase liberada para desenvolvimento futuro, sem inicio imediato.
 - Iniciada a execucao da rota `/cadastro` com handlers proprios.
 - Verificacao focada concluida com lint, check, testes automatizados e validacao HTTP local da rota `/cadastro`.
 - Enviada para auditoria tecnica.
 - Auditoria tecnica aprovada e validacao humana registrada; conclusao confirmada.
 
-## Evidencias da T02
+## Evidencias da F02
 
-### Mapa de fluxo - T02
+### Mapa de fluxo - F02
 
 **Fluxo:** cadastro inicial pela rota `/cadastro`. **Resultado produzido:** formulario responsivo, validacao de campos, criacao de usuario e
 sessao, cookie HTTP e exibicao da chave de redefinicao. **Exemplo acompanhado:** nome `Gerson` e senha `senhaboa` chegam pelo formulario; o
@@ -83,7 +83,7 @@ nos campos invalidos e alterna a senha entre texto e senha pela acao "Mostrar se
 **Componente:** [Handler POST de cadastro](../../../../routes/cadastro.tsx:35) - ðŸŸ¢ **Criado**
 
 **Entra:** dados do formulario, como `Gerson` e `senhaboa`. **Faz:** envia os valores ao `AuthenticationService`, reaproveitando as regras
-de normalizacao, validacao, hash, geracao da chave e criacao de sessao da T01. **Sai:** em sucesso, dados da pagina com usuario normalizado
+de normalizacao, validacao, hash, geracao da chave e criacao de sessao da F01. **Sai:** em sucesso, dados da pagina com usuario normalizado
 e chave de redefinicao; em erro de validacao ou duplicidade, formulario com mensagens e `is-danger`.
 
 ### 4. Gravar cookie de sessao
@@ -110,14 +110,14 @@ e chave de redefinicao; em erro de validacao ou duplicidade, formulario com mens
 
 Aspectos relevantes:
 
-- A T02 nao cria a tela final de `/biblioteca`; ela apenas aponta para essa rota apos a exibicao da chave, como planejado para a T03.
+- A F02 nao cria a tela final de `/biblioteca`; ela apenas aponta para essa rota apos a exibicao da chave, como planejada para a F03.
 - A leitura e escrita do cookie ficaram em helper de infraestrutura pequeno para reutilizacao posterior pela biblioteca segura.
 - O Browser interno nao estava disponivel na sessao; a validacao local da tela foi feita por servidor Fresh/Vite e requisicoes HTTP.
 
-## Verificacoes - T02
+## Verificacoes - F02
 
 - `deno lint` focado em `routes/cadastro.tsx`, `routes/cadastro_test.ts`, `islands/CadastroForm.tsx`, `infraestrutura/session_cookie.ts`,
-  arquivos de autenticacao da T01, `main.ts` e `utils.ts`: aprovado.
+  arquivos de autenticacao da F01, `main.ts` e `utils.ts`: aprovado.
 - `deno check` focado em `routes/cadastro.tsx`, `routes/cadastro_test.ts`, `islands/CadastroForm.tsx`, `infraestrutura/session_cookie.ts` e
   `main.ts`: aprovado.
 - `deno test -A routes/cadastro_test.ts aplicacao/autenticacao_service_test.ts infraestrutura/auth_repositories_test.ts`: 8 testes
@@ -126,7 +126,7 @@ Aspectos relevantes:
   de validacao; `POST` valido retornou a chave de redefinicao e `Set-Cookie` `livros_session`; `GET /cadastro` com sessao ativa retornou
   `303` para `/biblioteca`.
 
-## Auditoria - T02
+## Auditoria - F02
 
 **Resultado:** Aprovada
 
@@ -136,13 +136,13 @@ Aspectos relevantes:
 
 ### Verificacoes
 
-- Leitura do escopo, criterios, evolucao, verificacoes e mapa de fluxo da T02.
+- Leitura do escopo, criterios, evolucao, verificacoes e mapa de fluxo da F02.
 - Revisao de `routes/cadastro.tsx`, `islands/CadastroForm.tsx`, `infraestrutura/session_cookie.ts` e `routes/cadastro_test.ts`.
 - Confirmado que a rota `/cadastro` usa handler `GET` e `POST` proprios, sem API separada.
 - Confirmado que o formulario usa Bulma, `is-danger` em campos invalidos e `defaultValue` no nome de usuario para nao perder dados ao
   alternar a visualizacao da senha.
 - Confirmado que o cookie `livros_session` usa `HttpOnly`, `SameSite=Lax`, `Path=/` e expiracao da sessao.
-- `deno lint` focado nos arquivos relacionados da T02 e base de autenticacao: aprovado.
+- `deno lint` focado nos arquivos relacionados da F02 e base de autenticacao: aprovado.
 - `deno check` focado em rota, teste, island, cookie e `main.ts`: aprovado.
 - `deno test -A routes/cadastro_test.ts aplicacao/autenticacao_service_test.ts infraestrutura/auth_repositories_test.ts`: 8 testes
   aprovados.
@@ -150,9 +150,9 @@ Aspectos relevantes:
 
 ### Mapa de fluxo
 
-- Correto para a T02. O mapa representa o fluxo real de abertura da tela, envio do formulario, criacao de sessao, gravacao do cookie e
+- Correto para a F02. O mapa representa o fluxo real de abertura da tela, envio do formulario, criacao de sessao, gravacao do cookie e
   apresentacao da chave.
 
-## Validacao humana - T02
+## Validacao humana - F02
 
-**Resultado:** Aprovado **Retorno:** T02 aprovada.
+**Resultado:** Aprovado **Retorno:** F02 aprovada.

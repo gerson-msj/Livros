@@ -1,8 +1,8 @@
-# T05 - Limpar erro do campo ao editar cadastro
+# F05 - Limpar erro do campo ao editar cadastro
 
-**Trabalho:** [TR-001 - Cadastro de usuarios](../trabalho.md)
+**Tarefa:** [TF-001 - Cadastro de usuarios](../tarefa.md)
 
-**Estado:** Concluida **Depende de:** T02
+**Estado:** Concluida **Depende de:** F02
 
 **Objetivo tecnico**
 
@@ -11,7 +11,7 @@ um novo valor naquele campo.
 
 **Contexto necessario**
 
-- [T02 - Cadastro na rota /cadastro com handlers proprios](T02-cadastro-rota-cadastro-handlers-proprios.md): formulario, validacao visual e
+- [F02 - Cadastro na rota /cadastro com handlers proprios](F02-cadastro-rota-cadastro-handlers-proprios.md): formulario, validacao visual e
   mensagens de erro existentes.
 - [Interface com Bulma](../../../conhecimento.md#interface-com-bulma): campos invalidos usam `is-danger`.
 
@@ -30,7 +30,7 @@ um novo valor naquele campo.
 - Comportamento relevante possui verificacao automatizada ou validacao manual registrada.
 - A tela permanece utilizavel em desktop e mobile.
 
-**Fora da tarefa**
+**Fora da fase**
 
 - Alterar regras de validacao de nome de usuario ou senha.
 - Alterar mensagens de erro retornadas pelo servidor.
@@ -39,17 +39,17 @@ um novo valor naquele campo.
 
 **Evolucao**
 
-- Planejada e liberada para desenvolvimento em 2026-06-17 apos retorno de validacao final do TR-001.
-- Iniciada em 2026-06-17 em desenvolvimento conjunto com T06.
+- Planejada e liberada para desenvolvimento em 2026-06-17 apos retorno de validacao final do TF-001.
+- Iniciada em 2026-06-17 em desenvolvimento conjunto com F06.
 - Implementada com estado local de erros visiveis no formulario de cadastro.
 - Verificacao focada concluida com testes automatizados, lint e check.
 - Enviada para auditoria tecnica.
 - Validada pelo usuario em 2026-06-18.
 - Conclusao confirmada pela auditoria em 2026-06-18.
 
-## Evidencias da T05
+## Evidencias da F05
 
-### Mapa de fluxo - T05
+### Mapa de fluxo - F05
 
 **Fluxo:** limpeza do erro visual durante edicao do cadastro. **Resultado produzido:** erro de um campo invalido some assim que o usuario
 volta a digitar naquele campo, sem limpar erros de outros campos. **Exemplo acompanhado:** apos `abc` e `1234` serem rejeitados, o usuario
@@ -90,14 +90,14 @@ Aspectos relevantes:
 - A limpeza e apenas visual e local ao formulario; o `POST /cadastro` continua aplicando as mesmas regras de dominio.
 - Erros gerais permanecem visiveis porque nao pertencem a um campo especifico.
 
-## Verificacoes - T05
+## Verificacoes - F05
 
 - `deno test -A islands\cadastro_interactions_test.ts routes\cadastro_test.ts`: testes de interacao e cadastro aprovados.
 - `deno test -A islands\cadastro_interactions_test.ts routes\cadastro_test.ts routes\fluxo_cadastro_biblioteca_test.ts`: 7 testes aprovados.
 - `deno lint` focado em islands de cadastro, rota e testes relacionados: aprovado.
 - `deno check` focado em islands de cadastro, rota e testes relacionados: aprovado.
 
-## Auditoria - T05
+## Auditoria - F05
 
 **Resultado:** Aprovada
 
@@ -115,13 +115,13 @@ Aspectos relevantes:
 
 ### Mapa de fluxo
 
-- Correto para a T05.
+- Correto para a F05.
 
-## Validacao humana - T05
+## Validacao humana - F05
 
 **Resultado:** Aprovado **Retorno:** Tudo ok, pode finalizar tudo, realizar o commit e o push.
 
-## Confirmacao de conclusao - T05
+## Confirmacao de conclusao - F05
 
 **Resultado:** Conclusao confirmada
 
@@ -130,5 +130,5 @@ Aspectos relevantes:
 - Auditoria tecnica aprovada sem achados.
 - Validacao humana registrada como aprovada.
 - Mapa, verificacoes e evolucao estao atualizados.
-- Tabela de controle em `trabalho.md` sincronizada com o estado `Concluida`.
-- Nenhuma falha conhecida relacionada a T05 permanece aberta.
+- Tabela de controle em `tarefa.md` sincronizada com o estado `Concluida`.
+- Nenhuma falha conhecida relacionada a F05 permanece aberta.
