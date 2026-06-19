@@ -58,15 +58,20 @@ Nenhuma.
 
 ## Plano
 
-**Revisao:** 1
-**Proxima acao:** Desenvolver fases
+**Revisao:** 2
+**Proxima acao:** Validar projeto
 
 ### Estrategia
 
 Criar primeiro a base interativa do popup de mensagem, pois o titulo depende dela para confirmar a saida. Em seguida, criar o titulo
 reutilizavel com areas configuraveis e, por fim, aplicar os componentes nas paginas existentes mantendo o logout atual da biblioteca como
-mecanismo efetivo de saida. A verificacao deve cobrir comportamento assincrono, fechamento por `Esc` e clique fora, quebras de linha, temas
-Bulma e integracao nas paginas.
+mecanismo efetivo de saida. Depois da validacao visual, ajustar a apresentacao do titulo e do popup para alinhar os icones, simplificar a
+saida e melhorar a legibilidade da confirmacao. A verificacao deve cobrir comportamento assincrono, fechamento por `Esc` e clique fora,
+quebras de linha, temas Bulma e integracao nas paginas.
+
+### Historico do plano
+
+- 2026-06-19: revisao 2 adiciona F04 para ajustes visuais solicitados na validacao do titulo e do popup.
 
 ## Controle de fases
 
@@ -75,6 +80,7 @@ Bulma e integracao nas paginas.
 | F01 | Concluida | Nenhuma | Criar mensagem popup assincrona configuravel. | [F01 - Mensagem popup assincrona](fases/F01-mensagem-popup-assincrona.md) |
 | F02 | Concluida | F01 | Criar titulo padrao reutilizavel com confirmacao de saida. | [F02 - Titulo padrao reutilizavel](fases/F02-titulo-padrao-reutilizavel.md) |
 | F03 | Concluida | F02 | Aplicar o titulo em cadastro e biblioteca mantendo logout funcional. | [F03 - Aplicacao em cadastro e biblioteca](fases/F03-aplicacao-cadastro-biblioteca.md) |
+| F04 | Concluida | F03 | Ajustar layout visual do titulo e do popup apos validacao. | [F04 - Ajuste visual titulo popup](fases/F04-ajuste-visual-titulo-popup.md) |
 
 ## Resumo final da tarefa
 

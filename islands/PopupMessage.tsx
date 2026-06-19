@@ -104,6 +104,7 @@ export function createPopupMessageSession(resolve: (result: PopupMessageResult) 
 function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage }) {
     const { options } = activeMessage
     const themeClass = getPopupMessageThemeClass(options.theme)
+    const themeAccentClass = `livros-popup-message-card-${options.theme}`
 
     return (
         <div
@@ -119,14 +120,14 @@ function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage })
                 onClick={() => activeMessage.finish("cancel")}
             >
             </button>
-            <div class="modal-card livros-popup-message-card">
+            <div class={`modal-card livros-popup-message-card ${themeAccentClass}`}>
                 {options.title && (
                     <header class={`modal-card-head has-background-${options.theme}-light`}>
                         <p class={`modal-card-title has-text-${options.theme}`} id="popup-message-title">{options.title}</p>
                     </header>
                 )}
                 <section class="modal-card-body">
-                    <div class={`notification ${themeClass} is-light livros-popup-message-text`}>
+                    <div class="livros-popup-message-text">
                         {options.message.split(/\r?\n/).map((line, index) => (
                             <>
                                 {index > 0 && <br />}
@@ -136,15 +137,19 @@ function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage })
                     </div>
                 </section>
                 {(options.showPositiveButton || options.showNegativeButton) && (
-                    <footer class="modal-card-foot is-justify-content-flex-end">
+                    <footer class="modal-card-foot livros-popup-message-actions">
                         {options.showNegativeButton && (
-                            <button class="button" type="button" onClick={() => activeMessage.finish("cancel")}>
+                            <button
+                                class="button livros-popup-message-button"
+                                type="button"
+                                onClick={() => activeMessage.finish("cancel")}
+                            >
                                 {options.negativeText}
                             </button>
                         )}
                         {options.showPositiveButton && (
                             <button
-                                class={`button ${themeClass}`}
+                                class={`button ${themeClass} livros-popup-message-button`}
                                 type="button"
                                 onClick={() => activeMessage.finish("ok")}
                             >

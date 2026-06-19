@@ -144,7 +144,8 @@ html {
 }
 
 .livros-popup-message {
-  align-items: flex-start;
+  align-items: center;
+  justify-content: flex-start;
   padding-top: clamp(100px, 18vh, 150px);
 }
 
@@ -154,15 +155,47 @@ html {
 }
 
 .livros-popup-message-card {
+  border-top: 0.35rem solid #3e8ed0;
   max-width: min(92vw, 40rem);
 }
 
+.livros-popup-message-card-primary {
+  border-top-color: #00d1b2;
+}
+
+.livros-popup-message-card-info {
+  border-top-color: #3e8ed0;
+}
+
+.livros-popup-message-card-success {
+  border-top-color: #48c78e;
+}
+
+.livros-popup-message-card-warning {
+  border-top-color: #ffe08a;
+}
+
+.livros-popup-message-card-danger {
+  border-top-color: #f14668;
+}
+
 .livros-popup-message-text {
+  color: #363636;
+  font-size: 1.05rem;
   white-space: normal;
 }
 
+.livros-popup-message-actions {
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.livros-popup-message-button {
+  min-width: 7.5rem;
+}
+
 .livros-page-title {
-  align-items: center;
+  align-items: baseline;
   display: grid;
   gap: 0.75rem;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -178,20 +211,44 @@ html {
 
 .livros-page-title-left,
 .livros-page-title-right {
-  align-items: center;
+  align-items: baseline;
   display: flex;
-  min-height: 2.5rem;
 }
 
 .livros-page-title-icon-button,
 .livros-page-title-static-icon {
-  height: 2.5rem;
-  width: 2.5rem;
+  font-size: 2rem;
+  height: 1.25em;
+  line-height: 1;
+  width: 1.25em;
 }
 
 .livros-page-title-static-icon {
-  align-items: center;
   color: #485fc7;
   display: inline-flex;
   justify-content: center;
+}
+
+.livros-page-title-action-icon {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: #cc0f35;
+  display: inline-flex;
+  font-size: 1.35rem;
+  height: 1.5em;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  width: 1.5em;
+}
+
+.livros-page-title-action-icon:hover,
+.livros-page-title-action-icon:focus-visible {
+  color: #f14668;
+}
+
+.livros-page-title-action-icon:focus-visible {
+  outline: 2px solid #ffe08a;
+  outline-offset: 0.2rem;
 }

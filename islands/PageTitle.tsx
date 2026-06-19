@@ -20,7 +20,6 @@ export default function PageTitle({ title, leftMode = "icon", showLogout = false
 
     async function confirmLogout() {
         const result = await showMessage({
-            title: "Sair",
             message: "Deseja sair da biblioteca?",
             theme: "warning",
             positiveText: "Sair",
@@ -43,11 +42,10 @@ export default function PageTitle({ title, leftMode = "icon", showLogout = false
                 <h1 class="title livros-page-title-heading">{title}</h1>
                 <div class="livros-page-title-right">
                     {showLogout && (
-                        <button class="button is-danger is-light" type="button" onClick={confirmLogout}>
+                        <button class="livros-page-title-action-icon" type="button" aria-label="Sair" onClick={confirmLogout}>
                             <span class="icon">
                                 <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
                             </span>
-                            <span>Sair</span>
                         </button>
                     )}
                 </div>
