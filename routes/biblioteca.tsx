@@ -1,5 +1,6 @@
 import { Head } from "fresh/runtime"
 import { clearSessionCookie, getSessionIdFromCookie } from "../infraestrutura/session_cookie.ts"
+import PageTitle from "../islands/PageTitle.tsx"
 import { define } from "../utils.ts"
 
 export const handler = define.handlers({
@@ -35,15 +36,8 @@ export default define.page<typeof handler>(function Biblioteca() {
             <div class="container">
                 <div class="columns is-centered">
                     <div class="column is-full-mobile is-two-thirds-tablet is-half-desktop">
-                        <h1 class="title">Biblioteca</h1>
-                        <form method="post" class="box">
-                            <button class="button is-danger is-fullwidth" type="submit">
-                                <span class="icon">
-                                    <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
-                                </span>
-                                <span>Sair</span>
-                            </button>
-                        </form>
+                        <PageTitle title="Biblioteca" showLogout />
+                        <form method="post" id="logout-form" class="is-hidden" aria-hidden="true"></form>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@ import { Head } from "fresh/runtime"
 import { RegistrationValidationError, UsernameAlreadyExistsError, type ValidationIssue } from "../dominio/autenticacao.ts"
 import { getSessionIdFromCookie, setSessionCookie } from "../infraestrutura/session_cookie.ts"
 import CadastroForm from "../islands/CadastroForm.tsx"
+import PageTitle from "../islands/PageTitle.tsx"
 import ResetKeyPanel from "../islands/ResetKeyPanel.tsx"
 import { define } from "../utils.ts"
 
@@ -85,7 +86,7 @@ export default define.page<typeof handler>(function Cadastro({ data }) {
             <div class="container">
                 <div class="columns is-centered">
                     <div class="column is-full-mobile is-two-thirds-tablet is-half-desktop">
-                        <h1 class="title">Criar conta</h1>
+                        <PageTitle title="Criar conta" />
                         <p class="subtitle">Entre na sua biblioteca logo apos o cadastro.</p>
 
                         {data.resetKey
