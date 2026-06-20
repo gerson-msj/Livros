@@ -238,10 +238,30 @@ html {
   width: 1.25em;
 }
 
+.livros-page-title-icon-button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: #485fc7;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0;
+}
+
 .livros-page-title-static-icon {
   color: #485fc7;
   display: inline-flex;
   justify-content: center;
+}
+
+.livros-page-title-icon-button:hover,
+.livros-page-title-icon-button:focus-visible {
+  color: #3e56c4;
+}
+
+.livros-page-title-icon-button:focus-visible {
+  outline: 2px solid #485fc7;
+  outline-offset: 0.2rem;
 }
 
 .livros-page-title-action-icon {
@@ -273,6 +293,11 @@ html {
   border: 0;
   color: #7a7a7a;
   pointer-events: auto;
+}
+
+.control.has-icons-right .livros-field-icon-button.icon.is-right {
+  pointer-events: auto;
+  z-index: 2;
 }
 
 .livros-field-icon-button:hover,

@@ -6,6 +6,7 @@ export interface PasswordFieldProps {
     label: string
     autocomplete: string
     showPassword: boolean
+    value?: string
     error?: string
     onInput?: JSX.GenericEventHandler<HTMLInputElement>
     onToggle: () => void
@@ -18,7 +19,7 @@ export interface CopyableResetKeyFieldProps {
     onCopy: () => void
 }
 
-export function PasswordField({ id, name, label, autocomplete, showPassword, error, onInput, onToggle }: PasswordFieldProps) {
+export function PasswordField({ id, name, label, autocomplete, showPassword, value, error, onInput, onToggle }: PasswordFieldProps) {
     return (
         <div class="field">
             <label class="label" for={id}>{label}</label>
@@ -29,6 +30,7 @@ export function PasswordField({ id, name, label, autocomplete, showPassword, err
                     name={name}
                     type={showPassword ? "text" : "password"}
                     autocomplete={autocomplete}
+                    defaultValue={value}
                     aria-invalid={error ? "true" : "false"}
                     aria-describedby={error ? `${id}-error` : undefined}
                     onInput={onInput}

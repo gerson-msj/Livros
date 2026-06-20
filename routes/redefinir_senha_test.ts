@@ -35,6 +35,7 @@ Deno.test("POST /redefinir-senha invalido retorna mensagem generica", async () =
     assertPageResponse(response)
     assertEquals(response.data.username, "gerson")
     assertEquals(response.data.resetKey, "chave-errada")
+    assertEquals(response.data.newPassword, "nova-senha")
     assertEquals(response.data.error, "Nao foi possivel redefinir a senha. Confira os dados e tente novamente.")
 })
 
@@ -52,6 +53,7 @@ Deno.test("POST /redefinir-senha valido cria sessao, apresenta nova chave e inva
     assertPageResponse(response)
     assertEquals(response.data.username, "gerson")
     assertEquals(response.data.resetKey, "")
+    assertEquals(response.data.newPassword, "")
     assertMatch(response.data.newResetKey ?? "", /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
 
     const setCookie = new Headers(response.headers).get("set-cookie")

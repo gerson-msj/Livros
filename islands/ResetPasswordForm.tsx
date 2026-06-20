@@ -4,10 +4,11 @@ import { PasswordField, togglePasswordVisibility } from "./AuthFields.tsx"
 export interface ResetPasswordFormProps {
     username: string
     resetKey: string
+    newPassword: string
     error?: string
 }
 
-export default function ResetPasswordForm({ username, resetKey, error }: ResetPasswordFormProps) {
+export default function ResetPasswordForm({ username, resetKey, newPassword, error }: ResetPasswordFormProps) {
     const [showPassword, setShowPassword] = useState(false)
     const [visibleError, setVisibleError] = useState(error)
 
@@ -61,6 +62,7 @@ export default function ResetPasswordForm({ username, resetKey, error }: ResetPa
                 label="Nova senha"
                 autocomplete="new-password"
                 showPassword={showPassword}
+                value={newPassword}
                 onInput={() => setVisibleError(undefined)}
                 onToggle={() => setShowPassword(togglePasswordVisibility)}
             />

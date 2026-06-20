@@ -9,13 +9,15 @@ import { define } from "../utils.ts"
 interface ResetPasswordPageData {
     username: string
     resetKey: string
+    newPassword: string
     error?: string
     newResetKey?: string
 }
 
 const emptyData: ResetPasswordPageData = {
     username: "",
-    resetKey: ""
+    resetKey: "",
+    newPassword: ""
 }
 
 const invalidResetMessage = "Nao foi possivel redefinir a senha. Confira os dados e tente novamente."
@@ -45,6 +47,7 @@ export const handler = define.handlers({
                 data: {
                     username: result.user.username,
                     resetKey: "",
+                    newPassword: "",
                     newResetKey: result.resetKey
                 },
                 headers
@@ -55,6 +58,7 @@ export const handler = define.handlers({
                     data: {
                         username: username.trim(),
                         resetKey: resetKey.trim(),
+                        newPassword,
                         error: invalidResetMessage
                     }
                 }
@@ -77,9 +81,14 @@ export default define.page<typeof handler>(function ResetPassword({ data }) {
                         <PageTitle title="Redefinir senha" leftMode="back" backHref="/login" />
                         <p class="subtitle">Use sua chave atual para escolher uma nova senha.</p>
 
-                        {data.newResetKey
-                            ? <ResetPasswordResultPanel resetKey={data.newResetKey} />
-                            : <ResetPasswordForm username={data.username} resetKey={data.resetKey} error={data.error} />}
+                        {data.newResetKey ? <ResetPasswordResultPanel resetKey={data.newResetKey} /> : (
+                            <ResetPasswordForm
+                                username={data.username}
+                                resetKey={data.resetKey}
+                                newPassword={data.newPassword}
+                                error={data.error}
+                            />
+                        )}
 
                         {!data.newResetKey && (
                             <div class="content has-text-centered">

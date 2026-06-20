@@ -90,13 +90,13 @@ function PageTitleLeft({ title, mode, backHref }: { title: string; mode: PageTit
     if (mode === "back") {
         return (
             <button
-                class="button is-light livros-page-title-icon-button"
+                class="livros-page-title-icon-button"
                 type="button"
                 aria-label="Voltar"
                 onClick={dispatchBackIntent(title, backHref)}
             >
                 <span class="icon">
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
                 </span>
             </button>
         )

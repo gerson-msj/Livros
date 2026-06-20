@@ -51,6 +51,7 @@ Deno.test("POST /login com credenciais invalidas retorna mensagem generica", asy
 
     assertPageResponse(response)
     assertEquals(response.data.username, "gerson")
+    assertEquals(response.data.password, "senha-ruim")
     assertEquals(response.data.error, "Nao foi possivel entrar. Confira nome de usuario e senha.")
 })
 

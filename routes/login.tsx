@@ -7,11 +7,13 @@ import { define } from "../utils.ts"
 
 interface LoginPageData {
     username: string
+    password: string
     error?: string
 }
 
 const emptyData: LoginPageData = {
-    username: ""
+    username: "",
+    password: ""
 }
 
 const invalidLoginMessage = "Nao foi possivel entrar. Confira nome de usuario e senha."
@@ -42,6 +44,7 @@ export const handler = define.handlers({
                 return {
                     data: {
                         username: username.trim(),
+                        password,
                         error: invalidLoginMessage
                     }
                 }
@@ -64,7 +67,7 @@ export default define.page<typeof handler>(function Login({ data }) {
                         <PageTitle title="Entrar" />
                         <p class="subtitle">Entre na sua biblioteca, crie uma conta ou redefina sua senha.</p>
 
-                        <LoginForm username={data.username} error={data.error} />
+                        <LoginForm username={data.username} password={data.password} error={data.error} />
 
                         <div class="content has-text-centered">
                             <p>

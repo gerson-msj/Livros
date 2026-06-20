@@ -3,6 +3,7 @@ import { PasswordField, togglePasswordVisibility } from "./AuthFields.tsx"
 
 export interface CadastroFormProps {
     username: string
+    password: string
     errors: CadastroFormErrors
 }
 
@@ -14,7 +15,7 @@ export interface CadastroFormErrors {
 
 type FieldName = "username" | "password"
 
-export default function CadastroForm({ username, errors }: CadastroFormProps) {
+export default function CadastroForm({ username, password, errors }: CadastroFormProps) {
     const [showPassword, setShowPassword] = useState(false)
     const [visibleErrors, setVisibleErrors] = useState(errors)
 
@@ -53,6 +54,7 @@ export default function CadastroForm({ username, errors }: CadastroFormProps) {
                 label="Senha"
                 autocomplete="new-password"
                 showPassword={showPassword}
+                value={password}
                 error={visibleErrors.password}
                 onInput={() => setVisibleErrors((current) => clearFieldError(current, "password"))}
                 onToggle={() => setShowPassword(togglePasswordVisibility)}

@@ -2,7 +2,7 @@
 
 **Tarefa:** [TF-003 - Login e redefinicao de senha](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
 **Depende de:** F04
 
 ## Objetivo tecnico
@@ -46,3 +46,9 @@ redefinicao e apresentacao da chave.
 - Redesenho completo das telas de autenticacao.
 - Alteracao de regras de senha, chave ou duracao de sessao.
 - Novos recursos de cadastro, perfil ou biblioteca.
+
+## Resultado
+
+- Resultado entregue: icones de olho voltaram a receber clique nos campos Bulma, senha digitada passa a ser preservada em erros de login, cadastro e redefinicao, `/cadastro` ganhou volta para `/login`, o voltar usa chevron sem aparencia de botao e cadastro bem-sucedido permanece na pagina apresentando a chave antes de seguir para `/biblioteca`.
+- Verificacoes realizadas: `deno test --allow-env --allow-read --allow-write --allow-ffi islands/cadastro_interactions_test.ts islands/page_title_test.ts routes/login_test.ts routes/cadastro_test.ts routes/redefinir_senha_test.ts routes/biblioteca_test.ts routes/fluxo_cadastro_biblioteca_test.ts`; `deno task build`; validacao em Chrome via CDP confirmou clique real no olho em `/cadastro`, alterando o campo de `password` para `text`, e confirmou chevron de voltar sem texto.
+- Riscos, limitacoes ou pendencias: screenshots automatizados por CDP nao foram mantidos porque a captura ficou pendurada; validacao manual final do usuario continua recomendada.

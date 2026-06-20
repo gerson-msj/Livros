@@ -36,6 +36,7 @@ Deno.test("POST /cadastro retorna campos invalidos com mensagens do dominio", as
 
     assertPageResponse(response)
     assertEquals(response.data.username, "abc")
+    assertEquals(response.data.password, " 1234 ")
     assertEquals(response.data.errors.username, "O nome de usuario deve conter no minimo 5 caracteres.")
     assertEquals(response.data.errors.password, "A senha deve conter no minimo 5 caracteres.")
 })
@@ -48,6 +49,7 @@ Deno.test("POST /cadastro cria usuario, sessao, cookie HTTP e apresenta chave", 
 
     assertPageResponse(response)
     assertEquals(response.data.username, "gerson")
+    assertEquals(response.data.password, "")
     assertMatch(response.data.resetKey ?? "", /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
 
     const setCookie = new Headers(response.headers).get("set-cookie")

@@ -8,6 +8,7 @@ import { define } from "../utils.ts"
 
 interface CadastroPageData {
     username: string
+    password: string
     errors: {
         username?: string
         password?: string
@@ -18,6 +19,7 @@ interface CadastroPageData {
 
 const emptyData: CadastroPageData = {
     username: "",
+    password: "",
     errors: {}
 }
 
@@ -46,6 +48,7 @@ export const handler = define.handlers({
             return {
                 data: {
                     username: result.user.username,
+                    password: "",
                     errors: noErrors,
                     resetKey: result.resetKey
                 },
@@ -56,6 +59,7 @@ export const handler = define.handlers({
                 return {
                     data: {
                         username: username.trim(),
+                        password,
                         errors: mapValidationIssues(error.issues)
                     }
                 }
@@ -65,6 +69,7 @@ export const handler = define.handlers({
                 return {
                     data: {
                         username: username.trim(),
+                        password,
                         errors: {
                             username: "Este nome de usuario nao esta disponivel."
                         }
@@ -86,12 +91,12 @@ export default define.page<typeof handler>(function Cadastro({ data }) {
             <div class="container">
                 <div class="columns is-centered">
                     <div class="column is-full-mobile is-two-thirds-tablet is-half-desktop">
-                        <PageTitle title="Criar conta" />
-                        <p class="subtitle">Entre na sua biblioteca logo apos o cadastro.</p>
+                        <PageTitle title="Criar conta" leftMode="back" backHref="/login" />
+                        <p class="subtitle">Guarde sua chave antes de entrar na biblioteca.</p>
 
                         {data.resetKey
                             ? <ResetKeyPanel resetKey={data.resetKey} />
-                            : <CadastroForm username={data.username} errors={data.errors} />}
+                            : <CadastroForm username={data.username} password={data.password} errors={data.errors} />}
                     </div>
                 </div>
             </div>

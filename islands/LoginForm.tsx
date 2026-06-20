@@ -3,10 +3,11 @@ import { PasswordField, togglePasswordVisibility } from "./AuthFields.tsx"
 
 export interface LoginFormProps {
     username: string
+    password: string
     error?: string
 }
 
-export default function LoginForm({ username, error }: LoginFormProps) {
+export default function LoginForm({ username, password, error }: LoginFormProps) {
     const [showPassword, setShowPassword] = useState(false)
     const [visibleError, setVisibleError] = useState(error)
 
@@ -42,6 +43,7 @@ export default function LoginForm({ username, error }: LoginFormProps) {
                 label="Senha"
                 autocomplete="current-password"
                 showPassword={showPassword}
+                value={password}
                 onInput={() => setVisibleError(undefined)}
                 onToggle={() => setShowPassword(togglePasswordVisibility)}
             />
