@@ -21,6 +21,8 @@ inspecione todo o projeto ou toda a documentacao sem necessidade.
 - Trate o projeto como um MVP simples e evite complexidade preventiva.
 - Preserve Deno e Fresh como base tecnica.
 - Use Bulma para a interface quando os recursos do produto forem implementados.
+- Para ajustes visuais ou de layout, valide com navegador quando disponivel.
+  No VS Code, prefira `@chrome`/Chrome plugin para validar a tela renderizada.
 - Comece a persistencia com libSQL local e mantenha o uso futuro do Turso como
   direcao arquitetural.
 - Diferencie capacidades existentes de recursos apenas planejados.
