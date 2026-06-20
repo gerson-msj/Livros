@@ -2,7 +2,7 @@
 
 **Tarefa:** [TF-003 - Login e redefinicao de senha](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
 **Depende de:** Nenhuma
 
 ## Objetivo tecnico
@@ -15,8 +15,8 @@ decisoes atuais de seguranca, hash e sessao.
 - [Usuario](../../../conhecimento.md#usuario): regras atuais de nome de usuario, senha, chave de redefinicao e sessao inicial.
 - [Autenticacao e redefinicao de senha](../../../conhecimento.md#autenticacao-e-redefinicao-de-senha): senha e chave sao armazenadas como
   hashes; redefinicao deve invalidar a chave usada e gerar nova chave.
-- [TF-001 - Cadastro de usuarios](../../001-cadastro-de-usuarios/tarefa.md): fonte da base atual de dominio, servico, repositorios,
-  hasher e sessoes.
+- [TF-001 - Cadastro de usuarios](../../001-cadastro-de-usuarios/tarefa.md): fonte da base atual de dominio, servico, repositorios, hasher e
+  sessoes.
 
 ## Entrega esperada
 
@@ -47,3 +47,9 @@ decisoes atuais de seguranca, hash e sessao.
 - Tela de redefinicao de senha.
 - Ajustes visuais dos formularios.
 - Mudanca de redirecionamento da biblioteca.
+
+## Resultado
+
+- Resultado entregue: servico de autenticacao passou a autenticar usuario por nome e senha, redefinir senha com chave atual, gerar nova chave e criar sessao apos login ou redefinicao.
+- Verificacoes realizadas: `deno test --allow-env --allow-read --allow-write --allow-ffi aplicacao/autenticacao_service_test.ts infraestrutura/auth_repositories_test.ts`.
+- Riscos, limitacoes ou pendencias: telas e redirecionamentos permanecem para as fases seguintes.

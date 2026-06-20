@@ -5,9 +5,12 @@ import {
     type CreateSessionInput,
     type CreateUserInput,
     type SessionRepository,
+    type UpdateUserSecretsInput,
     type UserRepository
 } from "./autenticacao_service.ts"
 import {
+    InvalidCredentialsError,
+    InvalidPasswordResetError,
     RegistrationValidationError,
     type Session,
     SESSION_DURATION_MS,
@@ -70,6 +73,93 @@ Deno.test("recusa nome de usuario ja cadastrado", async () => {
     )
 })
 
+Deno.test("autentica usuario cadastrado com nome normalizado e senha", async () => {
+    const service = new AuthenticationService(
+        new InMemoryUserRepository(),
+        new InMemorySessionRepository(),
+        new WebCryptoSecretHasher(),
+        new FixedIds(),
+        new FixedClock(new Date("2026-06-16T12:00:00.000Z"))
+    )
+    await service.registerUser({ username: "gerson", password: "senhaboa" })
+
+    const result = await service.authenticateUser({ username: " GERSON ", password: " senhaboa " })
+
+    assertEquals(result.user.username, "gerson")
+    assertEquals(result.session.userId, result.user.id)
+})
+
+Deno.test("recusa login com usuario inexistente ou senha incorreta", async () => {
+    const service = new AuthenticationService(
+        new InMemoryUserRepository(),
+        new InMemorySessionRepository(),
+        new WebCryptoSecretHasher(),
+        new FixedIds(),
+        new FixedClock(new Date("2026-06-16T12:00:00.000Z"))
+    )
+    await service.registerUser({ username: "gerson", password: "senhaboa" })
+
+    await assertRejects(
+        () => service.authenticateUser({ username: "gerson", password: "senha-ruim" }),
+        InvalidCredentialsError
+    )
+    await assertRejects(
+        () => service.authenticateUser({ username: "maria", password: "senhaboa" }),
+        InvalidCredentialsError
+    )
+})
+
+Deno.test("redefine senha com chave atual, invalida chave antiga, gera nova chave e cria sessao", async () => {
+    const users = new InMemoryUserRepository()
+    const service = new AuthenticationService(
+        users,
+        new InMemorySessionRepository(),
+        new WebCryptoSecretHasher(),
+        new FixedIds(),
+        new FixedClock(new Date("2026-06-16T12:00:00.000Z"))
+    )
+    const registered = await service.registerUser({ username: "gerson", password: "senhaboa" })
+
+    const result = await service.resetPassword({
+        username: " GERSON ",
+        resetKey: ` ${registered.resetKey} `,
+        newPassword: " nova-senha "
+    })
+
+    assertEquals(result.user.id, registered.user.id)
+    assertEquals(result.session.userId, registered.user.id)
+    assertNotEquals(result.resetKey, registered.resetKey)
+    assert(await new WebCryptoSecretHasher().verify("nova-senha", users.users.get(registered.user.id)!.passwordHash))
+    assert(await new WebCryptoSecretHasher().verify(result.resetKey, users.users.get(registered.user.id)!.resetKeyHash))
+    assertEquals(await service.authenticateUser({ username: "gerson", password: "nova-senha" }).then(() => true), true)
+    await assertRejects(
+        () => service.resetPassword({ username: "gerson", resetKey: registered.resetKey, newPassword: "outra-senha" }),
+        InvalidPasswordResetError
+    )
+})
+
+Deno.test("redefinicao invalida nao altera senha nem chave", async () => {
+    const users = new InMemoryUserRepository()
+    const service = new AuthenticationService(
+        users,
+        new InMemorySessionRepository(),
+        new WebCryptoSecretHasher(),
+        new FixedIds(),
+        new FixedClock(new Date("2026-06-16T12:00:00.000Z"))
+    )
+    const registered = await service.registerUser({ username: "gerson", password: "senhaboa" })
+    const before = users.users.get(registered.user.id)!
+
+    await assertRejects(
+        () => service.resetPassword({ username: "gerson", resetKey: "chave-errada", newPassword: "nova-senha" }),
+        InvalidPasswordResetError
+    )
+
+    const after = users.users.get(registered.user.id)!
+    assertEquals(after.passwordHash, before.passwordHash)
+    assertEquals(after.resetKeyHash, before.resetKeyHash)
+})
+
 Deno.test("encerra sessao e impede consulta ativa posterior", async () => {
     const sessions = new InMemorySessionRepository()
     const service = new AuthenticationService(
@@ -103,6 +193,23 @@ class InMemoryUserRepository implements UserRepository {
 
         this.users.set(user.id, user)
         return Promise.resolve(user)
+    }
+
+    updateSecrets(input: UpdateUserSecretsInput): Promise<User> {
+        const user = this.users.get(input.id)
+
+        if (!user) {
+            throw new Error("Usuario nao encontrado.")
+        }
+
+        const updatedUser = {
+            ...user,
+            passwordHash: input.passwordHash,
+            resetKeyHash: input.resetKeyHash
+        }
+
+        this.users.set(updatedUser.id, updatedUser)
+        return Promise.resolve(updatedUser)
     }
 }
 

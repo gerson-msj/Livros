@@ -33,6 +33,18 @@ Deno.test("persiste usuario e sessao em banco libSQL local", async () => {
         assertEquals(sessions.rows[0].ended_at, null)
         assertEquals(await service.findActiveSession(result.session.id), result.session)
 
+        const reset = await service.resetPassword({
+            username: "joana",
+            resetKey: result.resetKey,
+            newPassword: "nova-senha"
+        })
+        const updatedUsers = await client.execute("SELECT password_hash, reset_key_hash FROM users WHERE id = ?", [result.user.id])
+
+        assertNotEquals(updatedUsers.rows[0].password_hash, users.rows[0].password_hash)
+        assertNotEquals(updatedUsers.rows[0].reset_key_hash, users.rows[0].reset_key_hash)
+        assertEquals(reset.session.userId, result.user.id)
+        assertEquals(await service.authenticateUser({ username: "joana", password: "nova-senha" }).then(() => true), true)
+
         await service.endSession(result.session.id)
 
         assertEquals(await service.findActiveSession(result.session.id), null)

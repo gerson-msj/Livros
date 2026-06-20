@@ -1,6 +1,6 @@
 # TF-003 - Login e redefinicao de senha
 
-**Estado:** Planejada
+**Estado:** Em desenvolvimento
 **Tipo:** Nova capacidade
 
 ## Resumo
@@ -92,7 +92,7 @@ chave for apresentada.
 ## Plano
 
 **Revisao:** 1
-**Proxima acao:** Aguardar confirmacao para desenvolver fases
+**Proxima acao:** Desenvolver F02
 
 ### Estrategia
 
@@ -110,12 +110,12 @@ componentes pequenos e verificacao integrada, sem criar uma biblioteca generica 
 
 ## Controle de fases
 
-| Fase | Estado | Depende de | Resumo | Arquivo |
-|---|---|---|---|---|
-| F01 | Planejada | Nenhuma | Base de autenticacao para login e redefinicao. | [F01 - Base de autenticacao para login e redefinicao](fases/F01-base-autenticacao-login-redefinicao.md) |
-| F02 | Planejada | F01 | Login como entrada principal do sistema. | [F02 - Login como entrada principal](fases/F02-login-entrada-principal.md) |
-| F03 | Planejada | F01, F02 | Redefinicao de senha com apresentacao de nova chave. | [F03 - Redefinicao de senha com nova chave](fases/F03-redefinicao-senha-nova-chave.md) |
-| F04 | Planejada | F02, F03 | Consistencia dos componentes e fluxo integrado de autenticacao. | [F04 - Consistencia componentes fluxo autenticacao](fases/F04-consistencia-componentes-fluxo-autenticacao.md) |
+| Fase | Estado             | Depende de | Resumo                                                          | Arquivo                                                                                                       |
+| ---- | ------------------ | ---------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| F01  | Concluida          | Nenhuma    | Base de autenticacao para login e redefinicao.                  | [F01 - Base de autenticacao para login e redefinicao](fases/F01-base-autenticacao-login-redefinicao.md)       |
+| F02  | Planejada          | F01        | Login como entrada principal do sistema.                        | [F02 - Login como entrada principal](fases/F02-login-entrada-principal.md)                                    |
+| F03  | Planejada          | F01, F02   | Redefinicao de senha com apresentacao de nova chave.            | [F03 - Redefinicao de senha com nova chave](fases/F03-redefinicao-senha-nova-chave.md)                        |
+| F04  | Planejada          | F02, F03   | Consistencia dos componentes e fluxo integrado de autenticacao. | [F04 - Consistencia componentes fluxo autenticacao](fases/F04-consistencia-componentes-fluxo-autenticacao.md) |
 
 ## Resumo final da tarefa
 
