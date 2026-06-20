@@ -91,8 +91,8 @@ chave for apresentada.
 
 ## Plano
 
-**Revisao:** 1
-**Proxima acao:** Aguardar validacao do projeto
+**Revisao:** 2
+**Proxima acao:** Aguardar confirmacao para desenvolver F05
 
 ### Estrategia
 
@@ -108,6 +108,11 @@ componentes pequenos e verificacao integrada, sem criar uma biblioteca generica 
 - A nova chave de redefinicao deve continuar visivel para copia manual mesmo quando a Clipboard API falhar ou nao estiver disponivel.
 - Componentes reutilizaveis devem nascer da duplicacao real entre as telas, mantendo o MVP simples.
 
+### Historico do plano
+
+- 2026-06-20: registrada revisao 2 apos validacao do projeto para corrigir interacoes dos icones, navegacao de volta, preservacao de senha
+  em erro e permanencia na tela de chave apos cadastro.
+
 ## Controle de fases
 
 | Fase | Estado             | Depende de | Resumo                                                          | Arquivo                                                                                                       |
@@ -116,6 +121,7 @@ componentes pequenos e verificacao integrada, sem criar uma biblioteca generica 
 | F02  | Concluida          | F01        | Login como entrada principal do sistema.                        | [F02 - Login como entrada principal](fases/F02-login-entrada-principal.md)                                    |
 | F03  | Concluida          | F01, F02   | Redefinicao de senha com apresentacao de nova chave.            | [F03 - Redefinicao de senha com nova chave](fases/F03-redefinicao-senha-nova-chave.md)                        |
 | F04  | Concluida          | F02, F03   | Consistencia dos componentes e fluxo integrado de autenticacao. | [F04 - Consistencia componentes fluxo autenticacao](fases/F04-consistencia-componentes-fluxo-autenticacao.md) |
+| F05  | Planejada          | F04        | Correcoes de validacao das telas publicas de autenticacao.      | [F05 - Correcoes validacao telas autenticacao](fases/F05-correcoes-validacao-telas-autenticacao.md)           |
 
 ## Resumo final da tarefa
 
