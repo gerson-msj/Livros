@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks"
+import { PasswordField, togglePasswordVisibility } from "./AuthFields.tsx"
 
 export interface LoginFormProps {
     username: string
@@ -35,31 +36,15 @@ export default function LoginForm({ username, error }: LoginFormProps) {
                 </div>
             </div>
 
-            <div class="field">
-                <label class="label" for="password">Senha</label>
-                <div class="control has-icons-left has-icons-right">
-                    <input
-                        class="input"
-                        id="password"
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        autocomplete="current-password"
-                        onInput={() => setVisibleError(undefined)}
-                    />
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-lock" aria-hidden="true"></i>
-                    </span>
-                    <button
-                        class="livros-field-icon-button icon is-small is-right"
-                        type="button"
-                        aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                        aria-pressed={showPassword ? "true" : "false"}
-                        onClick={() => setShowPassword(togglePasswordVisibility)}
-                    >
-                        <i class={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`} aria-hidden="true"></i>
-                    </button>
-                </div>
-            </div>
+            <PasswordField
+                id="password"
+                name="password"
+                label="Senha"
+                autocomplete="current-password"
+                showPassword={showPassword}
+                onInput={() => setVisibleError(undefined)}
+                onToggle={() => setShowPassword(togglePasswordVisibility)}
+            />
 
             <div class="field">
                 <button class="button is-primary is-fullwidth" type="submit">
@@ -71,8 +56,4 @@ export default function LoginForm({ username, error }: LoginFormProps) {
             </div>
         </form>
     )
-}
-
-export function togglePasswordVisibility(current: boolean): boolean {
-    return !current
 }

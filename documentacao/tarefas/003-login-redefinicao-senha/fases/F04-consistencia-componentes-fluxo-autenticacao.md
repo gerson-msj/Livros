@@ -2,7 +2,7 @@
 
 **Tarefa:** [TF-003 - Login e redefinicao de senha](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
 **Depende de:** F02, F03
 
 ## Objetivo tecnico
@@ -47,3 +47,9 @@ recuperacao de acesso.
 - Novas regras de autenticacao.
 - Mudancas de dominio ou persistencia nao exigidas pelas telas.
 - Redesenho completo do cadastro.
+
+## Resultado
+
+- Resultado entregue: campos compartilhados de senha com icone de olho e chave copiavel foram aplicados em cadastro, login e redefinicao; cadastro manteve suas regras atuais e passou a usar os mesmos controles visuais; fluxo integrado cobre cadastro, logout, login, redefinicao e retorno autenticado a `/biblioteca`.
+- Verificacoes realizadas: `deno test --allow-env --allow-read --allow-write --allow-ffi islands/cadastro_interactions_test.ts islands/page_title_test.ts routes/login_test.ts routes/redefinir_senha_test.ts routes/cadastro_test.ts routes/biblioteca_test.ts routes/fluxo_cadastro_biblioteca_test.ts`; `deno task build`.
+- Riscos, limitacoes ou pendencias: a captura visual headless continuou indisponivel nesta execucao; a validacao visual manual do projeto ainda e recomendada.

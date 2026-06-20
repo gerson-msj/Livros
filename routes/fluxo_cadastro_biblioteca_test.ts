@@ -7,6 +7,7 @@ import { SESSION_COOKIE_NAME } from "../infraestrutura/session_cookie.ts"
 import { handler as bibliotecaHandler } from "./biblioteca.tsx"
 import { handler as cadastroHandler } from "./cadastro.tsx"
 import { handler as loginHandler } from "./login.tsx"
+import { handler as resetPasswordHandler } from "./redefinir-senha.tsx"
 
 Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e encerra sessao", async () => {
     const dbPath = await Deno.makeTempFile({ suffix: ".db" })
@@ -85,8 +86,40 @@ Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e
         assertEquals(login.status, 303)
         assertEquals(login.headers.get("location"), "/biblioteca")
         assertStringIncludes(login.headers.get("set-cookie") ?? "", `${SESSION_COOKIE_NAME}=00000000-0000-4000-8000-000000000003`)
+        const loginSessionCookie = login.headers.get("set-cookie")!.split(";")[0]
 
-        const endedSessions = await client.execute("SELECT ended_at FROM sessions")
+        const logoutAposLogin = await bibliotecaHandler.POST!(
+            createBibliotecaContext(createRequest("POST", "/biblioteca", loginSessionCookie), service)
+        )
+
+        assert(logoutAposLogin instanceof Response)
+        assertEquals(logoutAposLogin.headers.get("location"), "/login")
+
+        const resetPassword = await resetPasswordHandler.POST!(createResetPasswordContext(
+            createResetPasswordRequest({
+                username: "gerson",
+                resetKey: cadastro.data.resetKey ?? "",
+                newPassword: "nova-senha"
+            }),
+            service
+        ))
+
+        assertResetPasswordPageResponse(resetPassword)
+        assertMatch(resetPassword.data.newResetKey ?? "", /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
+        assertStringIncludes(
+            new Headers(resetPassword.headers).get("set-cookie") ?? "",
+            `${SESSION_COOKIE_NAME}=00000000-0000-4000-8000-000000000004`
+        )
+        const resetPasswordSessionCookie = new Headers(resetPassword.headers).get("set-cookie")!.split(";")[0]
+
+        const bibliotecaAposReset = await bibliotecaHandler.GET!(
+            createBibliotecaContext(createRequest("GET", "/biblioteca", resetPasswordSessionCookie), service)
+        )
+
+        assert(!(bibliotecaAposReset instanceof Response))
+        assertEquals(bibliotecaAposReset.data, {})
+
+        const endedSessions = await client.execute("SELECT ended_at FROM sessions WHERE id = ?", ["00000000-0000-4000-8000-000000000002"])
 
         assertEquals(endedSessions.rows[0].ended_at, "2026-06-17T12:00:00.000Z")
     } finally {
@@ -98,8 +131,11 @@ Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e
 type CadastroContext = Parameters<NonNullable<typeof cadastroHandler.GET>>[0]
 type BibliotecaContext = Parameters<NonNullable<typeof bibliotecaHandler.GET>>[0]
 type LoginContext = Parameters<NonNullable<typeof loginHandler.GET>>[0]
+type ResetPasswordContext = Parameters<NonNullable<typeof resetPasswordHandler.GET>>[0]
 type CadastroResponse = Awaited<ReturnType<NonNullable<typeof cadastroHandler.POST>>>
 type CadastroPageResponse = Exclude<CadastroResponse, Response>
+type ResetPasswordResponse = Awaited<ReturnType<NonNullable<typeof resetPasswordHandler.POST>>>
+type ResetPasswordPageResponse = Exclude<ResetPasswordResponse, Response>
 
 function createCadastroContext(request: Request, authentication: AuthenticationService): CadastroContext {
     return {
@@ -134,6 +170,17 @@ function createLoginContext(request: Request, authentication: AuthenticationServ
     } as LoginContext
 }
 
+function createResetPasswordContext(request: Request, authentication: AuthenticationService): ResetPasswordContext {
+    return {
+        req: request,
+        state: {
+            services: {
+                authentication
+            }
+        }
+    } as ResetPasswordContext
+}
+
 function createCadastroRequest(input: { username: string; password: string }): Request {
     return new Request("http://localhost/cadastro", {
         method: "POST",
@@ -154,6 +201,16 @@ function createLoginRequest(input: { username: string; password: string }): Requ
     })
 }
 
+function createResetPasswordRequest(input: { username: string; resetKey: string; newPassword: string }): Request {
+    return new Request("http://localhost/redefinir-senha", {
+        method: "POST",
+        headers: {
+            "content-type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams(input)
+    })
+}
+
 function createRequest(method: "GET" | "POST", path: "/cadastro" | "/biblioteca", cookie: string): Request {
     return new Request(`http://localhost${path}`, {
         method,
@@ -164,6 +221,10 @@ function createRequest(method: "GET" | "POST", path: "/cadastro" | "/biblioteca"
 }
 
 function assertPageResponse(response: CadastroResponse): asserts response is CadastroPageResponse {
+    assert(!(response instanceof Response))
+}
+
+function assertResetPasswordPageResponse(response: ResetPasswordResponse): asserts response is ResetPasswordPageResponse {
     assert(!(response instanceof Response))
 }
 

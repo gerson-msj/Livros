@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks"
+import { PasswordField, togglePasswordVisibility } from "./AuthFields.tsx"
 
 export interface CadastroFormProps {
     username: string
@@ -46,36 +47,16 @@ export default function CadastroForm({ username, errors }: CadastroFormProps) {
                 {visibleErrors.username && <p class="help is-danger" id="username-error">{visibleErrors.username}</p>}
             </div>
 
-            <div class="field">
-                <label class="label" for="password">Senha</label>
-                <div class="control has-icons-left">
-                    <input
-                        class={`input ${visibleErrors.password ? "is-danger" : ""}`}
-                        id="password"
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        autocomplete="new-password"
-                        aria-invalid={visibleErrors.password ? "true" : "false"}
-                        aria-describedby={visibleErrors.password ? "password-error" : undefined}
-                        onInput={() => setVisibleErrors((current) => clearFieldError(current, "password"))}
-                    />
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-lock" aria-hidden="true"></i>
-                    </span>
-                </div>
-                {visibleErrors.password && <p class="help is-danger" id="password-error">{visibleErrors.password}</p>}
-            </div>
-
-            <div class="field">
-                <label class="checkbox">
-                    <input
-                        type="checkbox"
-                        checked={showPassword}
-                        onChange={(event) => setShowPassword(event.currentTarget.checked)}
-                    />{" "}
-                    Mostrar senha
-                </label>
-            </div>
+            <PasswordField
+                id="password"
+                name="password"
+                label="Senha"
+                autocomplete="new-password"
+                showPassword={showPassword}
+                error={visibleErrors.password}
+                onInput={() => setVisibleErrors((current) => clearFieldError(current, "password"))}
+                onToggle={() => setShowPassword(togglePasswordVisibility)}
+            />
 
             <div class="field">
                 <button class="button is-primary is-fullwidth" type="submit">

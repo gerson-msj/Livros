@@ -1,4 +1,5 @@
 import { useState } from "preact/hooks"
+import { CopyableResetKeyField } from "./AuthFields.tsx"
 
 type CopyStatus = "idle" | "copied" | "unavailable" | "failed"
 
@@ -20,24 +21,7 @@ export default function ResetKeyPanel({ resetKey }: { resetKey: string }) {
                 <p>Guarde sua chave de redefinicao de senha.</p>
             </div>
 
-            <div class="field">
-                <label class="label" for="reset-key">Chave de redefinicao</label>
-                <div class="control has-icons-left">
-                    <input class="input is-family-monospace" id="reset-key" type="text" value={resetKey} readonly />
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-key" aria-hidden="true"></i>
-                    </span>
-                </div>
-            </div>
-
-            <div class="field">
-                <button class="button is-info is-light is-fullwidth" type="button" onClick={copyKey}>
-                    <span class="icon">
-                        <i class="fas fa-copy" aria-hidden="true"></i>
-                    </span>
-                    <span>Copiar chave</span>
-                </button>
-            </div>
+            <CopyableResetKeyField id="reset-key" label="Chave de redefinicao" resetKey={resetKey} onCopy={copyKey} />
 
             <div class="field">
                 <a class="button is-primary is-fullwidth" href="/biblioteca">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks"
-import { togglePasswordVisibility } from "./LoginForm.tsx"
+import { PasswordField, togglePasswordVisibility } from "./AuthFields.tsx"
 
 export interface ResetPasswordFormProps {
     username: string
@@ -55,31 +55,15 @@ export default function ResetPasswordForm({ username, resetKey, error }: ResetPa
                 </div>
             </div>
 
-            <div class="field">
-                <label class="label" for="new-password">Nova senha</label>
-                <div class="control has-icons-left has-icons-right">
-                    <input
-                        class="input"
-                        id="new-password"
-                        name="newPassword"
-                        type={showPassword ? "text" : "password"}
-                        autocomplete="new-password"
-                        onInput={() => setVisibleError(undefined)}
-                    />
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-lock" aria-hidden="true"></i>
-                    </span>
-                    <button
-                        class="livros-field-icon-button icon is-small is-right"
-                        type="button"
-                        aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                        aria-pressed={showPassword ? "true" : "false"}
-                        onClick={() => setShowPassword(togglePasswordVisibility)}
-                    >
-                        <i class={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`} aria-hidden="true"></i>
-                    </button>
-                </div>
-            </div>
+            <PasswordField
+                id="new-password"
+                name="newPassword"
+                label="Nova senha"
+                autocomplete="new-password"
+                showPassword={showPassword}
+                onInput={() => setVisibleError(undefined)}
+                onToggle={() => setShowPassword(togglePasswordVisibility)}
+            />
 
             <div class="field">
                 <button class="button is-primary is-fullwidth" type="submit">
