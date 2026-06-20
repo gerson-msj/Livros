@@ -34,6 +34,19 @@ Deno.test("GET /biblioteca renderiza biblioteca minima para sessao ativa", async
     assertEquals(response.data, {})
 })
 
+Deno.test("GET /biblioteca redireciona cookie de sessao substituida para login", async () => {
+    const service = createAuthenticationService()
+    const registration = await service.registerUser({ username: "gerson", password: "senhaboa" })
+    await service.authenticateUser({ username: "gerson", password: "senhaboa" })
+    const request = createRequestWithSession("GET", registration.session.id)
+
+    const response = await handler.GET!(createContext(request, service))
+
+    assert(response instanceof Response)
+    assertEquals(response.status, 303)
+    assertEquals(response.headers.get("location"), "/login")
+})
+
 Deno.test("POST /biblioteca encerra sessao, limpa cookie e redireciona para login", async () => {
     const service = createAuthenticationService()
     const registration = await service.registerUser({ username: "gerson", password: "senhaboa" })
@@ -144,11 +157,21 @@ class InMemorySessionRepository implements SessionRepository {
         return Promise.resolve(session)
     }
 
-    end(id: string, endedAt: Date): Promise<void> {
+    end(id: string, _endedAt: Date): Promise<void> {
         const session = this.sessions.get(id)
 
         if (session) {
-            this.sessions.set(id, { ...session, endedAt })
+            this.sessions.delete(id)
+        }
+
+        return Promise.resolve()
+    }
+
+    endActiveByUserId(userId: string, _endedAt: Date): Promise<void> {
+        for (const session of this.sessions.values()) {
+            if (session.userId === userId) {
+                this.sessions.delete(session.id)
+            }
         }
 
         return Promise.resolve()

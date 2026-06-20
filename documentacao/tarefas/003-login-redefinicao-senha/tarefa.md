@@ -91,8 +91,8 @@ chave for apresentada.
 
 ## Plano
 
-**Revisao:** 2
-**Proxima acao:** Aguardar confirmacao para desenvolver F05
+**Revisao:** 3
+**Proxima acao:** Aguardar validacao do projeto
 
 ### Estrategia
 
@@ -112,6 +112,8 @@ componentes pequenos e verificacao integrada, sem criar uma biblioteca generica 
 
 - 2026-06-20: registrada revisao 2 apos validacao do projeto para corrigir interacoes dos icones, navegacao de volta, preservacao de senha
   em erro e permanencia na tela de chave apos cadastro.
+- 2026-06-20: registrada revisao 3 apos validacao do projeto para corrigir limpeza persistente da sessao no logout e garantir no maximo uma
+  sessao ativa por usuario.
 
 ## Controle de fases
 
@@ -121,7 +123,8 @@ componentes pequenos e verificacao integrada, sem criar uma biblioteca generica 
 | F02  | Concluida          | F01        | Login como entrada principal do sistema.                        | [F02 - Login como entrada principal](fases/F02-login-entrada-principal.md)                                    |
 | F03  | Concluida          | F01, F02   | Redefinicao de senha com apresentacao de nova chave.            | [F03 - Redefinicao de senha com nova chave](fases/F03-redefinicao-senha-nova-chave.md)                        |
 | F04  | Concluida          | F02, F03   | Consistencia dos componentes e fluxo integrado de autenticacao. | [F04 - Consistencia componentes fluxo autenticacao](fases/F04-consistencia-componentes-fluxo-autenticacao.md) |
-| F05  | Planejada          | F04        | Correcoes de validacao das telas publicas de autenticacao.      | [F05 - Correcoes validacao telas autenticacao](fases/F05-correcoes-validacao-telas-autenticacao.md)           |
+| F05  | Concluida          | F04        | Correcoes de validacao das telas publicas de autenticacao.      | [F05 - Correcoes validacao telas autenticacao](fases/F05-correcoes-validacao-telas-autenticacao.md)           |
+| F06  | Concluida          | F05        | Sessao unica por usuario e limpeza persistente no logout.       | [F06 - Sessao unica por usuario e logout persistente](fases/F06-sessao-unica-usuario-logout-persistente.md)   |
 
 ## Resumo final da tarefa
 

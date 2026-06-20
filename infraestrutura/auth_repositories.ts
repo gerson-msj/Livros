@@ -114,12 +114,21 @@ export class LibsqlSessionRepository implements SessionRepository {
         return result.rows[0] ? mapSession(result.rows[0]) : null
     }
 
-    async end(id: string, endedAt: Date): Promise<void> {
+    async end(id: string, _endedAt: Date): Promise<void> {
         await ensureDatabaseSchema(this.client)
 
         await this.client.execute({
-            sql: "UPDATE sessions SET ended_at = ? WHERE id = ? AND ended_at IS NULL",
-            args: [endedAt.toISOString(), id]
+            sql: "DELETE FROM sessions WHERE id = ?",
+            args: [id]
+        })
+    }
+
+    async endActiveByUserId(userId: string, _endedAt: Date): Promise<void> {
+        await ensureDatabaseSchema(this.client)
+
+        await this.client.execute({
+            sql: "DELETE FROM sessions WHERE user_id = ?",
+            args: [userId]
         })
     }
 }

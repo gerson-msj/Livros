@@ -69,6 +69,13 @@ Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e
         assertEquals(logout.headers.get("location"), "/login")
         assertStringIncludes(logout.headers.get("set-cookie") ?? "", "Max-Age=0")
 
+        const sessionsAfterLogout = await client.execute(
+            "SELECT id FROM sessions WHERE user_id = ?",
+            ["00000000-0000-4000-8000-000000000001"]
+        )
+
+        assertEquals(sessionsAfterLogout.rows.length, 0)
+
         const bibliotecaAposLogout = await bibliotecaHandler.GET!(
             createBibliotecaContext(createRequest("GET", "/biblioteca", sessionCookie), service)
         )
@@ -87,6 +94,13 @@ Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e
         assertEquals(login.headers.get("location"), "/biblioteca")
         assertStringIncludes(login.headers.get("set-cookie") ?? "", `${SESSION_COOKIE_NAME}=00000000-0000-4000-8000-000000000003`)
         const loginSessionCookie = login.headers.get("set-cookie")!.split(";")[0]
+        const sessionsAfterLogin = await client.execute(
+            "SELECT id FROM sessions WHERE user_id = ?",
+            ["00000000-0000-4000-8000-000000000001"]
+        )
+
+        assertEquals(sessionsAfterLogin.rows.length, 1)
+        assertEquals(sessionsAfterLogin.rows[0].id, "00000000-0000-4000-8000-000000000003")
 
         const logoutAposLogin = await bibliotecaHandler.POST!(
             createBibliotecaContext(createRequest("POST", "/biblioteca", loginSessionCookie), service)
@@ -119,9 +133,13 @@ Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e
         assert(!(bibliotecaAposReset instanceof Response))
         assertEquals(bibliotecaAposReset.data, {})
 
-        const endedSessions = await client.execute("SELECT ended_at FROM sessions WHERE id = ?", ["00000000-0000-4000-8000-000000000002"])
+        const sessionsAfterReset = await client.execute(
+            "SELECT id FROM sessions WHERE user_id = ?",
+            ["00000000-0000-4000-8000-000000000001"]
+        )
 
-        assertEquals(endedSessions.rows[0].ended_at, "2026-06-17T12:00:00.000Z")
+        assertEquals(sessionsAfterReset.rows.length, 1)
+        assertEquals(sessionsAfterReset.rows[0].id, "00000000-0000-4000-8000-000000000004")
     } finally {
         client.close()
         await Deno.remove(dbPath).catch(() => {})

@@ -23,6 +23,7 @@ export interface SessionRepository {
     create(input: CreateSessionInput): Promise<Session>
     findActiveById(id: string, now: Date): Promise<Session | null>
     end(id: string, endedAt: Date): Promise<void>
+    endActiveByUserId(userId: string, endedAt: Date): Promise<void>
 }
 
 export interface CreateUserInput {
@@ -152,10 +153,12 @@ export class AuthenticationService {
         await this.sessions.end(sessionId, this.clock.now())
     }
 
-    private createSession(userId: string): Promise<Session> {
+    private async createSession(userId: string): Promise<Session> {
         const now = this.clock.now()
 
-        return this.sessions.create({
+        await this.sessions.endActiveByUserId(userId, now)
+
+        return await this.sessions.create({
             id: this.ids.newId(),
             userId,
             createdAt: now,

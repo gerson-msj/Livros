@@ -179,6 +179,24 @@ Deno.test("encerra sessao e impede consulta ativa posterior", async () => {
     assertEquals(await service.findActiveSession(result.session.id), null)
 })
 
+Deno.test("nova sessao do mesmo usuario remove sessao anterior", async () => {
+    const sessions = new InMemorySessionRepository()
+    const service = new AuthenticationService(
+        new InMemoryUserRepository(),
+        sessions,
+        new WebCryptoSecretHasher(),
+        new FixedIds(),
+        new FixedClock(new Date("2026-06-16T12:00:00.000Z"))
+    )
+
+    const registered = await service.registerUser({ username: "gerson", password: "senhaboa" })
+    const authenticated = await service.authenticateUser({ username: "gerson", password: "senhaboa" })
+
+    assertEquals(await service.findActiveSession(registered.session.id), null)
+    assertEquals(await service.findActiveSession(authenticated.session.id), authenticated.session)
+    assertEquals(sessions.sessions.has(registered.session.id), false)
+})
+
 class InMemoryUserRepository implements UserRepository {
     readonly users = new Map<string, User>()
 
@@ -236,11 +254,21 @@ class InMemorySessionRepository implements SessionRepository {
         return Promise.resolve(session)
     }
 
-    end(id: string, endedAt: Date): Promise<void> {
+    end(id: string, _endedAt: Date): Promise<void> {
         const session = this.sessions.get(id)
 
         if (session) {
-            this.sessions.set(id, { ...session, endedAt })
+            this.sessions.delete(id)
+        }
+
+        return Promise.resolve()
+    }
+
+    endActiveByUserId(userId: string, _endedAt: Date): Promise<void> {
+        for (const session of this.sessions.values()) {
+            if (session.userId === userId) {
+                this.sessions.delete(session.id)
+            }
         }
 
         return Promise.resolve()

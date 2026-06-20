@@ -184,11 +184,21 @@ class InMemorySessionRepository implements SessionRepository {
         return Promise.resolve(session)
     }
 
-    end(id: string, endedAt: Date): Promise<void> {
+    end(id: string, _endedAt: Date): Promise<void> {
         const session = this.sessions.get(id)
 
         if (session) {
-            this.sessions.set(id, { ...session, endedAt })
+            this.sessions.delete(id)
+        }
+
+        return Promise.resolve()
+    }
+
+    endActiveByUserId(userId: string, _endedAt: Date): Promise<void> {
+        for (const session of this.sessions.values()) {
+            if (session.userId === userId) {
+                this.sessions.delete(session.id)
+            }
         }
 
         return Promise.resolve()

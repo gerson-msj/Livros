@@ -39,15 +39,26 @@ Deno.test("persiste usuario e sessao em banco libSQL local", async () => {
             newPassword: "nova-senha"
         })
         const updatedUsers = await client.execute("SELECT password_hash, reset_key_hash FROM users WHERE id = ?", [result.user.id])
+        const sessionsAfterReset = await client.execute("SELECT id, ended_at FROM sessions ORDER BY created_at, id")
 
         assertNotEquals(updatedUsers.rows[0].password_hash, users.rows[0].password_hash)
         assertNotEquals(updatedUsers.rows[0].reset_key_hash, users.rows[0].reset_key_hash)
         assertEquals(reset.session.userId, result.user.id)
-        assertEquals(await service.authenticateUser({ username: "joana", password: "nova-senha" }).then(() => true), true)
-
-        await service.endSession(result.session.id)
-
+        assertEquals(sessionsAfterReset.rows.length, 1)
+        assertEquals(sessionsAfterReset.rows[0].id, reset.session.id)
+        assertEquals(sessionsAfterReset.rows[0].ended_at, null)
         assertEquals(await service.findActiveSession(result.session.id), null)
+        const authenticated = await service.authenticateUser({ username: "joana", password: "nova-senha" })
+
+        const sessionsAfterLogin = await client.execute("SELECT id FROM sessions WHERE user_id = ?", [result.user.id])
+        assertEquals(sessionsAfterLogin.rows.length, 1)
+        assertEquals(sessionsAfterLogin.rows[0].id, authenticated.session.id)
+
+        await service.endSession(authenticated.session.id)
+
+        const sessionsAfterLogout = await client.execute("SELECT id FROM sessions WHERE user_id = ?", [result.user.id])
+        assertEquals(sessionsAfterLogout.rows.length, 0)
+        assertEquals(await service.findActiveSession(authenticated.session.id), null)
     } finally {
         client.close()
         await Deno.remove(dbPath).catch(() => {})
