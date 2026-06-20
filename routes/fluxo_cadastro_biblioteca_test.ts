@@ -6,6 +6,7 @@ import { LibsqlSessionRepository, LibsqlUserRepository } from "../infraestrutura
 import { SESSION_COOKIE_NAME } from "../infraestrutura/session_cookie.ts"
 import { handler as bibliotecaHandler } from "./biblioteca.tsx"
 import { handler as cadastroHandler } from "./cadastro.tsx"
+import { handler as loginHandler } from "./login.tsx"
 
 Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e encerra sessao", async () => {
     const dbPath = await Deno.makeTempFile({ suffix: ".db" })
@@ -64,7 +65,7 @@ Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e
 
         assert(logout instanceof Response)
         assertEquals(logout.status, 303)
-        assertEquals(logout.headers.get("location"), "/cadastro")
+        assertEquals(logout.headers.get("location"), "/login")
         assertStringIncludes(logout.headers.get("set-cookie") ?? "", "Max-Age=0")
 
         const bibliotecaAposLogout = await bibliotecaHandler.GET!(
@@ -73,7 +74,17 @@ Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e
 
         assert(bibliotecaAposLogout instanceof Response)
         assertEquals(bibliotecaAposLogout.status, 303)
-        assertEquals(bibliotecaAposLogout.headers.get("location"), "/cadastro")
+        assertEquals(bibliotecaAposLogout.headers.get("location"), "/login")
+
+        const login = await loginHandler.POST!(createLoginContext(
+            createLoginRequest({ username: "gerson", password: "senha-secreta" }),
+            service
+        ))
+
+        assert(login instanceof Response)
+        assertEquals(login.status, 303)
+        assertEquals(login.headers.get("location"), "/biblioteca")
+        assertStringIncludes(login.headers.get("set-cookie") ?? "", `${SESSION_COOKIE_NAME}=00000000-0000-4000-8000-000000000003`)
 
         const endedSessions = await client.execute("SELECT ended_at FROM sessions")
 
@@ -86,6 +97,7 @@ Deno.test("fluxo integrado cadastra, acessa biblioteca, persiste dados seguros e
 
 type CadastroContext = Parameters<NonNullable<typeof cadastroHandler.GET>>[0]
 type BibliotecaContext = Parameters<NonNullable<typeof bibliotecaHandler.GET>>[0]
+type LoginContext = Parameters<NonNullable<typeof loginHandler.GET>>[0]
 type CadastroResponse = Awaited<ReturnType<NonNullable<typeof cadastroHandler.POST>>>
 type CadastroPageResponse = Exclude<CadastroResponse, Response>
 
@@ -111,8 +123,29 @@ function createBibliotecaContext(request: Request, authentication: Authenticatio
     } as BibliotecaContext
 }
 
+function createLoginContext(request: Request, authentication: AuthenticationService): LoginContext {
+    return {
+        req: request,
+        state: {
+            services: {
+                authentication
+            }
+        }
+    } as LoginContext
+}
+
 function createCadastroRequest(input: { username: string; password: string }): Request {
     return new Request("http://localhost/cadastro", {
+        method: "POST",
+        headers: {
+            "content-type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams(input)
+    })
+}
+
+function createLoginRequest(input: { username: string; password: string }): Request {
+    return new Request("http://localhost/login", {
         method: "POST",
         headers: {
             "content-type": "application/x-www-form-urlencoded"

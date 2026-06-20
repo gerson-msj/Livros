@@ -8,7 +8,7 @@ export const handler = define.handlers({
         const sessionId = getSessionIdFromCookie(ctx.req.headers)
 
         if (!sessionId || !(await ctx.state.services.authentication.findActiveSession(sessionId))) {
-            return redirectToCadastro()
+            return redirectToLogin()
         }
 
         return { data: {} }
@@ -23,7 +23,7 @@ export const handler = define.handlers({
         }
 
         clearSessionCookie(headers)
-        return redirectToCadastro(headers)
+        return redirectToLogin(headers)
     }
 })
 
@@ -45,8 +45,8 @@ export default define.page<typeof handler>(function Biblioteca() {
     )
 })
 
-function redirectToCadastro(headers = new Headers()): Response {
-    headers.set("location", "/cadastro")
+function redirectToLogin(headers = new Headers()): Response {
+    headers.set("location", "/login")
 
     return new Response(null, {
         status: 303,

@@ -1,5 +1,6 @@
 import { assertEquals } from "jsr:@std/assert@1"
 import { clearFieldError } from "./CadastroForm.tsx"
+import { togglePasswordVisibility } from "./LoginForm.tsx"
 import { copyResetKey } from "./ResetKeyPanel.tsx"
 
 Deno.test("clearFieldError remove apenas o erro do campo editado", () => {
@@ -44,4 +45,9 @@ Deno.test("copyResetKey informa indisponibilidade ou falha sem ocultar copia man
     })
 
     assertEquals(result, "failed")
+})
+
+Deno.test("togglePasswordVisibility alterna exibicao da senha", () => {
+    assertEquals(togglePasswordVisibility(false), true)
+    assertEquals(togglePasswordVisibility(true), false)
 })

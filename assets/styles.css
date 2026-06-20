@@ -267,3 +267,20 @@ html {
   outline: 2px solid #ffe08a;
   outline-offset: 0.2rem;
 }
+
+.livros-field-icon-button {
+  background: transparent;
+  border: 0;
+  color: #7a7a7a;
+  pointer-events: auto;
+}
+
+.livros-field-icon-button:hover,
+.livros-field-icon-button:focus-visible {
+  color: #363636;
+}
+
+.livros-field-icon-button:focus-visible {
+  outline: 2px solid #485fc7;
+  outline-offset: -0.15rem;
+}

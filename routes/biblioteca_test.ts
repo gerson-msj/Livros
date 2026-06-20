@@ -5,6 +5,7 @@ import {
     type CreateSessionInput,
     type CreateUserInput,
     type SessionRepository,
+    type UpdateUserSecretsInput,
     type UserRepository
 } from "../aplicacao/autenticacao_service.ts"
 import type { Session, User } from "../dominio/autenticacao.ts"
@@ -12,14 +13,14 @@ import { WebCryptoSecretHasher } from "../infraestrutura/crypto.ts"
 import { SESSION_COOKIE_NAME } from "../infraestrutura/session_cookie.ts"
 import { handler } from "./biblioteca.tsx"
 
-Deno.test("GET /biblioteca redireciona visitante sem sessao para cadastro", async () => {
+Deno.test("GET /biblioteca redireciona visitante sem sessao para login", async () => {
     const request = new Request("http://localhost/biblioteca")
 
     const response = await handler.GET!(createContext(request, createAuthenticationService()))
 
     assert(response instanceof Response)
     assertEquals(response.status, 303)
-    assertEquals(response.headers.get("location"), "/cadastro")
+    assertEquals(response.headers.get("location"), "/login")
 })
 
 Deno.test("GET /biblioteca renderiza biblioteca minima para sessao ativa", async () => {
@@ -33,7 +34,7 @@ Deno.test("GET /biblioteca renderiza biblioteca minima para sessao ativa", async
     assertEquals(response.data, {})
 })
 
-Deno.test("POST /biblioteca encerra sessao, limpa cookie e redireciona para cadastro", async () => {
+Deno.test("POST /biblioteca encerra sessao, limpa cookie e redireciona para login", async () => {
     const service = createAuthenticationService()
     const registration = await service.registerUser({ username: "gerson", password: "senhaboa" })
     const request = createRequestWithSession("POST", registration.session.id)
@@ -42,7 +43,7 @@ Deno.test("POST /biblioteca encerra sessao, limpa cookie e redireciona para cada
 
     assert(response instanceof Response)
     assertEquals(response.status, 303)
-    assertEquals(response.headers.get("location"), "/cadastro")
+    assertEquals(response.headers.get("location"), "/login")
 
     const setCookie = response.headers.get("set-cookie")
     assert(setCookie)
@@ -54,7 +55,7 @@ Deno.test("POST /biblioteca encerra sessao, limpa cookie e redireciona para cada
 
     assert(secondResponse instanceof Response)
     assertEquals(secondResponse.status, 303)
-    assertEquals(secondResponse.headers.get("location"), "/cadastro")
+    assertEquals(secondResponse.headers.get("location"), "/login")
 })
 
 type BibliotecaContext = Parameters<NonNullable<typeof handler.GET>>[0]
@@ -100,6 +101,23 @@ class InMemoryUserRepository implements UserRepository {
         const user = { ...input }
         this.users.set(user.id, user)
         return Promise.resolve(user)
+    }
+
+    updateSecrets(input: UpdateUserSecretsInput): Promise<User> {
+        const user = this.users.get(input.id)
+
+        if (!user) {
+            throw new Error("Usuario nao encontrado.")
+        }
+
+        const updatedUser = {
+            ...user,
+            passwordHash: input.passwordHash,
+            resetKeyHash: input.resetKeyHash
+        }
+
+        this.users.set(updatedUser.id, updatedUser)
+        return Promise.resolve(updatedUser)
     }
 }
 

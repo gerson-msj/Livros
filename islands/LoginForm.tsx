@@ -1,0 +1,78 @@
+import { useEffect, useState } from "preact/hooks"
+
+export interface LoginFormProps {
+    username: string
+    error?: string
+}
+
+export default function LoginForm({ username, error }: LoginFormProps) {
+    const [showPassword, setShowPassword] = useState(false)
+    const [visibleError, setVisibleError] = useState(error)
+
+    useEffect(() => {
+        setVisibleError(error)
+    }, [error])
+
+    return (
+        <form method="post" class="box">
+            {visibleError && <div class="notification is-danger is-light">{visibleError}</div>}
+
+            <div class="field">
+                <label class="label" for="username">Nome de usuario</label>
+                <div class="control has-icons-left">
+                    <input
+                        class="input"
+                        id="username"
+                        name="username"
+                        type="text"
+                        autocomplete="username"
+                        defaultValue={username}
+                        onInput={() => setVisibleError(undefined)}
+                    />
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-user" aria-hidden="true"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label" for="password">Senha</label>
+                <div class="control has-icons-left has-icons-right">
+                    <input
+                        class="input"
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        autocomplete="current-password"
+                        onInput={() => setVisibleError(undefined)}
+                    />
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-lock" aria-hidden="true"></i>
+                    </span>
+                    <button
+                        class="livros-field-icon-button icon is-small is-right"
+                        type="button"
+                        aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                        aria-pressed={showPassword ? "true" : "false"}
+                        onClick={() => setShowPassword(togglePasswordVisibility)}
+                    >
+                        <i class={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`} aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="field">
+                <button class="button is-primary is-fullwidth" type="submit">
+                    <span class="icon">
+                        <i class="fas fa-right-to-bracket" aria-hidden="true"></i>
+                    </span>
+                    <span>Entrar</span>
+                </button>
+            </div>
+        </form>
+    )
+}
+
+export function togglePasswordVisibility(current: boolean): boolean {
+    return !current
+}

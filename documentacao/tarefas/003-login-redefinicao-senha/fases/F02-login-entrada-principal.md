@@ -2,7 +2,7 @@
 
 **Tarefa:** [TF-003 - Login e redefinicao de senha](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
 **Depende de:** F01
 
 ## Objetivo tecnico
@@ -50,3 +50,9 @@ Criar o fluxo publico de login e fazer dele a entrada principal do sistema para 
 - Redefinir senha com a chave.
 - Apresentar nova chave de redefinicao.
 - Refatoracao ampla do cadastro.
+
+## Resultado
+
+- Resultado entregue: rota `/login` criada com formulario de usuario e senha, alternancia de visualizacao da senha por icone no campo, mensagem generica para credenciais invalidas, links para cadastro e redefinicao, criacao de sessao em login valido e redirecionamentos de `/biblioteca` e logout para login.
+- Verificacoes realizadas: `deno test --allow-env --allow-read --allow-write --allow-ffi routes/login_test.ts routes/biblioteca_test.ts routes/cadastro_test.ts routes/fluxo_cadastro_biblioteca_test.ts islands/cadastro_interactions_test.ts`; `deno task build`.
+- Riscos, limitacoes ou pendencias: a captura visual headless nao conseguiu acessar o localhost, embora o servidor tenha respondido HTTP 200 via PowerShell; a tela de redefinicao ainda sera entregue na F03.

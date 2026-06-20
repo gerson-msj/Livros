@@ -112,7 +112,9 @@ function mapValidationIssues(issues: ValidationIssue[]): CadastroPageData["error
     const errors: CadastroPageData["errors"] = {}
 
     for (const issue of issues) {
-        errors[issue.field] = issue.message
+        if (issue.field === "username" || issue.field === "password") {
+            errors[issue.field] = issue.message
+        }
     }
 
     return errors

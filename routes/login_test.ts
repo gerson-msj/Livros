@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertMatch, assertStringIncludes } from "jsr:@std/assert@1"
+import { assert, assertEquals, assertStringIncludes } from "jsr:@std/assert@1"
 import {
     AuthenticationService,
     type Clock,
@@ -11,16 +11,12 @@ import {
 import type { Session, User } from "../dominio/autenticacao.ts"
 import { WebCryptoSecretHasher } from "../infraestrutura/crypto.ts"
 import { SESSION_COOKIE_NAME } from "../infraestrutura/session_cookie.ts"
-import { handler } from "./cadastro.tsx"
+import { handler } from "./login.tsx"
 
-Deno.test("GET /cadastro redireciona usuario com sessao ativa para biblioteca", async () => {
+Deno.test("GET /login redireciona usuario com sessao ativa para biblioteca", async () => {
     const service = createAuthenticationService()
     const registration = await service.registerUser({ username: "gerson", password: "senhaboa" })
-    const request = new Request("http://localhost/cadastro", {
-        headers: {
-            cookie: `${SESSION_COOKIE_NAME}=${registration.session.id}`
-        }
-    })
+    const request = createRequestWithSession("GET", registration.session.id)
 
     const response = await handler.GET!(createContext(request, service))
 
@@ -29,43 +25,40 @@ Deno.test("GET /cadastro redireciona usuario com sessao ativa para biblioteca", 
     assertEquals(response.headers.get("location"), "/biblioteca")
 })
 
-Deno.test("POST /cadastro retorna campos invalidos com mensagens do dominio", async () => {
-    const request = createPostRequest({ username: " abc ", password: " 1234 " })
+Deno.test("POST /login com credenciais validas cria sessao e redireciona para biblioteca", async () => {
+    const service = createAuthenticationService()
+    await service.registerUser({ username: "gerson", password: "senhaboa" })
+    const request = createPostRequest({ username: " GERSON ", password: " senhaboa " })
 
-    const response = await handler.POST!(createContext(request, createAuthenticationService()))
+    const response = await handler.POST!(createContext(request, service))
 
-    assertPageResponse(response)
-    assertEquals(response.data.username, "abc")
-    assertEquals(response.data.errors.username, "O nome de usuario deve conter no minimo 5 caracteres.")
-    assertEquals(response.data.errors.password, "A senha deve conter no minimo 5 caracteres.")
+    assert(response instanceof Response)
+    assertEquals(response.status, 303)
+    assertEquals(response.headers.get("location"), "/biblioteca")
+
+    const setCookie = response.headers.get("set-cookie")
+    assert(setCookie)
+    assertStringIncludes(setCookie, `${SESSION_COOKIE_NAME}=00000000-0000-4000-8000-000000000003`)
+    assertStringIncludes(setCookie, "HttpOnly")
 })
 
-Deno.test("POST /cadastro cria usuario, sessao, cookie HTTP e apresenta chave", async () => {
+Deno.test("POST /login com credenciais invalidas retorna mensagem generica", async () => {
     const service = createAuthenticationService()
-    const request = createPostRequest({ username: "  Gerson  ", password: " senhaboa " })
+    await service.registerUser({ username: "gerson", password: "senhaboa" })
+    const request = createPostRequest({ username: "gerson", password: "senha-ruim" })
 
     const response = await handler.POST!(createContext(request, service))
 
     assertPageResponse(response)
     assertEquals(response.data.username, "gerson")
-    assertMatch(response.data.resetKey ?? "", /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
-
-    const setCookie = new Headers(response.headers).get("set-cookie")
-    assert(setCookie)
-    assertStringIncludes(setCookie, `${SESSION_COOKIE_NAME}=00000000-0000-4000-8000-000000000002`)
-    assertStringIncludes(setCookie, "HttpOnly")
-    assertStringIncludes(setCookie, "SameSite=Lax")
-
-    const session = await service.findActiveSession("00000000-0000-4000-8000-000000000002")
-    assert(session)
-    assertEquals(session.userId, "00000000-0000-4000-8000-000000000001")
+    assertEquals(response.data.error, "Nao foi possivel entrar. Confira nome de usuario e senha.")
 })
 
-type CadastroContext = Parameters<NonNullable<typeof handler.GET>>[0]
-type CadastroResponse = Awaited<ReturnType<NonNullable<typeof handler.POST>>>
-type CadastroPageResponse = Exclude<CadastroResponse, Response>
+type LoginContext = Parameters<NonNullable<typeof handler.GET>>[0]
+type LoginResponse = Awaited<ReturnType<NonNullable<typeof handler.POST>>>
+type LoginPageResponse = Exclude<LoginResponse, Response>
 
-function createContext(request: Request, authentication: AuthenticationService): CadastroContext {
+function createContext(request: Request, authentication: AuthenticationService): LoginContext {
     return {
         req: request,
         state: {
@@ -73,11 +66,11 @@ function createContext(request: Request, authentication: AuthenticationService):
                 authentication
             }
         }
-    } as CadastroContext
+    } as LoginContext
 }
 
 function createPostRequest(input: { username: string; password: string }): Request {
-    return new Request("http://localhost/cadastro", {
+    return new Request("http://localhost/login", {
         method: "POST",
         headers: {
             "content-type": "application/x-www-form-urlencoded"
@@ -86,7 +79,16 @@ function createPostRequest(input: { username: string; password: string }): Reque
     })
 }
 
-function assertPageResponse(response: CadastroResponse): asserts response is CadastroPageResponse {
+function createRequestWithSession(method: "GET" | "POST", sessionId: string): Request {
+    return new Request("http://localhost/login", {
+        method,
+        headers: {
+            cookie: `${SESSION_COOKIE_NAME}=${sessionId}`
+        }
+    })
+}
+
+function assertPageResponse(response: LoginResponse): asserts response is LoginPageResponse {
     assert(!(response instanceof Response))
 }
 
