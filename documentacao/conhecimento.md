@@ -80,6 +80,11 @@ serie inteira.
 - Visitantes sem sessao ativa sao redirecionados de `/biblioteca` para `/cadastro`; usuarios ja logados sao redirecionados de `/cadastro`
   para `/biblioteca`.
 - Logout encerra a sessao persistida, limpa o cookie e impede novo acesso seguro com a mesma sessao.
+- Popup de mensagem reutilizavel como island Preact, com chamada assincrona, retorno `ok` ou `cancel`, temas Bulma, botoes opcionais,
+  quebras de linha legiveis e cancelamento por clique fora ou tecla `Esc`.
+- Titulo padrao reutilizavel como island Preact, com area esquerda configuravel, titulo alinhado a esquerda, intencao de voltar emitida por
+  evento e acao opcional de saida com confirmacao por popup.
+- As paginas `/cadastro` e `/biblioteca` usam o titulo padrao; a biblioteca confirma a saida antes de executar o logout existente.
 - Alteracoes em `Livros.db` sao ignoradas pelo watcher do Vite para evitar refresh durante o desenvolvimento local.
 
 ### Escopo inicial planejada
@@ -148,6 +153,11 @@ depois de cadastrada; ela pode ser excluida integralmente.
 Bulma foi escolhido como biblioteca de interface e seu CSS local e importado por `client.ts`. O projeto tambem disponibiliza o CSS local do
 Font Awesome em `static/css/all.min.css`, referenciado globalmente por `routes/_app.tsx`.
 
+Interacoes reutilizaveis de interface podem ser entregues como islands Preact pequenas quando exigirem estado no cliente. O popup de
+mensagem usa composicao Bulma `message` e `message-body`, preserva texto com quebras de linha sem interpretar HTML livre e resolve a escolha
+do usuario de forma assincrona. O titulo padrao encapsula apresentacao, intencao de voltar e confirmacao de saida, mas deixa a navegacao e o
+logout efetivo sob responsabilidade da pagina chamadora.
+
 ### Rotas Fresh e handlers
 
 As rotas devem concentrar a pagina e seus handlers sempre que isso for suficiente para o comportamento esperado. A propria pagina deve
@@ -198,4 +208,6 @@ O projeto comeca como um MVP simples. Novos recursos e complexidade devem ser ad
 ## Estado da tarefa
 
 A inicializacao do projeto Fresh esta concluida. A tarefa [TF-001 - Cadastro de usuarios](tarefas/001-cadastro-de-usuarios/tarefa.md)
-esta concluida apos implementar e validar cadastro, sessao inicial, biblioteca segura minima e ajustes de experiencia do cadastro.
+esta concluida apos implementar e validar cadastro, sessao inicial, biblioteca segura minima e ajustes de experiencia do cadastro. A tarefa
+[TF-002 - Componentes de mensagem e titulo](tarefas/002-componentes-mensagem-titulo/tarefa.md) esta concluida apos implementar e validar
+popup de mensagem, titulo padrao, aplicacao em cadastro e biblioteca e confirmacao de saida.
