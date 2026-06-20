@@ -7,3 +7,5 @@ contexto, decisoes pendentes e evidencias relevantes sem poluir o conhecimento p
   biblioteca.
 - [TF-002 - Componentes de mensagem e titulo](tarefas/002-componentes-mensagem-titulo/tarefa.md): popup assincrono de mensagens e
   titulo padrao para paginas.
+- [TF-003 - Login e redefinicao de senha](tarefas/003-login-redefinicao-senha/tarefa.md): entrada principal do sistema, login e uso da
+  chave para redefinir senha.
