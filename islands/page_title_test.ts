@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "jsr:@std/assert@1"
-import { createPageTitleBackIntent, PAGE_TITLE_BACK_INTENT_EVENT, submitLogoutForm } from "./PageTitle.tsx"
+import { createPageTitleBackIntent, navigateToBackHref, PAGE_TITLE_BACK_INTENT_EVENT, submitLogoutForm } from "./PageTitle.tsx"
 
 Deno.test("createPageTitleBackIntent informa apenas a intencao de voltar", () => {
     const event = createPageTitleBackIntent("Cadastro")
@@ -7,6 +7,16 @@ Deno.test("createPageTitleBackIntent informa apenas a intencao de voltar", () =>
     assertEquals(event.type, PAGE_TITLE_BACK_INTENT_EVENT)
     assertEquals(event.detail, { title: "Cadastro" })
     assertEquals(event.bubbles, true)
+})
+
+Deno.test("navigateToBackHref altera o destino quando href foi informado", () => {
+    const locationRef = {
+        href: ""
+    } as Location
+
+    assertEquals(navigateToBackHref("/login", locationRef), true)
+    assertEquals(locationRef.href, "/login")
+    assertEquals(navigateToBackHref(undefined, locationRef), false)
 })
 
 Deno.test("submitLogoutForm aciona o formulario existente", () => {

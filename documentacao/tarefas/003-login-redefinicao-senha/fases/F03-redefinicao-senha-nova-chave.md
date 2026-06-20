@@ -2,7 +2,7 @@
 
 **Tarefa:** [TF-003 - Login e redefinicao de senha](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
 **Depende de:** F01, F02
 
 ## Objetivo tecnico
@@ -53,3 +53,9 @@ usuario autenticado para a biblioteca.
 - Politica avancada de senha.
 - Bloqueio por tentativas.
 - Refatoracao ampla dos componentes compartilhados alem do necessario para esta tela funcionar.
+
+## Resultado
+
+- Resultado entregue: rota `/redefinir-senha` criada com formulario de usuario, chave atual e nova senha, alternancia de visualizacao da nova senha, redefinicao com geracao de nova chave, criacao de sessao e painel para copiar a nova chave dentro do campo antes de seguir para `/biblioteca`.
+- Verificacoes realizadas: `deno test --allow-env routes/redefinir_senha_test.ts islands/page_title_test.ts islands/cadastro_interactions_test.ts`; `deno task build`.
+- Riscos, limitacoes ou pendencias: consistencia visual compartilhada entre cadastro, login e redefinicao permanece para a F04.
