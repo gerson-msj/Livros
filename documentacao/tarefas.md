@@ -9,3 +9,5 @@ contexto, decisoes pendentes e evidencias relevantes sem poluir o conhecimento p
   titulo padrao para paginas.
 - [TF-003 - Login e redefinicao de senha](tarefas/003-login-redefinicao-senha/tarefa.md): entrada principal do sistema, login e uso da
   chave para redefinir senha.
+- [TF-004 - Gerenciamento de livros avulsos](tarefas/004-gerenciamento-livros-avulsos/tarefa.md): listagem, inclusao, edicao de datas e
+  exclusao de livros avulsos do usuario.
