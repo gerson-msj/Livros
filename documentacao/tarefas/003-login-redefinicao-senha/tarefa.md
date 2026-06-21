@@ -1,6 +1,6 @@
 # TF-003 - Login e redefinicao de senha
 
-**Estado:** Em desenvolvimento
+**Estado:** Concluida
 **Tipo:** Nova capacidade
 
 ## Resumo
@@ -92,7 +92,7 @@ chave for apresentada.
 ## Plano
 
 **Revisao:** 3
-**Proxima acao:** Aguardar validacao do projeto
+**Proxima acao:** Tarefa concluida
 
 ### Estrategia
 
@@ -128,20 +128,105 @@ componentes pequenos e verificacao integrada, sem criar uma biblioteca generica 
 
 ## Resumo final da tarefa
 
-Aguardando encerramento.
-
 ### Fonte da verdade
 
-Aguardando encerramento.
+A TF-003 implementou o login como entrada principal do sistema, a redefinicao de senha com chave de recuperacao, o alinhamento das telas
+publicas de autenticacao e a regra de sessao unica por usuario. Visitantes sem sessao ativa agora sao direcionados para `/login`; usuarios
+autenticados entram na biblioteca; cadastro e redefinicao apresentam a chave antes de permitir seguir autenticado para `/biblioteca`.
 
 ### Regras de negocio implementadas
 
-Aguardando encerramento.
+- Login usa nome de usuario e senha, normalizando o nome de usuario e recusando credenciais invalidas com mensagem generica.
+- Visitantes sem sessao ativa em `/biblioteca` sao redirecionados para `/login`.
+- Usuario ja autenticado que acessa login, cadastro ou redefinicao de senha e redirecionado para `/biblioteca`.
+- Redefinicao de senha exige nome de usuario, chave atual e nova senha validos; a chave usada deixa de funcionar e uma nova chave UUID e
+  apresentada ao usuario.
+- Login, cadastro e redefinicao bem-sucedidos criam sessao autenticada com validade de uma semana.
+- O sistema mantem no maximo uma sessao persistida por usuario: criar nova sessao remove sessoes anteriores do mesmo usuario.
+- Logout remove a sessao persistida do cookie atual, limpa o cookie HTTP e redireciona para `/login`.
+- Um dispositivo antigo com cookie de sessao substituida perde acesso quando a sessao for validada e e redirecionado para `/login`.
+- Campos de senha preservam o valor em erros de formulario e permitem alternar visibilidade por icone de olho.
+- As chaves de redefinicao apresentadas em cadastro e redefinicao ficam visiveis para copia manual e usam acao de copiar quando o navegador
+  suporta a Clipboard API.
 
 ### Decisoes tecnicas importantes
 
-Aguardando encerramento.
+- A autenticacao continuou centralizada em `AuthenticationService`, repositorios libSQL e provider por request.
+- Senhas e chaves de redefinicao seguem persistidas apenas como hashes PBKDF2 com SHA-256, salt aleatorio e 210000 iteracoes.
+- A regra de sessao unica foi aplicada no ponto comum de criacao de sessao, antes da insercao da nova sessao.
+- Sessoes substituidas ou encerradas sao removidas da tabela `sessions`; a coluna `ended_at` permanece no schema por compatibilidade.
+- Login, cadastro, redefinicao e biblioteca continuam concentrando pagina e handlers `GET`/`POST` nas rotas Fresh correspondentes.
+- Componentes pequenos compartilhados foram usados para campos de senha e apresentacao/copia de chave, sem criar biblioteca generica de
+  formularios.
 
 ### Limites conhecidos
 
-Aguardando encerramento.
+- Nao ha gestao de dispositivos, listagem de sessoes ou opcao de manter varias sessoes simultaneas.
+- Nao foram implementados email, segundo fator, captcha, bloqueio por tentativas, perfil de usuario ou alteracao de nome.
+- A coluna `ended_at` ainda existe no banco, embora o fluxo atual remova linhas de sessao em logout e substituicao de sessao.
+- A biblioteca segue como area segura minima; livros, autores e series permanecem para tarefas futuras.
+
+### Como validar
+
+- Executar
+  `deno test --allow-env --allow-read --allow-write --allow-ffi aplicacao/autenticacao_service_test.ts infraestrutura/auth_repositories_test.ts routes/biblioteca_test.ts routes/login_test.ts routes/cadastro_test.ts routes/redefinir_senha_test.ts routes/fluxo_cadastro_biblioteca_test.ts`.
+- Executar `deno task build`.
+- Em navegador, validar login, cadastro com exibicao de chave, redefinicao com nova chave, logout e substituicao da sessao ao entrar em outro
+  dispositivo.
+
+### Referencias
+
+- [F01 - Base de autenticacao para login e redefinicao](fases/F01-base-autenticacao-login-redefinicao.md): servico de autenticacao,
+  credenciais e repositorios.
+- [F02 - Login como entrada principal](fases/F02-login-entrada-principal.md): rota `/login`, redirecionamentos e entrada autenticada.
+- [F03 - Redefinicao de senha com nova chave](fases/F03-redefinicao-senha-nova-chave.md): uso da chave, geracao de nova chave e sessao apos
+  redefinicao.
+- [F04 - Consistencia componentes fluxo autenticacao](fases/F04-consistencia-componentes-fluxo-autenticacao.md): componentes
+  compartilhados e verificacao integrada.
+- [F05 - Correcoes validacao telas autenticacao](fases/F05-correcoes-validacao-telas-autenticacao.md): ajustes de validacao visual e
+  interacao das telas publicas.
+- [F06 - Sessao unica por usuario e logout persistente](fases/F06-sessao-unica-usuario-logout-persistente.md): regra de sessao unica e
+  remocao persistente no logout.
+
+## Consolidacao arquitetural
+
+**Modo:** Consolidar
+**Impacto permanente:** Sim
+
+**Conhecimento afetado**
+
+- [Conhecimento do projeto](../../conhecimento.md): dominio de usuario, estado atual, autenticacao e estado da tarefa.
+
+**Atualizacoes**
+
+- Login e redefinicao de senha foram registrados como capacidades existentes.
+- Redirecionamentos publicos passaram a apontar para `/login`.
+- Sessao unica por usuario, remocao persistente no logout e substituicao de sessao por novo login foram registrados como comportamento
+  atual.
+- Limites ainda nao implementados, como livros, autores, series, perfil, email e segundo fator, permaneceram diferenciados do estado atual.
+
+**Decisoes pendentes**
+
+- Nenhuma.
+
+**Riscos ou inconsistencias**
+
+- Nenhum bloqueante. A coluna `ended_at` permanece no schema apesar de o comportamento atual remover sessoes em vez de apenas marca-las como
+  encerradas.
+
+## Validacao final da tarefa
+
+**Resultado:** Aprovado
+**Retorno:** Tudo ok com a TF-003; pode finalizar a tarefa atual.
+
+## Auditoria de encerramento
+
+**Resultado:** Encerramento confirmado
+
+### Verificacoes
+
+- Todas as fases F01 a F06 estao `Concluida`.
+- Expectativas de aceite foram cobertas por fases, testes e validacao do usuario.
+- O resumo final representa o comportamento implementado.
+- O conhecimento permanente foi consolidado em `documentacao/conhecimento.md`.
+- Nao existem pendencias bloqueantes conhecidas relacionadas a TF-003.

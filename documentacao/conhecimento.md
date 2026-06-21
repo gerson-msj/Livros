@@ -1,7 +1,7 @@
 # Conhecimento do projeto
 
-Livros e um MVP para controlar leituras e organizar series de livros. O projeto usa Fresh, Deno e Bulma, possui cadastro inicial de
-usuarios, sessao HTTP persistida em libSQL local e uma area segura minima em `/biblioteca`.
+Livros e um MVP para controlar leituras e organizar series de livros. O projeto usa Fresh, Deno e Bulma, possui cadastro, login,
+redefinicao de senha, sessao HTTP persistida em libSQL local e uma area segura minima em `/biblioteca`.
 
 ## Visao
 
@@ -21,10 +21,14 @@ Pessoa que se cadastra no sistema com nome de usuario e senha e mantem seu propr
 
 No cadastro existente, o sistema remove espacos ao redor do nome de usuario e da senha, exige ao menos 5 caracteres para ambos, armazena o
 nome de usuario em minusculas e recusa nomes duplicados. Depois de um cadastro valido, gera uma chave UUID de redefinicao que deve ser
-anotada pelo usuario, cria uma sessao com validade de uma semana e permite entrada direta na area segura sem novo login.
+anotada pelo usuario, cria uma sessao com validade de uma semana e permite entrada direta na area segura depois que a chave for apresentada.
 
-Login separado ainda nao foi implementado. A redefinicao de senha permanece planejada e deve exigir nome de usuario, chave de redefinicao e
-uma nova senha. Depois da redefinicao, o sistema devera invalidar a chave utilizada e apresentar uma nova chave para redefinicoes futuras.
+O login usa nome de usuario e senha e funciona como entrada principal do sistema. A redefinicao de senha exige nome de usuario, chave de
+redefinicao atual e nova senha; quando concluida, invalida a chave usada, apresenta uma nova chave para uso futuro e cria uma sessao.
+
+Cada usuario pode ter no maximo uma sessao ativa persistida. Quando uma nova sessao e criada por cadastro, login ou redefinicao de senha,
+sessoes anteriores do mesmo usuario sao removidas. Um navegador que mantenha cookie de uma sessao substituida deixa de acessar a area segura
+quando a sessao for validada e e direcionado ao login.
 
 Os dados de livros, series e autores pertencem somente ao usuario que os cadastrou. Nao existe compartilhamento entre usuarios.
 
@@ -71,26 +75,29 @@ serie inteira.
 - Bulma e Font Awesome configurados para a interface.
 - Cadastro de usuarios em `/cadastro` com nome de usuario, senha, visualizacao opcional da senha digitada, indicacao `is-danger` para campos
   invalidos e limpeza do erro visual de um campo quando o usuario volta a digitar nele.
+- Login em `/login` com nome de usuario e senha, mensagens genericas para credenciais invalidas e caminhos para cadastro e redefinicao de
+  senha.
 - Cadastro bem-sucedido apresenta uma chave UUID de redefinicao, permite copiar a chave para a area de transferencia quando o navegador
-  suporta a Clipboard API e cria uma sessao inicial por cookie HTTP.
+  suporta a Clipboard API, cria uma sessao inicial por cookie HTTP e mantem a chave visivel antes de seguir para `/biblioteca`.
+- Redefinicao de senha em `/redefinir-senha` com nome de usuario, chave atual e nova senha, invalidando a chave usada, apresentando uma nova
+  chave e criando sessao autenticada.
 - Persistencia local com libSQL em `Livros.db` para usuarios e sessoes.
 - Senhas e chaves de redefinicao sao armazenadas por hash, nao em texto puro.
-- Sessao inicial tem validade de uma semana.
+- Sessoes tem validade de uma semana e ha no maximo uma sessao persistida por usuario.
 - `/biblioteca` existe como area segura minima contendo somente a opcao de saida.
-- Visitantes sem sessao ativa sao redirecionados de `/biblioteca` para `/cadastro`; usuarios ja logados sao redirecionados de `/cadastro`
-  para `/biblioteca`.
-- Logout encerra a sessao persistida, limpa o cookie e impede novo acesso seguro com a mesma sessao.
+- Visitantes sem sessao ativa sao redirecionados de `/biblioteca` para `/login`; usuarios ja logados sao redirecionados de `/login`,
+  `/cadastro` e `/redefinir-senha` para `/biblioteca`.
+- Logout remove a sessao persistida, limpa o cookie, redireciona para `/login` e impede novo acesso seguro com a mesma sessao.
 - Popup de mensagem reutilizavel como island Preact, com chamada assincrona, retorno `ok` ou `cancel`, temas Bulma, botoes opcionais,
   quebras de linha legiveis e cancelamento por clique fora ou tecla `Esc`.
 - Titulo padrao reutilizavel como island Preact, com area esquerda configuravel, titulo alinhado a esquerda, intencao de voltar emitida por
   evento e acao opcional de saida com confirmacao por popup.
-- As paginas `/cadastro` e `/biblioteca` usam o titulo padrao; a biblioteca confirma a saida antes de executar o logout existente.
+- As paginas `/login`, `/cadastro`, `/redefinir-senha` e `/biblioteca` usam o titulo padrao; a biblioteca confirma a saida antes de executar
+  o logout existente.
 - Alteracoes em `Livros.db` sao ignoradas pelo watcher do Vite para evitar refresh durante o desenvolvimento local.
 
 ### Escopo inicial planejada
 
-- Login com nome de usuario e senha.
-- Redefinicao de senha com nome de usuario, chave de redefinicao e nova senha.
 - Cadastro de livros.
 - Cadastro e reutilizacao de autores em livros avulsos e series.
 - Registro de titulo, autor e datas de inicio e conclusao da leitura.
@@ -122,17 +129,19 @@ O sistema nao exige email. Cada conta usa nome de usuario e senha.
 
 No cadastro implementado, uma chave de redefinicao em formato UUID e gerada e apresentada ao usuario. A tela permite copiar a chave para a
 area de transferencia quando o navegador suporta a Clipboard API e mantem a chave visivel para copia manual quando a copia automatica falha
-ou nao esta disponivel. Depois do cadastro, o usuario entra diretamente na area segura por uma sessao inicial registrada no banco e
+ou nao esta disponivel. Depois do cadastro, o usuario pode seguir para a area segura por uma sessao inicial registrada no banco e
 representada no navegador pelo cookie `livros_session`.
 
 Senha e chave de redefinicao sao persistidas somente como hashes PBKDF2 com SHA-256, salt aleatorio e 210000 iteracoes. A chave em texto
 claro aparece apenas no resultado do cadastro.
 
-Cada sessao criada no cadastro tem validade de uma semana. O cookie de sessao usa `HttpOnly`, `SameSite=Lax`, `Path=/` e expiracao alinhada
-a sessao persistida. O logout encerra a sessao no banco e limpa o cookie.
+Login separado em `/login` usa nome de usuario e senha e mostra mensagem generica quando as credenciais sao invalidas. Redefinicao de senha
+em `/redefinir-senha` usa nome de usuario, chave atual e nova senha; em caso de sucesso, invalida a chave usada, gera uma nova chave e a
+apresenta ao usuario para uso futuro.
 
-A redefinicao de senha ainda nao foi implementada. Quando for entregue, devera invalidar a chave utilizada e gerar uma nova chave de
-redefinicao, que deve ser apresentada ao usuario para uso futuro.
+Cada sessao tem validade de uma semana. O cookie de sessao usa `HttpOnly`, `SameSite=Lax`, `Path=/` e expiracao alinhada a sessao persistida.
+Ao criar uma nova sessao para um usuario, sessoes anteriores do mesmo usuario sao removidas para manter no maximo uma sessao persistida por
+usuario. O logout remove a sessao no banco e limpa o cookie.
 
 ### Privacidade
 
@@ -210,4 +219,6 @@ O projeto comeca como um MVP simples. Novos recursos e complexidade devem ser ad
 A inicializacao do projeto Fresh esta concluida. A tarefa [TF-001 - Cadastro de usuarios](tarefas/001-cadastro-de-usuarios/tarefa.md)
 esta concluida apos implementar e validar cadastro, sessao inicial, biblioteca segura minima e ajustes de experiencia do cadastro. A tarefa
 [TF-002 - Componentes de mensagem e titulo](tarefas/002-componentes-mensagem-titulo/tarefa.md) esta concluida apos implementar e validar
-popup de mensagem, titulo padrao, aplicacao em cadastro e biblioteca e confirmacao de saida.
+popup de mensagem, titulo padrao, aplicacao em cadastro e biblioteca e confirmacao de saida. A tarefa
+[TF-003 - Login e redefinicao de senha](tarefas/003-login-redefinicao-senha/tarefa.md) esta concluida apos implementar e validar login,
+redefinicao de senha com nova chave, redirecionamentos para login, componentes de autenticacao e sessao unica por usuario.
