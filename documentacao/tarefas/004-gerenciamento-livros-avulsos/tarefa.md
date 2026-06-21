@@ -1,6 +1,6 @@
 # TF-004 - Gerenciamento de livros avulsos
 
-**Estado:** Planejada
+**Estado:** Em desenvolvimento
 **Tipo:** Nova capacidade
 
 ## Resumo
@@ -119,7 +119,7 @@ avulsos, a forma consolidada das rotas, o modelo de dados adotado e os limites c
 ## Plano
 
 **Revisao:** 1
-**Proxima acao:** Aguardar confirmacao para commitar o planejamento e iniciar as fases UX
+**Proxima acao:** Executar F02 com a skill designer
 
 ### Estrategia
 
@@ -134,17 +134,17 @@ codigo, validacao das datas, comportamento visual em navegador e retorno correto
 
 ## Controle de fases
 
-| Fase | Estado    | Depende de | Resumo                                                   | Arquivo                                                                                   |
-| ---- | --------- | ---------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| F01  | Planejada | Nenhuma    | Entrada mockada de livros na biblioteca.                 | [F01 - Entrada mockada livros biblioteca](fases/F01-entrada-mockada-livros-biblioteca.md) |
-| F02  | Planejada | F01        | Lista mockada de livros com topo fixo e rolagem.         | [F02 - Lista mockada livros](fases/F02-lista-mockada-livros.md)                           |
-| F03  | Planejada | F02        | Inclusao mockada com componentes de data e autor.        | [F03 - Inclusao mockada livro](fases/F03-inclusao-mockada-livro.md)                       |
-| F04  | Planejada | F03        | Edicao e exclusao mockadas de livro.                     | [F04 - Edicao exclusao mockadas livro](fases/F04-edicao-exclusao-mockadas-livro.md)       |
-| F05  | Planejada | F01, F04   | Dominio e persistencia de autores e livros avulsos.      | [F05 - Dominio persistencia livros](fases/F05-dominio-persistencia-livros.md)             |
-| F06  | Planejada | F05        | Listagem real de livros e entrada pela biblioteca.       | [F06 - Listagem real livros](fases/F06-listagem-real-livros.md)                           |
-| F07  | Planejada | F03, F05   | Inclusao real de livro com autor existente ou novo.      | [F07 - Inclusao real livro](fases/F07-inclusao-real-livro.md)                             |
-| F08  | Planejada | F04, F05   | Edicao de datas e exclusao real de livro.                | [F08 - Edicao exclusao real livro](fases/F08-edicao-exclusao-real-livro.md)               |
-| F09  | Planejada | F06, F07, F08 | Validacao integrada do gerenciamento de livros avulsos. | [F09 - Validacao integrada livros](fases/F09-validacao-integrada-livros.md)               |
+| Fase | Estado             | Depende de    | Resumo                                                  | Arquivo                                                                                   |
+| ---- | ------------------ | ------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| F01  | Concluida          | Nenhuma       | Entrada mockada de livros na biblioteca.                | [F01 - Entrada mockada livros biblioteca](fases/F01-entrada-mockada-livros-biblioteca.md) |
+| F02  | Planejada          | F01           | Lista mockada de livros com topo fixo e rolagem.        | [F02 - Lista mockada livros](fases/F02-lista-mockada-livros.md)                           |
+| F03  | Planejada          | F02           | Inclusao mockada com componentes de data e autor.       | [F03 - Inclusao mockada livro](fases/F03-inclusao-mockada-livro.md)                       |
+| F04  | Planejada          | F03           | Edicao e exclusao mockadas de livro.                    | [F04 - Edicao exclusao mockadas livro](fases/F04-edicao-exclusao-mockadas-livro.md)       |
+| F05  | Planejada          | F01, F04      | Dominio e persistencia de autores e livros avulsos.     | [F05 - Dominio persistencia livros](fases/F05-dominio-persistencia-livros.md)             |
+| F06  | Planejada          | F05           | Listagem real de livros e entrada pela biblioteca.      | [F06 - Listagem real livros](fases/F06-listagem-real-livros.md)                           |
+| F07  | Planejada          | F03, F05      | Inclusao real de livro com autor existente ou novo.     | [F07 - Inclusao real livro](fases/F07-inclusao-real-livro.md)                             |
+| F08  | Planejada          | F04, F05      | Edicao de datas e exclusao real de livro.               | [F08 - Edicao exclusao real livro](fases/F08-edicao-exclusao-real-livro.md)               |
+| F09  | Planejada          | F06, F07, F08 | Validacao integrada do gerenciamento de livros avulsos. | [F09 - Validacao integrada livros](fases/F09-validacao-integrada-livros.md)               |
 
 ## Resumo final da tarefa
 

@@ -309,3 +309,74 @@ html {
   outline: 2px solid #485fc7;
   outline-offset: -0.15rem;
 }
+.livros-library-actions {
+  display: grid;
+  gap: 1rem;
+}
+
+.livros-library-card {
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  box-shadow: none;
+  color: inherit;
+  display: block;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.livros-library-card-primary {
+  border-color: #b8c1f2;
+}
+
+.livros-library-card-primary:hover,
+.livros-library-card-primary:focus-visible {
+  border-color: #485fc7;
+  box-shadow: 0 0 0 2px rgba(72, 95, 199, 0.18);
+  color: inherit;
+}
+
+.livros-library-card-primary:focus-visible {
+  outline: 2px solid #485fc7;
+  outline-offset: 0.2rem;
+}
+
+.livros-library-card-disabled {
+  background: #f5f5f5;
+  color: #7a7a7a;
+}
+
+.livros-library-card-content {
+  align-items: center;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: 1rem;
+}
+
+.livros-library-card-icon {
+  color: #485fc7;
+  font-size: 1.5rem;
+}
+
+.livros-library-card-disabled .livros-library-card-icon {
+  color: #7a7a7a;
+}
+
+.livros-library-card-text {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.livros-library-card-text strong,
+.livros-library-card-text span {
+  overflow-wrap: anywhere;
+}
+
+.livros-library-card-arrow {
+  color: #485fc7;
+}
+
+.livros-books-mock-notice {
+  border-radius: 8px;
+}

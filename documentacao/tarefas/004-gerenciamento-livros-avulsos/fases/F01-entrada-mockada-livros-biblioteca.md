@@ -2,7 +2,7 @@
 
 **Tarefa:** [TF-004 - Gerenciamento de livros avulsos](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
 **Depende de:** Nenhuma
 **Tipo de fase:** UX
 **Executor:** designer
@@ -37,3 +37,13 @@ livros avulsos e como a futura entrada de series podera coexistir sem ser implem
 - Persistencia, regras de dominio e handlers reais de livros.
 - Implementacao de series.
 - Alteracao real do modelo de dados.
+
+## Resultado
+
+- Biblioteca passou a exibir uma entrada mockada para livros avulsos e uma entrada reservada para series em layout compativel com desktop e
+  mobile.
+- A entrada de livros navega para `/biblioteca/livros`, rota segura com placeholder mockado para orientar a fase F02.
+- Validacoes realizadas com `deno fmt --check routes\biblioteca.tsx routes\biblioteca\livros.tsx`, `deno task build` e renderizacao em
+  Chrome local/Playwright em desktop e mobile.
+- Usuario validou a organizacao visual da fase.
+- O fluxo continua sem persistencia, regras de dominio ou implementacao real de livros e series.
