@@ -114,12 +114,12 @@ avulsos, a forma consolidada das rotas, o modelo de dados adotado e os limites c
 - Definir o modelo de dados concreto para livros avulsos e autores, incluindo a referencia opcional de autor no banco.
 - Definir a forma final do componente de data a partir do modelo que sera fornecido pelo usuario.
 - Definir a forma final do componente de selecao/criacao de autor a partir do modelo que sera fornecido pelo usuario.
-- Definir se a lista de livros tera apenas rolagem simples ou algum recurso minimo adicional durante a validacao UX.
+- Validar o layout reutilizavel `FixedHeaderPage` criado na F02 em telas futuras com topo fixo e rolagem da pagina.
 
 ## Plano
 
 **Revisao:** 1
-**Proxima acao:** Executar F02 com a skill designer
+**Proxima acao:** Executar F03 com a skill designer
 
 ### Estrategia
 
@@ -137,7 +137,7 @@ codigo, validacao das datas, comportamento visual em navegador e retorno correto
 | Fase | Estado             | Depende de    | Resumo                                                  | Arquivo                                                                                   |
 | ---- | ------------------ | ------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | F01  | Concluida          | Nenhuma       | Entrada mockada de livros na biblioteca.                | [F01 - Entrada mockada livros biblioteca](fases/F01-entrada-mockada-livros-biblioteca.md) |
-| F02  | Planejada          | F01           | Lista mockada de livros com topo fixo e rolagem.        | [F02 - Lista mockada livros](fases/F02-lista-mockada-livros.md)                           |
+| F02  | Concluida          | F01           | Lista mockada de livros com topo fixo e rolagem.        | [F02 - Lista mockada livros](fases/F02-lista-mockada-livros.md)                           |
 | F03  | Planejada          | F02           | Inclusao mockada com componentes de data e autor.       | [F03 - Inclusao mockada livro](fases/F03-inclusao-mockada-livro.md)                       |
 | F04  | Planejada          | F03           | Edicao e exclusao mockadas de livro.                    | [F04 - Edicao exclusao mockadas livro](fases/F04-edicao-exclusao-mockadas-livro.md)       |
 | F05  | Planejada          | F01, F04      | Dominio e persistencia de autores e livros avulsos.     | [F05 - Dominio persistencia livros](fases/F05-dominio-persistencia-livros.md)             |

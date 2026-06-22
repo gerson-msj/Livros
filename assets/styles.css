@@ -377,6 +377,226 @@ html {
   color: #485fc7;
 }
 
-.livros-books-mock-notice {
+.livros-fixed-page {
+  min-height: 100dvh;
+}
+
+.livros-fixed-page-header {
+  left: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 20;
+}
+
+.livros-fixed-page-header-inner {
+  pointer-events: auto;
+}
+
+.livros-fixed-page-content {
+  margin-top: calc(var(--livros-fixed-page-header-height, 17rem) + var(--livros-fixed-page-content-gap, 1rem));
+}
+
+.livros-books-page {
+  background: #111820;
+  --livros-fixed-page-content-gap: 1rem;
+}
+
+.livros-books-fixed-header {
+  background: linear-gradient(180deg, #111820 0%, #111820 86%, rgba(17, 24, 32, 0));
+  padding: 1.5rem 1.5rem 0.95rem;
+}
+
+.livros-books-fixed-header-inner {
+  margin: 0 auto;
+  max-width: 36rem;
+  width: calc(100% - 3rem);
+}
+
+.livros-books-fixed-header .livros-page-title-heading {
+  color: #f5f7fb;
+}
+
+.livros-books-fixed-header .livros-page-title-icon-button {
+  color: #7c8df0;
+}
+
+.livros-books-fixed-header .livros-page-title-icon-button:hover,
+.livros-books-fixed-header .livros-page-title-icon-button:focus-visible {
+  color: #9fb0ff;
+}
+
+.livros-books-fixed-header .livros-books-toolbar-text p:first-child {
+  color: #d8dee9;
+}
+
+.livros-books-fixed-header .livros-books-toolbar-text .has-text-grey {
+  color: #aeb8c8 !important;
+}
+
+.livros-books-toolbar {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.livros-books-toolbar-text {
+  min-width: 0;
+}
+
+.livros-books-toolbar-text p {
+  overflow-wrap: anywhere;
+}
+
+.livros-books-new-button {
+  flex: 0 0 auto;
+}
+
+.livros-books-state-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.livros-books-feedback {
   border-radius: 8px;
+  margin-bottom: 0;
+  padding: 0.75rem 1rem;
+}
+
+.livros-books-page-list {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 36rem;
+  padding: 0.125rem 0.125rem 3rem;
+  width: calc(100% - 3rem);
+}
+
+.livros-books-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.livros-book-item {
+  align-items: center;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  color: #f5f7fb;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  padding: 0.875rem 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.livros-book-item:hover,
+.livros-book-item:focus-visible {
+  background: #263244;
+  border-color: #7c8df0;
+  box-shadow: 0 0 0 2px rgba(124, 141, 240, 0.28);
+}
+
+.livros-book-item:focus-visible {
+  outline: 2px solid #7c8df0;
+  outline-offset: 0.15rem;
+}
+
+.livros-book-item-main,
+.livros-book-item-dates,
+.livros-book-date {
+  min-width: 0;
+}
+
+.livros-book-item-main {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.livros-book-item-title {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.livros-book-item-author {
+  color: #d8dee9;
+  overflow-wrap: anywhere;
+}
+
+.livros-book-item-dates {
+  display: grid;
+  gap: 0.25rem;
+  grid-template-columns: repeat(2, minmax(6.75rem, auto));
+}
+
+.livros-book-date {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.livros-book-date-label {
+  color: #aeb8c8;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.livros-book-item-arrow {
+  color: #9fb0ff;
+}
+
+.livros-books-empty {
+  align-items: center;
+  border: 1px dashed #b5b5b5;
+  border-radius: 8px;
+  color: #4a4a4a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  justify-content: center;
+  min-height: 18rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.livros-books-empty-icon {
+  color: #485fc7;
+  font-size: 2rem;
+}
+
+@media (max-width: 520px) {
+  .livros-books-page {
+    padding-bottom: 1rem;
+  }
+
+  .livros-books-fixed-header {
+    padding-top: 1rem;
+  }
+
+  .livros-books-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .livros-books-new-button {
+    width: 100%;
+  }
+
+  .livros-book-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .livros-book-item-dates {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .livros-book-item-arrow {
+    grid-column: 2;
+    grid-row: 1;
+  }
 }
