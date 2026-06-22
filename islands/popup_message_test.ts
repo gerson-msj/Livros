@@ -56,3 +56,12 @@ Deno.test("createPopupMessageSession resolve apenas a primeira escolha", () => {
 
     assertEquals(results, ["cancel"])
 })
+
+Deno.test("createPopupMessageSession permite resultado de botao secundario", () => {
+    const results: PopupMessageResult[] = []
+    const session = createPopupMessageSession((result) => results.push(result))
+
+    session.finish("negative")
+
+    assertEquals(results, ["negative"])
+})

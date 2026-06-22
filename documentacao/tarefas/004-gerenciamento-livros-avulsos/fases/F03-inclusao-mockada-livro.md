@@ -2,10 +2,7 @@
 
 **Tarefa:** [TF-004 - Gerenciamento de livros avulsos](../tarefa.md)
 
-**Estado:** Planejada
-**Depende de:** F02
-**Tipo de fase:** UX
-**Executor:** designer
+**Estado:** Concluida **Depende de:** F02 **Tipo de fase:** UX **Executor:** designer
 
 ## Objetivo tecnico
 
@@ -39,3 +36,26 @@ confirmacoes e alerta de volta com alteracoes nao salvas.
 - Criacao real de autores ou livros.
 - Consulta real de autores do usuario.
 - Regras persistentes de duplicidade.
+
+## Resultado
+
+- Tela `/biblioteca/livros/novo` entregue como inclusao mockada protegida por sessao, com formulario pequeno em fluxo normal, sem topo fixo.
+- Componentes UX temporarios criados: `MockBookCreateForm`, `MockBookDateInput` e `MockAuthorPicker`.
+- `MockBookDateInput` segue o modelo fornecido: `input[type=date]`, indicador nativo escondido, botao de calendario via `showPicker` e
+  classe `is-placeholder` quando o campo esta vazio ou incompleto.
+- `MockAuthorPicker` segue o modelo fornecido: campo somente leitura, modal com pesquisa, lista rolavel, selecao de autor existente e
+  criacao de novo nome; a opcao `Criar "autor"` aparece no inicio da lista filtrada.
+- Validacoes simuladas de salvamento cobrem titulo curto, autor curto e duplicidade de titulo/autor; erros de titulo e autor aparecem juntos
+  no message em tela, sem popup de erro.
+- Datas incompletas ficam tratadas como ausencia de data na UX mockada.
+- Salvamento valido usa popup de confirmacao e retorna para `/biblioteca/livros`.
+- Retorno com alteracoes nao salvas usa popup com mensagem em cor padrao, botoes abaixo da mensagem e alinhados a direita; `Permanecer` e a
+  acao principal e `Voltar sem salvar` e a acao secundaria.
+- `PopupMessage` foi ajustado para manter titulo e corpo com cores padrao do tema e aplicar a cor semantica somente ao botao principal.
+- Artefatos temporarios de UX: dados mockados, validacoes simuladas e navegacao por `globalThis.location`; as fases comuns devem substituir
+  por handlers e integracao real quando implementarem persistencia.
+- Artefatos reutilizaveis para fases futuras: visual dos componentes `MockBookDateInput` e `MockAuthorPicker`, fluxo de mensagem em tela
+  para erro de formulario, popup de alteracoes nao salvas e ajuste do `PopupMessage`.
+- Validacoes realizadas com `deno check`, `deno test islands\popup_message_test.ts`, `deno task build` e validacao visual/interativa do
+  usuario em navegador.
+- Usuario aprovou a fase em 2026-06-22. A F04 sera iniciada em outro momento.

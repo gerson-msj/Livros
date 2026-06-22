@@ -1,7 +1,7 @@
 import type { ComponentChild } from "preact"
 import { useEffect, useMemo, useState } from "preact/hooks"
 
-export type PopupMessageResult = "ok" | "cancel"
+export type PopupMessageResult = "ok" | "cancel" | "negative"
 export type PopupMessageTheme = "primary" | "info" | "success" | "warning" | "danger" | "dark"
 
 export interface PopupMessageOptions {
@@ -120,7 +120,7 @@ function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage })
             >
             </button>
             <div class="modal-content livros-popup-message-content">
-                <article class={`message ${themeClass} livros-popup-message-panel`}>
+                <article class="message livros-popup-message-panel">
                     {options.title && (
                         <header class="message-header">
                             <p id="popup-message-title">{options.title}</p>
@@ -135,9 +135,9 @@ function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage })
                                 <div class="livros-popup-message-actions">
                                     {options.showNegativeButton && (
                                         <button
-                                            class="button is-dark is-outlined livros-popup-message-button"
+                                            class="button is-light livros-popup-message-button"
                                             type="button"
-                                            onClick={() => activeMessage.finish("cancel")}
+                                            onClick={() => activeMessage.finish("negative")}
                                         >
                                             {options.negativeText}
                                         </button>

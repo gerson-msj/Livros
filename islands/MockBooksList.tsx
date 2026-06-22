@@ -31,7 +31,8 @@ export default function MockBooksList() {
     const books = showEmpty ? [] : mockBooks
 
     function simulateNewBook() {
-        setMessage("Fluxo de novo livro simulado. A tela de inclusao sera definida na F03.")
+        setMessage("Abrindo inclusao mockada de livro.")
+        globalThis.location.href = "/biblioteca/livros/novo"
     }
 
     function simulateEdit(book: MockBook) {
