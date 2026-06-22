@@ -544,6 +544,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: #aeb8c8;
 }
 
+.livros-book-form .livros-book-readonly-input {
+    background: #263244;
+    border-color: #4b5563;
+    color: #d8dee9;
+    cursor: default;
+}
+
+.livros-book-form .livros-book-readonly-input:focus,
+.livros-book-form .livros-book-readonly-input:focus-visible {
+    border-color: #4b5563;
+    box-shadow: none;
+}
+
+.livros-book-readonly-help {
+    color: #aeb8c8;
+}
+
 .livros-book-form .input:focus,
 .livros-book-form .input:focus-visible {
     border-color: #7c8df0;

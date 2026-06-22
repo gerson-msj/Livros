@@ -2,10 +2,7 @@
 
 **Tarefa:** [TF-004 - Gerenciamento de livros avulsos](../tarefa.md)
 
-**Estado:** Planejada
-**Depende de:** F03
-**Tipo de fase:** UX
-**Executor:** designer
+**Estado:** Concluida **Depende de:** F03 **Tipo de fase:** UX **Executor:** designer
 
 ## Objetivo tecnico
 
@@ -39,3 +36,23 @@ retorno para a lista.
 - Exclusao real no banco.
 - Atualizacao real de datas.
 - Mudanca de titulo ou autor depois do cadastro.
+
+## Resultado
+
+- Tela `/biblioteca/livros/:id` entregue como edicao/exclusao mockada protegida por sessao.
+- A lista mockada passou a abrir a rota de edicao ao selecionar um livro.
+- Titulo e autor aparecem em campos somente leitura com ajuda textual indicando que nao podem ser alterados depois do cadastro.
+- Datas permanecem editaveis com o mesmo componente `MockBookDateInput` validado no fluxo de inclusao.
+- Salvamento mockado valida data de inicio posterior a data de conclusao, exibe erro em tela e, quando valido, mostra popup de confirmacao e
+  retorna para `/biblioteca/livros`.
+- Voltar sem alteracoes retorna diretamente para a lista; voltar com alteracoes nao salvas mostra popup de confirmacao.
+- Exclusao mockada usa icone de lixeira no header, pede confirmacao contendo o titulo do livro, mostra mensagem de sucesso e retorna para a
+  lista.
+- Validacoes visuais/interativas realizadas pelo usuario no navegador local; ajustes pedidos de acentuacao foram aplicados.
+- Artefatos reutilizaveis para fases futuras: visual do fluxo de edicao, uso do icone de exclusao no header, campos somente leitura para
+  titulo/autor, mensagens de confirmacao e validacao de datas.
+- Artefatos temporarios de UX: dados mockados, validacoes simuladas, exclusao simulada e navegacao por `globalThis.location`; as fases
+  comuns devem substituir por handlers, regras e persistencia reais.
+- Verificacoes realizadas com `deno fmt`, `deno lint`, `deno check` nos arquivos tocados, alem de `deno check` e `deno task build` durante a
+  implementacao da fase.
+- Usuario aprovou a fase em 2026-06-22.

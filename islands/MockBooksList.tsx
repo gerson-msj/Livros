@@ -36,7 +36,8 @@ export default function MockBooksList() {
     }
 
     function simulateEdit(book: MockBook) {
-        setMessage(`Edicao simulada para "${book.title}". A edicao de datas sera definida na F04.`)
+        setMessage(`Abrindo edicao mockada de "${book.title}".`)
+        globalThis.location.href = `/biblioteca/livros/${book.id}`
     }
 
     return (
