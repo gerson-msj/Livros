@@ -2,9 +2,7 @@
 
 **Tarefa:** [TF-004 - Gerenciamento de livros avulsos](../tarefa.md)
 
-**Estado:** Planejada
-**Depende de:** F04, F05
-**Tipo de fase:** Comum
+**Estado:** Concluida **Depende de:** F04, F05 **Tipo de fase:** Comum
 
 ## Objetivo tecnico
 
@@ -42,3 +40,23 @@ leitura depois do cadastro.
 - Alteracao de titulo ou autor.
 - Restauracao de livro excluido.
 - Regras de series.
+
+## Resultado
+
+- Rota `/biblioteca/livros/:id` substituida pela edicao/exclusao real protegida por sessao, carregando apenas livro avulso do usuario
+  autenticado no `GET`, salvando datas no `POST` e excluindo no `DELETE`.
+- Criado `BookEditForm` real com titulo e autor somente leitura, edicao das datas, alerta de volta com alteracoes nao salvas, confirmacao de
+  exclusao com titulo do livro, mensagens de sucesso e retorno para a lista.
+- Bloqueio de acesso a livros de outros usuarios mantido por consulta e operacoes escopadas por `userId`; livro inexistente ou alheio nao
+  pode ser editado nem excluido.
+- Removidos artefatos mockados paralelos ja cobertos pela implementacao real da lista, inclusao e edicao/exclusao: `MockBooksList`,
+  `MockBookCreateForm`, `MockAuthorPicker`, `MockBookDateInput` e `MockBookEditForm`.
+- Adicionados testes de rota para visitante sem sessao, carregamento de livro proprio, bloqueio de livro de outro usuario, salvamento real
+  de datas, validacao de datas incoerentes e exclusao real.
+- Verificacoes realizadas: `rg -n "Mock|mockad|simulad" islands routes`, `deno fmt --check` nos arquivos tocados,
+  `deno test -A
+  routes\biblioteca_livros_id_test.ts`, `deno test -A`, `deno lint .`, `deno check` e `deno task build`.
+- Testes unitarios temporarios: nao criados.
+- Riscos, limitacoes ou pendencias: validacao visual em navegador fica para a validacao integrada da F09, salvo se o usuario solicitar
+  ajuste antes.
+- Validacao dos fontes: aprovada pelo usuario em 2026-06-23.

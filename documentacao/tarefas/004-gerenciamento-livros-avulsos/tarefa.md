@@ -117,7 +117,7 @@ avulsos, a forma consolidada das rotas, o modelo de dados adotado e os limites c
 
 ## Plano
 
-**Revisao:** 1 **Proxima acao:** Executar F08 com a skill desenvolvedor
+**Revisao:** 1 **Proxima acao:** Validar fontes da F08 com o usuario
 
 ### Estrategia
 
@@ -141,7 +141,7 @@ codigo, validacao das datas, comportamento visual em navegador e retorno correto
 | F05  | Concluida | F01, F04      | Dominio e persistencia de autores e livros avulsos.     | [F05 - Dominio persistencia livros](fases/F05-dominio-persistencia-livros.md)             |
 | F06  | Concluida | F05           | Listagem real de livros e entrada pela biblioteca.      | [F06 - Listagem real livros](fases/F06-listagem-real-livros.md)                           |
 | F07  | Concluida | F03, F05      | Inclusao real de livro com autor existente ou novo.     | [F07 - Inclusao real livro](fases/F07-inclusao-real-livro.md)                             |
-| F08  | Planejada | F04, F05      | Edicao de datas e exclusao real de livro.               | [F08 - Edicao exclusao real livro](fases/F08-edicao-exclusao-real-livro.md)               |
+| F08  | Concluida | F04, F05      | Edicao de datas e exclusao real de livro.               | [F08 - Edicao exclusao real livro](fases/F08-edicao-exclusao-real-livro.md)               |
 | F09  | Planejada | F06, F07, F08 | Validacao integrada do gerenciamento de livros avulsos. | [F09 - Validacao integrada livros](fases/F09-validacao-integrada-livros.md)               |
 
 ## Resumo final da tarefa
