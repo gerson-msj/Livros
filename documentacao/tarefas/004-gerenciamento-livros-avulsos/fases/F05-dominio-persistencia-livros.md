@@ -59,8 +59,12 @@ criem, validem, atualizem datas e excluam registros.
   necessario, criar livro, atualizar somente datas e excluir livro.
 - Criados reposititorios libSQL para autores e livros avulsos, associados ao usuario e com consultas, atualizacoes e exclusoes sempre
   escopadas por `user_id`.
-- Adicionadas tabelas `authors` e `standalone_books`; `standalone_books.author_id` permanece opcional no banco para compatibilidade futura
-  com livros de series, enquanto o servico mantem autor obrigatorio para livro avulso.
+- Adicionadas tabelas `authors` e `books`; `books` e uma tabela unica para livros avulsos e futuros livros de serie.
+- Um livro avulso e representado por `author_id` preenchido, `series_id` vazio e `series_order` vazia.
+- Um futuro livro de serie devera ser representado por `series_id` e `series_order` preenchidos, `author_id` vazio, herdando o autor da
+  serie.
+- A referencia de autor permanece opcional no banco para compatibilidade com livros de series, enquanto o servico mantem autor obrigatorio
+  para livro avulso.
 - A duplicidade do par titulo/autor e validada por codigo no escopo do usuario; o mesmo titulo e aceito com autor diferente e o mesmo par e
   aceito para outro usuario.
 - Provider por request passou a expor `books`, reutilizando o cliente libSQL, gerador de UUID e relogio ja usados na composicao existente.
@@ -68,3 +72,5 @@ criem, validem, atualizem datas e excluam registros.
   `deno test -A aplicacao\livros_service_test.ts`, `deno test -A`, `deno lint .` e `deno check`.
 - `deno task check` nao concluiu porque o `deno fmt --check .` encontrou formatacao preexistente fora do escopo da fase, incluindo arquivos
   base e assets; nenhuma alteracao ampla de formatacao foi aplicada para evitar misturar escopos.
+- Ajuste solicitado na validacao dos fontes: substituida a tabela especifica `standalone_books` pela tabela unica `books`, com classificacao
+  derivada de `author_id`, `series_id` e `series_order`.

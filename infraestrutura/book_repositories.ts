@@ -77,9 +77,12 @@ export class LibsqlStandaloneBookRepository implements StandaloneBookRepository 
         const result = await this.client.execute({
             sql: `
                 SELECT ${bookColumns}
-                FROM standalone_books books
+                FROM books
                 LEFT JOIN authors ON authors.id = books.author_id
                 WHERE books.user_id = ?
+                  AND books.author_id IS NOT NULL
+                  AND books.series_id IS NULL
+                  AND books.series_order IS NULL
                 ORDER BY books.created_at DESC, books.id DESC
             `,
             args: [userId]
@@ -94,9 +97,12 @@ export class LibsqlStandaloneBookRepository implements StandaloneBookRepository 
         const result = await this.client.execute({
             sql: `
                 SELECT ${bookColumns}
-                FROM standalone_books books
+                FROM books
                 LEFT JOIN authors ON authors.id = books.author_id
                 WHERE books.user_id = ? AND books.id = ?
+                  AND books.author_id IS NOT NULL
+                  AND books.series_id IS NULL
+                  AND books.series_order IS NULL
                 LIMIT 1
             `,
             args: [userId, bookId]
@@ -111,9 +117,11 @@ export class LibsqlStandaloneBookRepository implements StandaloneBookRepository 
         const result = await this.client.execute({
             sql: `
                 SELECT ${bookColumns}
-                FROM standalone_books books
+                FROM books
                 LEFT JOIN authors ON authors.id = books.author_id
                 WHERE books.user_id = ? AND books.normalized_title = ? AND books.author_id = ?
+                  AND books.series_id IS NULL
+                  AND books.series_order IS NULL
                 LIMIT 1
             `,
             args: [userId, normalizedTitle, authorId]
@@ -127,16 +135,18 @@ export class LibsqlStandaloneBookRepository implements StandaloneBookRepository 
 
         await this.client.execute({
             sql: `
-                INSERT INTO standalone_books (
+                INSERT INTO books (
                     id,
                     user_id,
                     title,
                     normalized_title,
                     author_id,
+                    series_id,
+                    series_order,
                     reading_started_on,
                     reading_finished_on,
                     created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, NULL, NULL, ?, ?, ?)
             `,
             args: [
                 input.id,
@@ -164,9 +174,12 @@ export class LibsqlStandaloneBookRepository implements StandaloneBookRepository 
 
         const result = await this.client.execute({
             sql: `
-                UPDATE standalone_books
+                UPDATE books
                 SET reading_started_on = ?, reading_finished_on = ?
                 WHERE user_id = ? AND id = ?
+                  AND author_id IS NOT NULL
+                  AND series_id IS NULL
+                  AND series_order IS NULL
                 RETURNING id
             `,
             args: [
@@ -188,7 +201,13 @@ export class LibsqlStandaloneBookRepository implements StandaloneBookRepository 
         await ensureDatabaseSchema(this.client)
 
         const result = await this.client.execute({
-            sql: "DELETE FROM standalone_books WHERE user_id = ? AND id = ?",
+            sql: `
+                DELETE FROM books
+                WHERE user_id = ? AND id = ?
+                  AND author_id IS NOT NULL
+                  AND series_id IS NULL
+                  AND series_order IS NULL
+            `,
             args: [userId, bookId]
         })
 

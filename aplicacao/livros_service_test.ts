@@ -65,6 +65,31 @@ Deno.test("gerencia livros avulsos e autores privados por usuario em libSQL", as
             title: "Duna",
             authorName: "Frank Herbert"
         })
+        await client.execute({
+            sql: `
+                INSERT INTO books (
+                    id,
+                    user_id,
+                    title,
+                    normalized_title,
+                    author_id,
+                    series_id,
+                    series_order,
+                    reading_started_on,
+                    reading_finished_on,
+                    created_at
+                ) VALUES (?, ?, ?, ?, NULL, ?, ?, NULL, NULL, ?)
+            `,
+            args: [
+                "series-book",
+                "user-a",
+                "Livro de serie",
+                "livro de serie",
+                "series-a",
+                1,
+                "2026-06-22T12:00:10.000Z"
+            ]
+        })
 
         const books = await service.listStandaloneBooks("user-a")
         assertEquals(books.map((book) => book.id), [sameTitleDifferentAuthor.id, firstBook.id])
@@ -101,9 +126,23 @@ Deno.test("gerencia livros avulsos e autores privados por usuario em libSQL", as
         assertEquals(await service.deleteStandaloneBook("user-a", firstBook.id), true)
         assertEquals(await service.findStandaloneBook("user-a", firstBook.id), null)
 
-        const columns = await client.execute("PRAGMA table_info(standalone_books)")
+        const columns = await client.execute("PRAGMA table_info(books)")
         const authorIdColumn = columns.rows.find((row) => row.name === "author_id")
+        const seriesIdColumn = columns.rows.find((row) => row.name === "series_id")
+        const seriesOrderColumn = columns.rows.find((row) => row.name === "series_order")
         assertEquals(authorIdColumn?.notnull, 0)
+        assertEquals(seriesIdColumn?.notnull, 0)
+        assertEquals(seriesOrderColumn?.notnull, 0)
+
+        const standaloneRows = await client.execute("SELECT author_id, series_id, series_order FROM books WHERE id = ?", [
+            sameTitleDifferentAuthor.id
+        ])
+        assertEquals(typeof standaloneRows.rows[0].author_id, "string")
+        assertEquals(standaloneRows.rows[0].series_id, null)
+        assertEquals(standaloneRows.rows[0].series_order, null)
+
+        const oldTable = await client.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'standalone_books'")
+        assertEquals(oldTable.rows.length, 0)
     } finally {
         client.close()
         await Deno.remove(dbPath).catch(() => {})
