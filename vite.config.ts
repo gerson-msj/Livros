@@ -5,7 +5,7 @@ export default defineConfig({
     plugins: [fresh()],
     server: {
         watch: {
-            ignored: ["**/Livros.db"]
+            ignored: ["**/Livros.db", "**/Livros.db-*", "**/livros.db", "**/livros.db-*"]
         }
     }
 })

@@ -2,9 +2,7 @@
 
 **Tarefa:** [TF-004 - Gerenciamento de livros avulsos](../tarefa.md)
 
-**Estado:** Planejada
-**Depende de:** F03, F05
-**Tipo de fase:** Comum
+**Estado:** Concluida **Depende de:** F03, F05 **Tipo de fase:** Comum
 
 ## Objetivo tecnico
 
@@ -41,3 +39,23 @@ lista.
 - Edicao de livro ja cadastrado.
 - Exclusao de livro.
 - Cadastro de series.
+
+## Resultado
+
+- Rota `/biblioteca/livros/novo` substituida pela inclusao real protegida por sessao, carregando autores do usuario autenticado no `GET` e
+  criando livro avulso no `POST`.
+- Criado `BookCreateForm` com dados reais, reaproveitando a experiencia visual validada para titulo, autor, datas opcionais, previa,
+  confirmacao de sucesso e alerta de volta com alteracoes nao salvas.
+- Criados componentes neutros `AuthorPicker` e `BookDateInput` para substituir os componentes mockados no fluxo real de inclusao.
+- O salvamento usa `BooksService.createStandaloneBook`, criando autor novo quando necessario, reutilizando autor existente pelo dominio e
+  propagando validacoes reais de titulo, autor, datas e duplicidade para mensagem em tela.
+- Adicionados testes de rota para visitante sem sessao, carregamento de autores do usuario autenticado, criacao real de livro, erro de
+  validacao e duplicidade.
+- Ajustado `vite.config.ts` para ignorar tambem `livros.db` e arquivos auxiliares do SQLite/libSQL em minusculas, evitando recarga do Vite
+  durante o salvamento local e preservando o popup de sucesso.
+- Verificacoes realizadas: `deno fmt --check` nos arquivos tocados, `deno test -A routes\biblioteca_livros_novo_test.ts`, `deno test -A`,
+  `deno lint .`, `deno check`, `deno task build` e validacao em navegador de inclusao com autor novo, popup de sucesso e retorno para a
+  lista.
+- Testes unitarios temporarios: nao criados.
+- Riscos, limitacoes ou pendencias: a edicao e exclusao reais permanecem fora desta fase e continuam planejadas para F08.
+- Validacao dos fontes: aprovada pelo usuario em 2026-06-23.
