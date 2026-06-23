@@ -1,7 +1,7 @@
 # Conhecimento do projeto
 
-Livros e um MVP para controlar leituras e organizar series de livros. O projeto usa Fresh, Deno e Bulma, possui cadastro, login,
-redefinicao de senha, sessao HTTP persistida em libSQL local e uma area segura minima em `/biblioteca`.
+Livros e um MVP para controlar leituras e organizar series de livros. O projeto usa Fresh, Deno e Bulma, possui cadastro, login, redefinicao
+de senha, sessao HTTP persistida em libSQL local e gerenciamento de livros avulsos na area segura `/biblioteca`.
 
 ## Visao
 
@@ -40,6 +40,9 @@ cadastro.
 Ao cadastrar um livro avulso ou uma serie, o usuario pode escolher um autor que ja tenha cadastrado. Autores nao sao compartilhados entre
 usuarios.
 
+No gerenciamento de livros avulsos, o usuario pode escolher um autor existente ou digitar um novo autor durante a inclusao. Quando o nome
+digitado ainda nao existe para o usuario, o autor e criado junto com o livro e passa a ficar disponivel em proximos cadastros.
+
 ### Livro
 
 Obra registrada por um usuario como livro avulso ou como parte de uma serie. No MVP, possui:
@@ -52,10 +55,15 @@ Obra registrada por um usuario como livro avulso ou como parte de uma serie. No 
 As datas sao opcionais. Depois do cadastro, somente as datas podem ser alteradas. Caso outro dado esteja incorreto, o usuario deve excluir o
 livro e cadastra-lo novamente.
 
+Livro avulso exige titulo e autor com ao menos dois caracteres. O mesmo usuario nao pode cadastrar outro livro avulso com o mesmo par titulo
+e autor, considerando a comparacao normalizada por codigo. O mesmo titulo e permitido quando o autor e diferente, e o mesmo par titulo/autor
+e permitido para usuarios diferentes.
+
+Datas em branco sao aceitas. Quando informadas, devem ser datas completas, e a data de inicio nao pode ser posterior a data de conclusao.
+
 O MVP nao armazena um estado de leitura separado. Quando necessario, a situacao da leitura deve ser inferida pelas datas registradas.
 
-Livros avulsos e livros de series nao possuem uma relacao direta no comportamento do MVP. A possibilidade de usar um cadastro unico de
-livros, indicando se cada livro e avulso ou pertence a uma serie, deve ser avaliada durante a definicao do modelo de dados.
+Livros avulsos e livros de series nao possuem uma relacao direta no comportamento atual do MVP.
 
 ### Serie
 
@@ -81,13 +89,21 @@ serie inteira.
   suporta a Clipboard API, cria uma sessao inicial por cookie HTTP e mantem a chave visivel antes de seguir para `/biblioteca`.
 - Redefinicao de senha em `/redefinir-senha` com nome de usuario, chave atual e nova senha, invalidando a chave usada, apresentando uma nova
   chave e criando sessao autenticada.
-- Persistencia local com libSQL em `Livros.db` para usuarios e sessoes.
+- Persistencia local com libSQL em `Livros.db` para usuarios, sessoes, autores e livros.
 - Senhas e chaves de redefinicao sao armazenadas por hash, nao em texto puro.
 - Sessoes tem validade de uma semana e ha no maximo uma sessao persistida por usuario.
-- `/biblioteca` existe como area segura minima contendo somente a opcao de saida.
+- `/biblioteca` existe como area segura com opcao de saida, entrada para livros avulsos e entrada de series marcada como recurso futuro.
 - Visitantes sem sessao ativa sao redirecionados de `/biblioteca` para `/login`; usuarios ja logados sao redirecionados de `/login`,
   `/cadastro` e `/redefinir-senha` para `/biblioteca`.
 - Logout remove a sessao persistida, limpa o cookie, redireciona para `/login` e impede novo acesso seguro com a mesma sessao.
+- `/biblioteca/livros` lista livros avulsos do usuario autenticado, ordenados por inclusao com cadastros mais recentes no inicio, exibindo
+  titulo, autor, data de inicio e data de conclusao.
+- `/biblioteca/livros/novo` permite incluir livro avulso com titulo, autor existente ou novo e datas opcionais. Ao salvar com sucesso,
+  apresenta confirmacao e retorna para a lista.
+- `/biblioteca/livros/:id` permite abrir livro avulso proprio para editar somente datas ou excluir o livro. Titulo e autor ficam somente
+  leitura; a exclusao exige confirmacao contendo o titulo do livro e retorna para a lista apos sucesso.
+- Os fluxos de inclusao e edicao alertam o usuario ao tentar voltar com alteracoes nao salvas.
+- Visitantes sem sessao ativa nao acessam as rotas de livros; usuarios autenticados veem, editam e excluem somente seus proprios livros.
 - Popup de mensagem reutilizavel como island Preact, com chamada assincrona, retorno `ok` ou `cancel`, temas Bulma, botoes opcionais,
   quebras de linha legiveis e cancelamento por clique fora ou tecla `Esc`.
 - Titulo padrao reutilizavel como island Preact, com area esquerda configuravel, titulo alinhado a esquerda, intencao de voltar emitida por
@@ -96,15 +112,9 @@ serie inteira.
   o logout existente.
 - Alteracoes em `Livros.db` sao ignoradas pelo watcher do Vite para evitar refresh durante o desenvolvimento local.
 
-### Escopo inicial planejada
+### Escopo inicial planejado
 
-- Cadastro de livros.
-- Cadastro e reutilizacao de autores em livros avulsos e series.
-- Registro de titulo, autor e datas de inicio e conclusao da leitura.
 - Cadastro e organizacao de series de livros.
-
-O modelo de dados concreto, incluindo a representacao unificada ou separada de livros avulsos e livros de series, ainda precisa ser
-definido.
 
 ## Decisoes
 
@@ -139,9 +149,9 @@ Login separado em `/login` usa nome de usuario e senha e mostra mensagem generic
 em `/redefinir-senha` usa nome de usuario, chave atual e nova senha; em caso de sucesso, invalida a chave usada, gera uma nova chave e a
 apresenta ao usuario para uso futuro.
 
-Cada sessao tem validade de uma semana. O cookie de sessao usa `HttpOnly`, `SameSite=Lax`, `Path=/` e expiracao alinhada a sessao persistida.
-Ao criar uma nova sessao para um usuario, sessoes anteriores do mesmo usuario sao removidas para manter no maximo uma sessao persistida por
-usuario. O logout remove a sessao no banco e limpa o cookie.
+Cada sessao tem validade de uma semana. O cookie de sessao usa `HttpOnly`, `SameSite=Lax`, `Path=/` e expiracao alinhada a sessao
+persistida. Ao criar uma nova sessao para um usuario, sessoes anteriores do mesmo usuario sao removidas para manter no maximo uma sessao
+persistida por usuario. O logout remove a sessao no banco e limpa o cookie.
 
 ### Privacidade
 
@@ -150,12 +160,25 @@ registros.
 
 Dentro dos dados de um mesmo usuario, autores sao compartilhados entre livros avulsos e series e podem ser selecionados em novos cadastros.
 
+O isolamento tambem se aplica a listagens, selecoes, validacoes de duplicidade, edicao e exclusao de livros avulsos.
+
 ### Imutabilidade dos cadastros
 
 Depois do cadastro, o usuario pode alterar somente as datas dos livros avulsos e dos livros pertencentes a series.
 
 Erros em outros dados de um livro avulso exigem sua exclusao e um novo cadastro. Uma serie nao permite alterar nome, autor, livros ou ordem
 depois de cadastrada; ela pode ser excluida integralmente.
+
+### Modelo de livros e autores
+
+Autores e livros sao persistidos em tabelas `authors` e `books`, sempre associados ao usuario. A tabela `books` e unica para livros avulsos
+e futuros livros de series.
+
+Um livro avulso e identificado por `author_id` preenchido, `series_id` vazio e `series_order` vazia. Um futuro livro de serie devera usar
+`series_id` e `series_order` preenchidos, com `author_id` vazio, herdando o autor da serie.
+
+A referencia de autor permanece opcional no banco para compatibilidade com livros de series, mas o servico mantem autor obrigatorio na regra
+de negocio de livro avulso.
 
 ### Interface com Bulma
 
@@ -174,6 +197,9 @@ preferir carregar dados com `GET` e processar formularios com `POST` em seus han
 
 Rotas de API separadas devem ser usadas somente quando houver necessidade real de um endpoint fora da pagina em questao, como integracoes,
 consumo por componentes interativos ou reutilizacao entre fluxos.
+
+As rotas de livros avulsos confirmadas sao `/biblioteca/livros`, `/biblioteca/livros/novo` e `/biblioteca/livros/:id`. A rota de edicao usa
+`GET` para carregar a pagina, `POST` para salvar datas e `DELETE` para excluir por chamada do componente interativo.
 
 ### Organizacao orientada a dominio
 
@@ -216,9 +242,12 @@ O projeto comeca como um MVP simples. Novos recursos e complexidade devem ser ad
 
 ## Estado da tarefa
 
-A inicializacao do projeto Fresh esta concluida. A tarefa [TF-001 - Cadastro de usuarios](tarefas/001-cadastro-de-usuarios/tarefa.md)
-esta concluida apos implementar e validar cadastro, sessao inicial, biblioteca segura minima e ajustes de experiencia do cadastro. A tarefa
+A inicializacao do projeto Fresh esta concluida. A tarefa [TF-001 - Cadastro de usuarios](tarefas/001-cadastro-de-usuarios/tarefa.md) esta
+concluida apos implementar e validar cadastro, sessao inicial, biblioteca segura minima e ajustes de experiencia do cadastro. A tarefa
 [TF-002 - Componentes de mensagem e titulo](tarefas/002-componentes-mensagem-titulo/tarefa.md) esta concluida apos implementar e validar
 popup de mensagem, titulo padrao, aplicacao em cadastro e biblioteca e confirmacao de saida. A tarefa
 [TF-003 - Login e redefinicao de senha](tarefas/003-login-redefinicao-senha/tarefa.md) esta concluida apos implementar e validar login,
-redefinicao de senha com nova chave, redirecionamentos para login, componentes de autenticacao e sessao unica por usuario.
+redefinicao de senha com nova chave, redirecionamentos para login, componentes de autenticacao e sessao unica por usuario. A tarefa
+[TF-004 - Gerenciamento de livros avulsos](tarefas/004-gerenciamento-livros-avulsos/tarefa.md) esta concluida apos implementar e validar
+entrada pela biblioteca, listagem, inclusao, edicao de datas, exclusao, autores privados reutilizaveis, persistencia libSQL e isolamento por
+usuario.

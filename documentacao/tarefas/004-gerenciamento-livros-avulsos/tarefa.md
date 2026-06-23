@@ -1,6 +1,6 @@
 # TF-004 - Gerenciamento de livros avulsos
 
-**Estado:** Em desenvolvimento **Tipo:** Nova capacidade
+**Estado:** Concluida **Tipo:** Nova capacidade
 
 ## Resumo
 
@@ -117,7 +117,7 @@ avulsos, a forma consolidada das rotas, o modelo de dados adotado e os limites c
 
 ## Plano
 
-**Revisao:** 1 **Proxima acao:** Fechar TF-004 com a skill desenvolvedor
+**Revisao:** 1 **Proxima acao:** Encerrada
 
 ### Estrategia
 
@@ -146,20 +146,55 @@ codigo, validacao das datas, comportamento visual em navegador e retorno correto
 
 ## Resumo final da tarefa
 
-Aguardando encerramento.
-
 ### Fonte da verdade
 
-Aguardando encerramento.
+TF-004 entregou o gerenciamento de livros avulsos do usuario autenticado a partir de `/biblioteca`, com entrada para livros, lista em
+`/biblioteca/livros`, inclusao em `/biblioteca/livros/novo` e edicao/exclusao em `/biblioteca/livros/:id`. O usuario pode listar somente
+seus livros, criar livro com autor existente ou novo, editar somente datas e excluir livro com confirmacao.
 
 ### Regras de negocio implementadas
 
-Aguardando encerramento.
+- Livros e autores pertencem ao usuario autenticado; dados de outro usuario nao aparecem em listas, selecoes, validacoes, edicao ou
+  exclusao.
+- Livro avulso exige titulo e autor com ao menos dois caracteres.
+- Datas sao opcionais, mas, quando informadas, devem ser completas; data de inicio posterior a conclusao e recusada.
+- O mesmo usuario nao pode cadastrar outro livro avulso com o mesmo par titulo/autor; o mesmo titulo e permitido com autor diferente e o
+  mesmo par e permitido para outro usuario.
+- Depois do cadastro, titulo e autor ficam somente leitura; para corrigi-los, o usuario deve excluir o livro e cadastrar novamente.
+- Inclusao e edicao alertam ao voltar com alteracoes nao salvas; exclusao exige confirmacao contendo o titulo do livro.
 
 ### Decisoes tecnicas importantes
 
-Aguardando encerramento.
+- As rotas confirmadas sao `/biblioteca/livros`, `/biblioteca/livros/novo` e `/biblioteca/livros/:id`, mantendo pagina e handlers na propria
+  rota Fresh.
+- Autores e livros sao persistidos em libSQL nas tabelas `authors` e `books`, com operacoes sempre escopadas por `user_id`.
+- `books` e uma tabela unica para livros avulsos e futuros livros de series: livro avulso usa `author_id` preenchido, `series_id` vazio e
+  `series_order` vazia.
+- A coluna `author_id` permanece opcional no banco para compatibilidade futura com livros de series, embora o dominio exija autor para livro
+  avulso.
+- O provider por request passou a expor `books`, reutilizando cliente libSQL, relogio e gerador de UUID da composicao existente.
+- Os componentes mockados das fases UX foram substituidos por componentes reais, sem manter versoes mockadas paralelas.
 
 ### Limites conhecidos
 
-Aguardando encerramento.
+- Series continuam fora do escopo; a biblioteca mostra apenas uma entrada reservada para esse recurso futuro.
+- Nao ha busca, filtro avancado, paginacao, importacao de plataformas externas ou edicao de titulo/autor apos cadastro.
+- O sistema nao mantem estado de leitura separado; a situacao deve continuar sendo inferida pelas datas.
+
+### Como validar
+
+- Executar `deno test -A`, `deno lint .`, `deno check` e `deno task build`.
+- No navegador, cadastrar ou autenticar um usuario, acessar `/biblioteca/livros`, incluir livro, voltar para a lista, editar datas e excluir
+  o livro.
+
+### Referencias
+
+- [F05 - Dominio e persistencia de livros](fases/F05-dominio-persistencia-livros.md): regras, modelo libSQL, `BooksService` e repositories.
+- [F06 - Listagem real livros](fases/F06-listagem-real-livros.md): entrada pela biblioteca e lista real.
+- [F07 - Inclusao real livro](fases/F07-inclusao-real-livro.md): inclusao real com autor existente ou novo.
+- [F08 - Edicao exclusao real livro](fases/F08-edicao-exclusao-real-livro.md): edicao de datas e exclusao reais.
+- [F09 - Validacao integrada livros](fases/F09-validacao-integrada-livros.md): validacao integrada automatizada e em navegador.
+
+## Validacao final da tarefa
+
+**Resultado:** Aprovado **Retorno:** Usuario validou os fontes da F09 e autorizou finalizar a tarefa em 2026-06-23.
