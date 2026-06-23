@@ -2,9 +2,7 @@
 
 **Tarefa:** [TF-004 - Gerenciamento de livros avulsos](../tarefa.md)
 
-**Estado:** Planejada
-**Depende de:** F06, F07, F08
-**Tipo de fase:** Comum
+**Estado:** Concluida **Depende de:** F06, F07, F08 **Tipo de fase:** Comum
 
 ## Objetivo tecnico
 
@@ -39,3 +37,19 @@ de regras antes do encerramento da tarefa.
 - Novos recursos alem do escopo ja planejado.
 - Consolidacao do conhecimento permanente.
 - Encerramento formal da tarefa.
+
+## Resultado
+
+- Adicionado teste integrado `routes/fluxo_livros_avulsos_test.ts` cobrindo cadastro com sessao, entrada pela biblioteca, lista vazia,
+  inclusao real de livro com autor novo, recusa de duplicidade, mesmo titulo com autor diferente, reutilizacao de autores, edicao de datas,
+  recusa de datas incoerentes, isolamento entre usuarios, bloqueio de edicao/exclusao de livro alheio, exclusao real e retorno da lista.
+- Validado em navegador com banco temporario na porta `5181`: cadastro de usuario, entrada em `/biblioteca`, acesso a `/biblioteca/livros`,
+  estado vazio, inclusao de `Duna`, popup de sucesso, retorno para lista, edicao de datas, alerta de alteracoes nao salvas, popup de
+  salvamento, exclusao com confirmacao contendo o titulo do livro, popup de exclusao e retorno ao estado vazio.
+- Validado em viewport mobile `390x844`: lista vazia, inclusao, lista com livro e edicao sem overflow horizontal observado (`scrollWidth`
+  igual a `clientWidth`) e com acoes principais disponiveis.
+- Verificacoes realizadas: `deno test -A routes\fluxo_livros_avulsos_test.ts`, `deno test -A`, `deno lint .`, `deno check` e
+  `deno task build`.
+- Testes unitarios temporarios: nao criados.
+- Riscos, limitacoes ou pendencias: nenhuma pendencia conhecida que impeca o encerramento da TF-004.
+- Validacao dos fontes: aprovada pelo usuario em 2026-06-23.
