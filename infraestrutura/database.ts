@@ -46,6 +46,29 @@ async function runMigrations(client: Client): Promise<void> {
             FOREIGN KEY (user_id) REFERENCES users(id)
         )`,
         "CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id)",
-        "CREATE INDEX IF NOT EXISTS idx_sessions_active ON sessions(id, expires_at, ended_at)"
+        "CREATE INDEX IF NOT EXISTS idx_sessions_active ON sessions(id, expires_at, ended_at)",
+        `CREATE TABLE IF NOT EXISTS authors (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            name TEXT NOT NULL,
+            normalized_name TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )`,
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_authors_user_normalized_name ON authors(user_id, normalized_name)",
+        `CREATE TABLE IF NOT EXISTS standalone_books (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            title TEXT NOT NULL,
+            normalized_title TEXT NOT NULL,
+            author_id TEXT,
+            reading_started_on TEXT,
+            reading_finished_on TEXT,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (author_id) REFERENCES authors(id)
+        )`,
+        "CREATE INDEX IF NOT EXISTS idx_standalone_books_user_created_at ON standalone_books(user_id, created_at)",
+        "CREATE INDEX IF NOT EXISTS idx_standalone_books_user_title_author ON standalone_books(user_id, normalized_title, author_id)"
     ], "write")
 }

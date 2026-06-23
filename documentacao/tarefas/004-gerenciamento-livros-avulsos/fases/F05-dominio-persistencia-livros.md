@@ -2,9 +2,7 @@
 
 **Tarefa:** [TF-004 - Gerenciamento de livros avulsos](../tarefa.md)
 
-**Estado:** Planejada
-**Depende de:** F01, F04
-**Tipo de fase:** Comum
+**Estado:** Concluida **Depende de:** F01, F04 **Tipo de fase:** Comum
 
 ## Objetivo tecnico
 
@@ -42,8 +40,8 @@ criem, validem, atualizem datas e excluam registros.
 
 ## Cuidados de implementacao
 
-- A obrigatoriedade de autor e regra de negocio do livro avulso; nao transformar isso em uma restricao que bloqueie o modelo futuro de livros
-  de series.
+- A obrigatoriedade de autor e regra de negocio do livro avulso; nao transformar isso em uma restricao que bloqueie o modelo futuro de
+  livros de series.
 - Validar duplicidade por codigo, considerando o escopo do usuario.
 - Preservar o MVP simples e evitar modelagem de series nesta fase.
 
@@ -52,3 +50,21 @@ criem, validem, atualizem datas e excluam registros.
 - Telas reais de listagem, inclusao, edicao ou exclusao.
 - Cadastro ou comportamento de series.
 - Integracao com Turso remoto.
+
+## Resultado
+
+- Criado dominio de livros avulsos com normalizacao de titulo/autor, validacao de tamanho minimo, datas opcionais completas e bloqueio de
+  data de inicio posterior a data de conclusao.
+- Criado `BooksService` com operacoes para listar autores, listar livros avulsos, consultar livro por usuario, criar autor quando
+  necessario, criar livro, atualizar somente datas e excluir livro.
+- Criados reposititorios libSQL para autores e livros avulsos, associados ao usuario e com consultas, atualizacoes e exclusoes sempre
+  escopadas por `user_id`.
+- Adicionadas tabelas `authors` e `standalone_books`; `standalone_books.author_id` permanece opcional no banco para compatibilidade futura
+  com livros de series, enquanto o servico mantem autor obrigatorio para livro avulso.
+- A duplicidade do par titulo/autor e validada por codigo no escopo do usuario; o mesmo titulo e aceito com autor diferente e o mesmo par e
+  aceito para outro usuario.
+- Provider por request passou a expor `books`, reutilizando o cliente libSQL, gerador de UUID e relogio ja usados na composicao existente.
+- Verificacoes realizadas: `deno fmt --check` nos arquivos tocados, `deno lint` nos arquivos tocados, `deno check` nos arquivos tocados,
+  `deno test -A aplicacao\livros_service_test.ts`, `deno test -A`, `deno lint .` e `deno check`.
+- `deno task check` nao concluiu porque o `deno fmt --check .` encontrou formatacao preexistente fora do escopo da fase, incluindo arquivos
+  base e assets; nenhuma alteracao ampla de formatacao foi aplicada para evitar misturar escopos.
