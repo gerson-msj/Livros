@@ -2,14 +2,12 @@
 
 **Tarefa:** [TF-004 - Gerenciamento de livros avulsos](../tarefa.md)
 
-**Estado:** Planejada
-**Depende de:** F05
-**Tipo de fase:** Comum
+**Estado:** Concluida **Depende de:** F05 **Tipo de fase:** Comum
 
 ## Objetivo tecnico
 
-Integrar a entrada real de livros na biblioteca e a listagem real de livros avulsos do usuario autenticado, usando a experiencia validada nas
-fases UX.
+Integrar a entrada real de livros na biblioteca e a listagem real de livros avulsos do usuario autenticado, usando a experiencia validada
+nas fases UX.
 
 ## Contexto necessario
 
@@ -40,3 +38,19 @@ fases UX.
 - Inclusao real de livro.
 - Edicao real de datas.
 - Exclusao real de livro.
+
+## Resultado
+
+- Rota `/biblioteca/livros` passou a consultar a sessao ativa, usar `session.userId` e carregar livros avulsos reais via `BooksService`.
+- A lista real recebe dados serializaveis com id, titulo, autor, data de inicio e data de conclusao.
+- Criado `BooksList` reaproveitando `FixedHeaderPage`, `PageTitle`, classes visuais aprovadas, estado vazio, botao de novo livro e navegacao
+  real para `/biblioteca/livros/novo` e `/biblioteca/livros/:id`.
+- A listagem real preserva a ordenacao entregue pela persistencia, com livros mais recentes primeiro, e mostra somente os livros retornados
+  para o usuario autenticado.
+- Removidos da rota de listagem os controles, mensagens e dados mockados da fase UX, mantendo os componentes mockados antigos disponiveis
+  para as rotas de inclusao/edicao que ainda serao substituidas em fases futuras.
+- Verificacoes realizadas: `deno test -A routes\biblioteca_livros_test.ts`, `deno fmt --check` nos arquivos tocados, `deno lint` nos
+  arquivos tocados, `deno check` nos arquivos tocados, `deno test -A`, `deno lint .`, `deno check` e `deno task build`.
+- Validacao em navegador nao foi realizada nesta fase porque nao havia ferramenta direta de navegador disponivel no ambiente atual.
+- Ajuste solicitado na validacao visual: o layout reutilizavel passou a usar header `sticky` no fluxo da pagina, sem margem calculada por
+  JavaScript, eliminando salto inicial e vao entre a area fixa e a area de rolagem.

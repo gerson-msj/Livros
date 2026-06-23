@@ -380,10 +380,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .livros-fixed-page-header {
-    left: 0;
     pointer-events: none;
-    position: fixed;
-    right: 0;
+    position: sticky;
     top: 0;
     z-index: 20;
 }
@@ -393,12 +391,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .livros-fixed-page-content {
-    margin-top: calc(var(--livros-fixed-page-header-height, 17rem) + var(--livros-fixed-page-content-gap, 1rem));
+    margin-top: 0;
 }
 
 .livros-books-page {
     background: #111820;
-    --livros-fixed-page-content-gap: 1rem;
 }
 
 .livros-book-form-route,
@@ -408,8 +405,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .livros-books-fixed-header {
-    background: linear-gradient(180deg, #111820 0%, #111820 86%, rgba(17, 24, 32, 0));
-    padding: 1.5rem 1.5rem 0.95rem;
+    background: #111820;
+    padding: 1.5rem 1.5rem 1rem;
 }
 
 .livros-books-fixed-header-inner {
@@ -448,7 +445,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: flex;
     gap: 1rem;
     justify-content: space-between;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
 }
 
 .livros-books-toolbar-text {
@@ -480,7 +477,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-left: auto;
     margin-right: auto;
     max-width: 36rem;
-    padding: 0.125rem 0.125rem 3rem;
+    padding: 0 0.125rem 3rem;
     width: calc(100% - 3rem);
 }
 

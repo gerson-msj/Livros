@@ -117,7 +117,7 @@ avulsos, a forma consolidada das rotas, o modelo de dados adotado e os limites c
 
 ## Plano
 
-**Revisao:** 1 **Proxima acao:** Executar F06 com a skill desenvolvedor
+**Revisao:** 1 **Proxima acao:** Executar F07 com a skill desenvolvedor
 
 ### Estrategia
 
@@ -139,7 +139,7 @@ codigo, validacao das datas, comportamento visual em navegador e retorno correto
 | F03  | Concluida | F02           | Inclusao mockada com componentes de data e autor.       | [F03 - Inclusao mockada livro](fases/F03-inclusao-mockada-livro.md)                       |
 | F04  | Concluida | F03           | Edicao e exclusao mockadas de livro.                    | [F04 - Edicao exclusao mockadas livro](fases/F04-edicao-exclusao-mockadas-livro.md)       |
 | F05  | Concluida | F01, F04      | Dominio e persistencia de autores e livros avulsos.     | [F05 - Dominio persistencia livros](fases/F05-dominio-persistencia-livros.md)             |
-| F06  | Planejada | F05           | Listagem real de livros e entrada pela biblioteca.      | [F06 - Listagem real livros](fases/F06-listagem-real-livros.md)                           |
+| F06  | Concluida | F05           | Listagem real de livros e entrada pela biblioteca.      | [F06 - Listagem real livros](fases/F06-listagem-real-livros.md)                           |
 | F07  | Planejada | F03, F05      | Inclusao real de livro com autor existente ou novo.     | [F07 - Inclusao real livro](fases/F07-inclusao-real-livro.md)                             |
 | F08  | Planejada | F04, F05      | Edicao de datas e exclusao real de livro.               | [F08 - Edicao exclusao real livro](fases/F08-edicao-exclusao-real-livro.md)               |
 | F09  | Planejada | F06, F07, F08 | Validacao integrada do gerenciamento de livros avulsos. | [F09 - Validacao integrada livros](fases/F09-validacao-integrada-livros.md)               |
