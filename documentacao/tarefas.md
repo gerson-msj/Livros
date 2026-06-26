@@ -11,3 +11,5 @@ contexto, decisoes pendentes e evidencias relevantes sem poluir o conhecimento p
   chave para redefinir senha.
 - [TF-004 - Gerenciamento de livros avulsos](tarefas/004-gerenciamento-livros-avulsos/tarefa.md): listagem, inclusao, edicao de datas e
   exclusao de livros avulsos do usuario.
+- [T-005 - Gerenciamento de series de livros](tarefas/005-gerenciamento-series-livros/tarefa.md): listagem, inclusao, edicao de datas e
+  exclusao de series de livros do usuario.
