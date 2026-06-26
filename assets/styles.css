@@ -679,6 +679,101 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     gap: 0.75rem;
 }
 
+.livros-series-mock-note {
+    color: #aeb8c8;
+    font-size: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.livros-series-list {
+    display: grid;
+    gap: 0.875rem;
+}
+
+.livros-series-item {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    color: #f5f7fb;
+    display: grid;
+    gap: 0.875rem;
+    padding: 0.875rem 1rem;
+    text-align: left;
+    width: 100%;
+}
+
+.livros-series-item:hover,
+.livros-series-item:focus-visible {
+    background: #263244;
+    border-color: #7c8df0;
+    box-shadow: 0 0 0 2px rgba(124, 141, 240, 0.28);
+}
+
+.livros-series-item:focus-visible {
+    outline: 2px solid #7c8df0;
+    outline-offset: 0.15rem;
+}
+
+.livros-series-item-header {
+    align-items: center;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.livros-series-item-main {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.livros-series-item-title {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.livros-series-item-author,
+.livros-series-item-meta {
+    color: #d8dee9;
+    overflow-wrap: anywhere;
+}
+
+.livros-series-item-meta {
+    font-size: 0.75rem;
+    text-align: right;
+}
+
+.livros-series-books {
+    border-top: 1px solid #374151;
+    display: grid;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+}
+
+.livros-series-book {
+    display: block;
+}
+
+.livros-series-book-main {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.livros-series-book-title {
+    color: #f5f7fb;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.livros-series-book-dates {
+    color: #aeb8c8;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    gap: 0.25rem 0.75rem;
+}
+
 .livros-book-item {
     align-items: center;
     background: #1f2937;
@@ -804,5 +899,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     .livros-book-item-arrow {
         grid-column: 2;
         grid-row: 1;
+    }
+
+    .livros-series-item-header {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .livros-series-item-meta {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        text-align: left;
     }
 }

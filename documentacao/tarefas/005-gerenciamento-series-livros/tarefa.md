@@ -1,6 +1,7 @@
 # T-005 - Gerenciamento de series de livros
 
-**Estado:** Planejada
+**Estado:** Em desenvolvimento
+
 **Tipo:** Nova capacidade
 
 ## Resumo
@@ -60,7 +61,8 @@ autor e ao menos um livro, abrir uma serie existente para alterar somente datas 
 - [Modelo de livros e autores](../../conhecimento.md#modelo-de-livros-e-autores): livros de series devem reaproveitar a tabela de livros com
   associacao a serie e ordem.
 - [Interface com Bulma](../../conhecimento.md#interface-com-bulma): a interface deve manter Bulma e componentes reutilizaveis existentes.
-- [Rotas Fresh e handlers](../../conhecimento.md#rotas-fresh-e-handlers): paginas e handlers de rota devem ser preferidos quando suficientes.
+- [Rotas Fresh e handlers](../../conhecimento.md#rotas-fresh-e-handlers): paginas e handlers de rota devem ser preferidos quando
+  suficientes.
 - [Organizacao orientada a dominio](../../conhecimento.md#organizacao-orientada-a-dominio): regras de negocio devem ficar separadas de
   detalhes de interface e persistencia.
 
@@ -68,9 +70,9 @@ autor e ao menos um livro, abrir uma serie existente para alterar somente datas 
 
 Impacto permanente identificado: sim.
 
-A tarefa afeta o dominio de Serie, o dominio de Livro, recursos existentes e decisoes sobre persistencia libSQL, imutabilidade dos cadastros,
-privacidade e organizacao orientada a dominio. Depois da entrega validada, o conhecimento permanente devera ser consolidado para registrar
-series como recurso existente e as regras efetivamente implementadas.
+A tarefa afeta o dominio de Serie, o dominio de Livro, recursos existentes e decisoes sobre persistencia libSQL, imutabilidade dos
+cadastros, privacidade e organizacao orientada a dominio. Depois da entrega validada, o conhecimento permanente devera ser consolidado para
+registrar series como recurso existente e as regras efetivamente implementadas.
 
 ## Decisoes pendentes
 
@@ -79,8 +81,7 @@ series como recurso existente e as regras efetivamente implementadas.
 
 ## Plano
 
-**Revisao:** 1
-**Proxima acao:** Aguardar confirmacao para commitar os artefatos de planejamento e iniciar as fases.
+**Revisao:** 1 **Proxima acao:** Aguardar confirmacao para commitar os artefatos de planejamento e iniciar as fases.
 
 ### Estrategia
 
@@ -88,20 +89,20 @@ Comecar pelas fases UX para validar, com dados mockados, a entrada de series, a 
 datas. Essas fases devem produzir artefatos visuais reutilizaveis, com mocks isolados para serem removidos ou substituidos depois.
 
 As fases comuns devem preservar o comportamento visual e interativo validado, substituindo os mocks por dominio, persistencia libSQL e
-handlers reais. A entrega deve manter o MVP simples, reaproveitar autores e livros conforme as decisoes existentes e verificar isolamento por
-usuario, duplicidades, datas opcionais e exclusao em cascata.
+handlers reais. A entrega deve manter o MVP simples, reaproveitar autores e livros conforme as decisoes existentes e verificar isolamento
+por usuario, duplicidades, datas opcionais e exclusao em cascata.
 
 As decisoes pendentes sobre normalizacao e datas devem ser fechadas durante a primeira fase comum antes de consolidar as regras no dominio.
 
 ## Controle de fases
 
-| Fase | Estado | Depende de | Resumo | Arquivo |
-|---|---|---|---|---|
-| F01 | Planejada | Nenhuma | Criar experiencia mockada da listagem e entrada de series na biblioteca | [F01 - Experiencia mockada de listagem de series](fases/F01-experiencia-mockada-listagem-series.md) |
-| F02 | Planejada | F01 | Criar experiencia mockada de inclusao, edicao de datas e exclusao de serie | [F02 - Experiencia mockada de formulario de serie](fases/F02-experiencia-mockada-formulario-serie.md) |
-| F03 | Planejada | F01, F02 | Implementar dominio e persistencia de series com livros ordenados | [F03 - Dominio e persistencia de series](fases/F03-dominio-persistencia-series.md) |
-| F04 | Planejada | F03 | Integrar biblioteca, listagem e inclusao de series com dados reais | [F04 - Listagem e inclusao reais de series](fases/F04-listagem-inclusao-reais-series.md) |
-| F05 | Planejada | F04 | Integrar edicao de datas e exclusao real de series | [F05 - Edicao e exclusao reais de series](fases/F05-edicao-exclusao-reais-series.md) |
+| Fase | Estado    | Depende de | Resumo                                                                     | Arquivo                                                                                               |
+| ---- | --------- | ---------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| F01  | Concluida | Nenhuma    | Criar experiencia mockada da listagem e entrada de series na biblioteca    | [F01 - Experiencia mockada de listagem de series](fases/F01-experiencia-mockada-listagem-series.md)   |
+| F02  | Planejada | F01        | Criar experiencia mockada de inclusao, edicao de datas e exclusao de serie | [F02 - Experiencia mockada de formulario de serie](fases/F02-experiencia-mockada-formulario-serie.md) |
+| F03  | Planejada | F01, F02   | Implementar dominio e persistencia de series com livros ordenados          | [F03 - Dominio e persistencia de series](fases/F03-dominio-persistencia-series.md)                    |
+| F04  | Planejada | F03        | Integrar biblioteca, listagem e inclusao de series com dados reais         | [F04 - Listagem e inclusao reais de series](fases/F04-listagem-inclusao-reais-series.md)              |
+| F05  | Planejada | F04        | Integrar edicao de datas e exclusao real de series                         | [F05 - Edicao e exclusao reais de series](fases/F05-edicao-exclusao-reais-series.md)                  |
 
 ## Resumo final da tarefa
 

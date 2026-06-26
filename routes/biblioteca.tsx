@@ -52,18 +52,20 @@ export default define.page<typeof handler>(function Biblioteca() {
                                     </span>
                                 </div>
                             </a>
-                            <div class="card livros-library-card livros-library-card-disabled" aria-disabled="true">
+                            <a class="card livros-library-card livros-library-card-primary" href="/biblioteca/series">
                                 <div class="card-content livros-library-card-content">
                                     <span class="icon livros-library-card-icon" aria-hidden="true">
                                         <i class="fas fa-layer-group"></i>
                                     </span>
                                     <span class="livros-library-card-text">
                                         <strong>Series</strong>
-                                        <span>Espaco reservado para organizar colecoes depois.</span>
+                                        <span>Organize colecoes e acompanhe a leitura em ordem.</span>
                                     </span>
-                                    <span class="tag is-light">Em breve</span>
+                                    <span class="icon livros-library-card-arrow" aria-hidden="true">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         <form method="post" id="logout-form" class="is-hidden" aria-hidden="true"></form>
                     </div>

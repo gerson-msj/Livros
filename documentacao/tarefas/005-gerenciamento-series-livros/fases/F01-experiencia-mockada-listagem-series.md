@@ -2,9 +2,12 @@
 
 **Tarefa:** [T-005 - Gerenciamento de series de livros](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
+
 **Depende de:** Nenhuma
+
 **Tipo de fase:** UX
+
 **Executor:** designer
 
 ## Objetivo tecnico
@@ -39,3 +42,16 @@ Criar a experiencia visual e navegavel da entrada de series na biblioteca e da l
 - Persistencia em libSQL.
 - Validacoes reais de duplicidade, autor, titulo ou datas.
 - Edicao real de series.
+
+## Resultado
+
+- Entrada de series liberada na biblioteca, apontando para `/biblioteca/series`.
+- Tela `/biblioteca/series` criada com dados mockados explicitos e isolados na propria rota.
+- Island `SeriesList` criada com nome e estrutura esperados para reutilizacao na integracao real.
+- Listagem mockada apresenta nome da serie, autor e sublista de livros em ordem crescente, sem exibir numero de ordem ao usuario.
+- Acao `Nova serie` aponta para `/biblioteca/series/nova` e clique em uma serie aponta para `/biblioteca/series/:id`, ambos ainda como
+  navegacao prevista para fases seguintes.
+- Validacao tecnica realizada com `deno task build`.
+- Validacao visual/interativa aprovada pelo usuario em 26/06/2026.
+- A tela aprovada se torna referencia visual e interativa para as fases comuns; os dados mockados da rota devem ser substituidos por dados
+  reais na integracao.
