@@ -2,9 +2,12 @@
 
 **Tarefa:** [T-005 - Gerenciamento de series de livros](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
+
 **Depende de:** F01
+
 **Tipo de fase:** UX
+
 **Executor:** designer
 
 ## Objetivo tecnico
@@ -15,8 +18,10 @@ Criar a experiencia visual e interativa mockada para incluir uma nova serie, edi
 
 - [Serie](../../../conhecimento.md#serie): durante o cadastro, livros recebem ordem automatica e somente o ultimo pode ser removido.
 - [Livro](../../../conhecimento.md#livro): datas sao opcionais e, depois do cadastro, somente datas podem ser alteradas.
-- [Imutabilidade dos cadastros](../../../conhecimento.md#imutabilidade-dos-cadastros): nome, autor, livros e ordem da serie nao devem ser editaveis depois do cadastro.
-- [Interface com Bulma](../../../conhecimento.md#interface-com-bulma): confirmacoes devem reaproveitar a experiencia de popup quando fizer sentido.
+- [Imutabilidade dos cadastros](../../../conhecimento.md#imutabilidade-dos-cadastros): nome, autor, livros e ordem da serie nao devem ser
+  editaveis depois do cadastro.
+- [Interface com Bulma](../../../conhecimento.md#interface-com-bulma): confirmacoes devem reaproveitar a experiencia de popup quando fizer
+  sentido.
 
 ## Entrega esperada
 
@@ -40,3 +45,19 @@ Criar a experiencia visual e interativa mockada para incluir uma nova serie, edi
 - Exclusao real de serie.
 - Validacoes definitivas de backend.
 - Alteracoes permanentes no modelo de dados.
+
+## Resultado
+
+- Tela `/biblioteca/series/nova` criada com formulario mockado de nova serie, usando nome, autor existente ou novo e lista de livros.
+- Tela `/biblioteca/series/:id` criada com formulario mockado de edicao, exibindo serie, autor e titulos como somente leitura.
+- Inclusao de livros na nova serie validada com livros adicionados ao final da lista, rolagem automatica para o novo livro e controles da
+  lista posicionados no rodape.
+- Alerta de ultimo livro sem titulo validado como mensagem no cabecalho fixo da pagina, mantendo o contexto visivel durante a rolagem.
+- Remocao do ultimo livro validada com confirmacao por popup.
+- Edicao de datas validada como unico comportamento editavel depois do cadastro.
+- Exclusao de serie validada como fluxo mockado com confirmacao explicita por popup.
+- Rotas e islands foram criados com nomes e caminhos finais esperados para reaproveitamento na integracao real.
+- Dados, autores e respostas de salvamento/exclusao permanecem mockados e devem ser substituidos por handlers e servicos reais nas fases
+  comuns.
+- Validacao tecnica realizada com `deno task build`.
+- Validacao visual/interativa aprovada pelo usuario em 26/06/2026.

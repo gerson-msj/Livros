@@ -502,6 +502,33 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: #9fb0ff;
 }
 
+.livros-series-form-fixed-header {
+    background: #111820;
+    padding: 1.5rem 0 0.75rem;
+}
+
+.livros-series-form-fixed-header-inner {
+    margin: 0 auto;
+    max-width: 36rem;
+    width: calc(100% - 3rem);
+}
+
+.livros-series-form-scroll-content {
+    padding-top: 0.75rem;
+}
+
+.livros-series-create-page .livros-book-form-toolbar {
+    margin-bottom: 0.5rem;
+}
+
+.livros-series-create-page .livros-book-form-feedback {
+    margin-bottom: 0;
+}
+
+.livros-series-form-top-anchor {
+    scroll-margin-top: calc(var(--livros-fixed-page-header-height, 0px) + 0.75rem);
+}
+
 .livros-book-form-toolbar .livros-books-toolbar-text p:first-child {
     color: #d8dee9;
 }
@@ -611,6 +638,57 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .livros-book-form-preview dd {
     color: #f5f7fb;
     overflow-wrap: anywhere;
+}
+
+.livros-series-form-section {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.livros-series-form-section-header {
+    align-items: start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.livros-series-form-section-header p {
+    overflow-wrap: anywhere;
+}
+
+.livros-series-form-section-header .has-text-grey {
+    color: #aeb8c8 !important;
+}
+
+.livros-series-form-books {
+    display: grid;
+    gap: 0.875rem;
+}
+
+.livros-series-form-book {
+    background: #111820;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.livros-series-form-list-actions {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.livros-series-form-list-actions .buttons {
+    margin-bottom: 0;
+}
+
+.livros-series-form-top-link {
+    color: #9fb0ff;
+    flex: 0 0 auto;
 }
 
 .livros-author-picker-modal {
@@ -885,6 +963,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
     .livros-book-form-dates {
         grid-template-columns: 1fr;
+    }
+
+    .livros-series-form-section-header,
+    .livros-series-form-list-actions {
+        align-items: stretch;
+        flex-direction: column;
     }
 
     .livros-book-item {
