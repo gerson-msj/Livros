@@ -517,11 +517,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding-top: 0.75rem;
 }
 
-.livros-series-create-page .livros-book-form-toolbar {
+.livros-series-form-page .livros-book-form-toolbar {
     margin-bottom: 0.5rem;
 }
 
-.livros-series-create-page .livros-book-form-feedback {
+.livros-series-form-page .livros-book-form-feedback {
     margin-bottom: 0;
 }
 
