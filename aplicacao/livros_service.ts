@@ -1,6 +1,7 @@
 import {
     type CreateStandaloneBookInput,
     DuplicateStandaloneBookError,
+    type RecentLibraryBook,
     type StandaloneBook,
     type UpdateStandaloneBookDatesInput,
     validateStandaloneBook,
@@ -11,6 +12,7 @@ import type { AuthorsService } from "./autores_service.ts"
 
 export interface StandaloneBookRepository {
     listByUser(userId: string): Promise<StandaloneBook[]>
+    listRecentByUser(userId: string, limit: number): Promise<RecentLibraryBook[]>
     findByUserAndId(userId: string, bookId: string): Promise<StandaloneBook | null>
     findByUserTitleAndAuthor(userId: string, normalizedTitle: string, authorId: string): Promise<StandaloneBook | null>
     create(input: CreateStandaloneBookRecordInput): Promise<StandaloneBook>
@@ -46,6 +48,10 @@ export class BooksService {
 
     listStandaloneBooks(userId: string): Promise<StandaloneBook[]> {
         return this.books.listByUser(userId)
+    }
+
+    listRecentLibraryBooks(userId: string, limit = 10): Promise<RecentLibraryBook[]> {
+        return this.books.listRecentByUser(userId, limit)
     }
 
     findStandaloneBook(userId: string, bookId: string): Promise<StandaloneBook | null> {

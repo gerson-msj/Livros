@@ -11,6 +11,15 @@ export interface StandaloneBook {
     createdAt: Date
 }
 
+export interface RecentLibraryBook {
+    id: string
+    userId: string
+    title: string
+    authorName: string
+    readingFinishedOn: string | null
+    createdAt: Date
+}
+
 export interface BookDatesInput {
     readingStartedOn?: string | null
     readingFinishedOn?: string | null

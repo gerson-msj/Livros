@@ -4,7 +4,7 @@ import type {
     StandaloneBookRepository,
     UpdateStandaloneBookDatesRecordInput
 } from "../aplicacao/livros_service.ts"
-import type { StandaloneBook } from "../dominio/livros.ts"
+import type { RecentLibraryBook, StandaloneBook } from "../dominio/livros.ts"
 import { asNullableString, asString } from "./author_repositories.ts"
 import { ensureDatabaseSchema } from "./database.ts"
 
@@ -29,6 +29,57 @@ export class LibsqlStandaloneBookRepository implements StandaloneBookRepository 
         })
 
         return result.rows.map(mapStandaloneBook)
+    }
+
+    async listRecentByUser(userId: string, limit: number): Promise<RecentLibraryBook[]> {
+        await ensureDatabaseSchema(this.client)
+
+        const result = await this.client.execute({
+            sql: `
+                SELECT *
+                FROM (
+                    SELECT
+                        books.id AS book_id,
+                        books.user_id AS book_user_id,
+                        books.title AS book_title,
+                        authors.name AS author_name,
+                        books.reading_finished_on,
+                        books.created_at AS book_created_at
+                    FROM books
+                    INNER JOIN authors ON authors.id = books.author_id AND authors.user_id = books.user_id
+                    WHERE books.user_id = ?
+                      AND books.author_id IS NOT NULL
+                      AND books.series_id IS NULL
+                      AND books.series_order IS NULL
+
+                    UNION ALL
+
+                    SELECT
+                        books.id AS book_id,
+                        books.user_id AS book_user_id,
+                        books.title AS book_title,
+                        authors.name AS author_name,
+                        books.reading_finished_on,
+                        books.created_at AS book_created_at
+                    FROM books
+                    INNER JOIN series ON series.id = books.series_id AND series.user_id = books.user_id
+                    INNER JOIN authors ON authors.id = series.author_id AND authors.user_id = series.user_id
+                    WHERE books.user_id = ?
+                      AND books.author_id IS NULL
+                      AND books.series_id IS NOT NULL
+                      AND books.series_order IS NOT NULL
+                )
+                ORDER BY
+                    CASE WHEN reading_finished_on IS NULL THEN 1 ELSE 0 END ASC,
+                    CASE WHEN reading_finished_on IS NULL THEN book_created_at ELSE reading_finished_on END DESC,
+                    book_created_at DESC,
+                    book_id DESC
+                LIMIT ?
+            `,
+            args: [userId, userId, limit]
+        })
+
+        return result.rows.map(mapRecentLibraryBook)
     }
 
     async findByUserAndId(userId: string, bookId: string): Promise<StandaloneBook | null> {
@@ -184,6 +235,17 @@ function mapStandaloneBook(row: Row): StandaloneBook {
             createdAt: new Date(asString(row.author_created_at))
         },
         readingStartedOn: asNullableString(row.reading_started_on),
+        readingFinishedOn: asNullableString(row.reading_finished_on),
+        createdAt: new Date(asString(row.book_created_at))
+    }
+}
+
+function mapRecentLibraryBook(row: Row): RecentLibraryBook {
+    return {
+        id: asString(row.book_id),
+        userId: asString(row.book_user_id),
+        title: asString(row.book_title),
+        authorName: asString(row.author_name),
         readingFinishedOn: asNullableString(row.reading_finished_on),
         createdAt: new Date(asString(row.book_created_at))
     }

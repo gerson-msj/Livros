@@ -1,7 +1,8 @@
 # Conhecimento do projeto
 
 Livros e um MVP para controlar leituras e organizar series de livros. O projeto usa Fresh, Deno e Bulma, possui cadastro, login, redefinicao
-de senha, sessao HTTP persistida em libSQL local e gerenciamento de livros avulsos e series na area segura `/biblioteca`.
+de senha, sessao HTTP persistida em libSQL local e biblioteca com gerenciamento de livros avulsos, series e lista compacta de ultimos livros
+na area segura `/biblioteca`.
 
 ## Visao
 
@@ -63,7 +64,9 @@ Datas em branco sao aceitas. Quando informadas, devem ser datas completas, e a d
 
 O MVP nao armazena um estado de leitura separado. Quando necessario, a situacao da leitura deve ser inferida pelas datas registradas.
 
-Livros avulsos e livros de series nao possuem uma relacao direta no comportamento atual do MVP.
+Livros avulsos e livros de series aparecem juntos na lista compacta de ultimos livros da biblioteca. Essa lista prioriza livros com data de
+conclusao em ordem decrescente e, quando houver menos de 10 concluidos, completa com livros sem data de conclusao por ordem decrescente de
+cadastro.
 
 ### Serie
 
@@ -92,7 +95,10 @@ serie inteira.
 - Persistencia local com libSQL em `Livros.db` para usuarios, sessoes, autores, livros e series.
 - Senhas e chaves de redefinicao sao armazenadas por hash, nao em texto puro.
 - Sessoes tem validade de uma semana e ha no maximo uma sessao persistida por usuario.
-- `/biblioteca` existe como area segura com opcao de saida, entrada para livros avulsos e entrada para series.
+- `/biblioteca` existe como area segura com opcao de saida, pontos de entrada compactos para livros avulsos e series, e lista compacta dos
+  ultimos livros do usuario autenticado.
+- A lista compacta da biblioteca mistura livros avulsos e livros de series, mostra no maximo 10 itens, exibe somente titulo, autor e data de
+  conclusao, nao possui acao ao clicar no livro, e fica oculta quando nao ha livros ou series cadastrados.
 - Visitantes sem sessao ativa sao redirecionados de `/biblioteca` para `/login`; usuarios ja logados sao redirecionados de `/login`,
   `/cadastro` e `/redefinir-senha` para `/biblioteca`.
 - Logout remove a sessao persistida, limpa o cookie, redireciona para `/login` e impede novo acesso seguro com a mesma sessao.
@@ -259,4 +265,6 @@ redefinicao de senha com nova chave, redirecionamentos para login, componentes d
 entrada pela biblioteca, listagem, inclusao, edicao de datas, exclusao, autores privados reutilizaveis, persistencia libSQL e isolamento por
 usuario. A tarefa [T-005 - Gerenciamento de series de livros](tarefas/005-gerenciamento-series-livros/tarefa.md) esta concluida apos
 implementar e validar listagem, inclusao, edicao de datas e exclusao de series, com autores reutilizaveis, livros ordenados, persistencia
-libSQL e isolamento por usuario.
+libSQL e isolamento por usuario. A tarefa [T-006 - Biblioteca com ultimos livros](tarefas/006-biblioteca-ultimos-livros/tarefa.md) esta
+concluida apos alterar a biblioteca para pontos de entrada compactos e uma lista real dos ultimos livros, unificando livros avulsos e livros
+de series com isolamento por usuario.

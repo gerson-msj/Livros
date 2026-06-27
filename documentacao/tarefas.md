@@ -13,3 +13,5 @@ contexto, decisoes pendentes e evidencias relevantes sem poluir o conhecimento p
   exclusao de livros avulsos do usuario.
 - [T-005 - Gerenciamento de series de livros](tarefas/005-gerenciamento-series-livros/tarefa.md): listagem, inclusao, edicao de datas e
   exclusao de series de livros do usuario.
+- [T-006 - Biblioteca com ultimos livros](tarefas/006-biblioteca-ultimos-livros/tarefa.md): layout da biblioteca com pontos de entrada
+  reduzidos e lista compacta dos ultimos livros do usuario.
