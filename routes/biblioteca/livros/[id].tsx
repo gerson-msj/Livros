@@ -42,7 +42,7 @@ export const handler = define.handlers({
             })
 
             if (book === null) {
-                return jsonResponse({ ok: false, messages: ["Livro nao encontrado na sua biblioteca."] }, 404)
+                return jsonResponse({ ok: false, messages: ["Livro não encontrado na sua biblioteca."] }, 404)
             }
 
             return jsonResponse({
@@ -67,18 +67,18 @@ export const handler = define.handlers({
         const book = await ctx.state.services.books.findStandaloneBook(session.userId, ctx.params.id)
 
         if (book === null) {
-            return jsonResponse({ ok: false, messages: ["Livro nao encontrado na sua biblioteca."] }, 404)
+            return jsonResponse({ ok: false, messages: ["Livro não encontrado na sua biblioteca."] }, 404)
         }
 
         const deleted = await ctx.state.services.books.deleteStandaloneBook(session.userId, ctx.params.id)
 
         if (!deleted) {
-            return jsonResponse({ ok: false, messages: ["Livro nao encontrado na sua biblioteca."] }, 404)
+            return jsonResponse({ ok: false, messages: ["Livro não encontrado na sua biblioteca."] }, 404)
         }
 
         return jsonResponse({
             ok: true,
-            messages: [`"${book.title}" foi excluido da sua biblioteca.`],
+            messages: [`"${book.title}" foi excluído da sua biblioteca.`],
             redirectTo: "/biblioteca/livros"
         })
     }

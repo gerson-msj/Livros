@@ -20,7 +20,7 @@ const emptyData: ResetPasswordPageData = {
     newPassword: ""
 }
 
-const invalidResetMessage = "Nao foi possivel redefinir a senha. Confira os dados e tente novamente."
+const invalidResetMessage = "Não foi possível redefinir a senha. Confira os dados e tente novamente."
 
 export const handler = define.handlers({
     async GET(ctx) {

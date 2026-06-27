@@ -28,7 +28,7 @@ export default function CadastroForm({ username, password, errors }: CadastroFor
             {visibleErrors.general && <div class="notification is-danger is-light">{visibleErrors.general}</div>}
 
             <div class="field">
-                <label class="label" for="username">Nome de usuario</label>
+                <label class="label" for="username">Nome de usuário</label>
                 <div class="control has-icons-left">
                     <input
                         class={`input ${visibleErrors.username ? "is-danger" : ""}`}

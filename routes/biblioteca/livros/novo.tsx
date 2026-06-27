@@ -50,7 +50,7 @@ export const handler = define.handlers({
             if (error instanceof DuplicateStandaloneBookError) {
                 return jsonResponse({
                     ok: false,
-                    messages: ["Ja existe um livro com este titulo e autor."]
+                    messages: ["Já existe um livro com este título e autor."]
                 }, 400)
             }
 

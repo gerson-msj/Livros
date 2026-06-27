@@ -40,7 +40,7 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
     const [isSaving, setIsSaving] = useState(false)
     const [feedback, setFeedback] = useState<FeedbackState>({
         theme: "info",
-        messages: ["Preencha a serie e inclua pelo menos um livro."]
+        messages: ["Preencha a série e inclua pelo menos um livro."]
     })
 
     const hasChanges = name.trim() !== "" || author !== null || books.some(hasBookChanges)
@@ -64,8 +64,8 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
         }
 
         const result: PopupMessageResult = await showMessage({
-            title: "Alteracoes nao salvas",
-            message: "Existem dados preenchidos nesta serie. Deseja voltar para a lista mesmo assim?",
+            title: "Alterações não salvas",
+            message: "Existem dados preenchidos nesta série. Deseja voltar para a lista mesmo assim?",
             theme: "warning",
             positiveText: "Permanecer",
             negativeText: "Voltar sem salvar",
@@ -88,7 +88,7 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
         if (!lastBook.title.trim()) {
             setFeedback({
                 theme: "warning",
-                messages: ["Preencha o titulo do ultimo livro antes de adicionar outro."]
+                messages: ["Preencha o título do último livro antes de adicionar outro."]
             })
             return
         }
@@ -97,7 +97,7 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
         shouldScrollToLastBookRef.current = true
         setFeedback({
             theme: "info",
-            messages: ["Novo livro adicionado a serie."]
+            messages: ["Novo livro adicionado à série."]
         })
     }
 
@@ -105,14 +105,14 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
         if (books.length === 1) {
             setFeedback({
                 theme: "danger",
-                messages: ["A serie precisa manter ao menos um livro."]
+                messages: ["A série precisa manter ao menos um livro."]
             })
             return
         }
 
         const result = await showMessage({
-            title: "Remover ultimo livro",
-            message: "Deseja remover o ultimo livro da serie?",
+            title: "Remover último livro",
+            message: "Deseja remover o último livro da série?",
             theme: "warning",
             positiveText: "Remover",
             negativeText: "Cancelar",
@@ -127,7 +127,7 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
         setBooks((current) => current.slice(0, -1))
         setFeedback({
             theme: "info",
-            messages: ["Ultimo livro removido da serie."]
+            messages: ["Último livro removido da série."]
         })
     }
 
@@ -187,8 +187,8 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
             })
 
             await showMessage({
-                title: "Serie salva",
-                message: result.messages[0] ?? "Serie salva com sucesso.",
+                title: "Série salva",
+                message: result.messages[0] ?? "Série salva com sucesso.",
                 theme: "success"
             })
 
@@ -214,7 +214,7 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
                 contentClassName="livros-book-form-page-content livros-series-form-scroll-content"
                 header={
                     <>
-                        <header class="livros-page-title" aria-label="Titulo da pagina Nova serie">
+                        <header class="livros-page-title" aria-label="Título da página Nova série">
                             <div class="livros-page-title-left">
                                 <button class="livros-page-title-icon-button" type="button" aria-label="Voltar" onClick={tryBack}>
                                     <span class="icon">
@@ -222,13 +222,13 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
                                     </span>
                                 </button>
                             </div>
-                            <h1 class="title livros-page-title-heading">Nova serie</h1>
+                            <h1 class="title livros-page-title-heading">Nova série</h1>
                             <div class="livros-page-title-right"></div>
                         </header>
 
-                        <div class="livros-books-toolbar livros-book-form-toolbar" aria-label="Acoes do cadastro de serie">
+                        <div class="livros-books-toolbar livros-book-form-toolbar" aria-label="Ações do cadastro de série">
                             <div class="livros-books-toolbar-text">
-                                <p class="has-text-weight-semibold">Incluir serie</p>
+                                <p class="has-text-weight-semibold">Incluir série</p>
                                 <p class="is-size-7 has-text-grey">Informe nome, autor e os livros em ordem</p>
                             </div>
                             <button
@@ -256,13 +256,13 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
                     }}
                 >
                     <div class="field">
-                        <label class="label livros-book-form-label">Nome da serie</label>
+                        <label class="label livros-book-form-label">Nome da série</label>
                         <div class="control">
                             <input
                                 class="input"
                                 type="text"
                                 value={name}
-                                placeholder="Ex.: Cronicas de Eldoria"
+                                placeholder="Ex.: Crônicas de Eldoria"
                                 onInput={(event) => setName(event.currentTarget.value)}
                             />
                         </div>
@@ -273,8 +273,8 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
                     <div class="livros-series-form-section">
                         <div class="livros-series-form-section-header">
                             <div>
-                                <p class="has-text-weight-semibold">Livros da serie</p>
-                                <p class="is-size-7 has-text-grey">A ordem e definida pela sequencia abaixo</p>
+                                <p class="has-text-weight-semibold">Livros da série</p>
+                                <p class="is-size-7 has-text-grey">A ordem é definida pela sequência abaixo</p>
                             </div>
                         </div>
 
@@ -289,7 +289,7 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
                             ))}
                         </div>
 
-                        <div class="livros-series-form-list-actions" aria-label="Acoes da lista de livros da serie">
+                        <div class="livros-series-form-list-actions" aria-label="Ações da lista de livros da série">
                             <div class="buttons">
                                 <button class="button is-link is-light" type="button" onClick={addBook}>
                                     <span class="icon">
@@ -298,7 +298,7 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
                                     <span>Adicionar livro</span>
                                 </button>
                                 <button class="button is-danger is-light" type="button" onClick={removeLastBook}>
-                                    Remover ultimo
+                                    Remover último
                                 </button>
                             </div>
                             <button class="button is-text livros-series-form-top-link" type="button" onClick={scrollToTop}>
@@ -323,26 +323,26 @@ function SeriesDraftBookFields(
     return (
         <section ref={bookRef} class="livros-series-form-book">
             <div class="field">
-                <label class="label livros-book-form-label">Titulo do livro</label>
+                <label class="label livros-book-form-label">Título do livro</label>
                 <div class="control">
                     <input
                         class="input"
                         type="text"
                         value={book.title}
-                        placeholder="Titulo do livro"
+                        placeholder="Título do livro"
                         onInput={(event) => onChange({ title: event.currentTarget.value })}
                     />
                 </div>
             </div>
             <div class="livros-book-form-dates">
                 <BookDateInput
-                    label="Inicio da leitura"
+                    label="Início da leitura"
                     value={book.readingStartedOn}
                     class={getDateInputClass(book.readingStartedOn)}
                     onInput={(event) => onChange({ readingStartedOn: event.currentTarget.value })}
                 />
                 <BookDateInput
-                    label="Conclusao da leitura"
+                    label="Conclusão da leitura"
                     value={book.readingFinishedOn}
                     class={getDateInputClass(book.readingFinishedOn)}
                     onInput={(event) => onChange({ readingFinishedOn: event.currentTarget.value })}
@@ -370,7 +370,7 @@ function validateSeries(name: string, author: SelectableAuthor | null, books: Se
     const normalizedTitles = titledBooks.map((title) => title.toLowerCase())
 
     if (name.trim().length < 2) {
-        issues.push("Informe o nome da serie com pelo menos 2 caracteres.")
+        issues.push("Informe o nome da série com pelo menos 2 caracteres.")
     }
 
     if (author === null) {
@@ -378,11 +378,11 @@ function validateSeries(name: string, author: SelectableAuthor | null, books: Se
     }
 
     if (titledBooks.length === 0) {
-        issues.push("Inclua ao menos um livro com titulo.")
+        issues.push("Inclua ao menos um livro com título.")
     }
 
     if (new Set(normalizedTitles).size !== normalizedTitles.length) {
-        issues.push("A mesma serie nao deve ter livros com titulos repetidos.")
+        issues.push("A mesma série não deve ter livros com títulos repetidos.")
     }
 
     return issues

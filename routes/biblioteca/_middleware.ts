@@ -18,7 +18,7 @@ function prefersJson(headers: Headers): boolean {
 }
 
 function jsonSessionExpiredResponse(): Response {
-    return new Response(JSON.stringify({ ok: false, messages: ["Sessao expirada. Entre novamente."] }), {
+    return new Response(JSON.stringify({ ok: false, messages: ["Sessão expirada. Entre novamente."] }), {
         status: 401,
         headers: {
             "content-type": "application/json; charset=utf-8"

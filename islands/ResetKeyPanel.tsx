@@ -18,10 +18,10 @@ export default function ResetKeyPanel({ resetKey }: { resetKey: string }) {
         <div class="box">
             <div class="notification is-success is-light">
                 <p class="has-text-weight-semibold">Conta criada.</p>
-                <p>Guarde sua chave de redefinicao de senha.</p>
+                <p>Guarde sua chave de redefinição de senha.</p>
             </div>
 
-            <CopyableResetKeyField id="reset-key" label="Chave de redefinicao" resetKey={resetKey} onCopy={copyKey} />
+            <CopyableResetKeyField id="reset-key" label="Chave de redefinição" resetKey={resetKey} onCopy={copyKey} />
 
             <div class="field">
                 <a class="button is-primary is-fullwidth" href="/biblioteca">
@@ -34,7 +34,7 @@ export default function ResetKeyPanel({ resetKey }: { resetKey: string }) {
 
             {copyStatus === "copied" && <p class="help is-success" role="status">Chave copiada.</p>}
             {copyStatus === "unavailable" && <p class="help" role="status">Copie a chave manualmente.</p>}
-            {copyStatus === "failed" && <p class="help is-danger" role="status">Nao foi possivel copiar. Copie manualmente.</p>}
+            {copyStatus === "failed" && <p class="help is-danger" role="status">Não foi possível copiar. Copie manualmente.</p>}
         </div>
     )
 }

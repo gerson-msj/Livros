@@ -60,14 +60,14 @@ export interface NormalizedBookDates {
 
 export class StandaloneBookValidationError extends Error {
     constructor(public readonly issues: StandaloneBookValidationIssue[]) {
-        super("Dados do livro invalidos")
+        super("Dados do livro inválidos")
         this.name = "StandaloneBookValidationError"
     }
 }
 
 export class DuplicateStandaloneBookError extends Error {
     constructor() {
-        super("Livro avulso duplicado para o usuario.")
+        super("Livro avulso duplicado para o usuário.")
         this.name = "DuplicateStandaloneBookError"
     }
 }
@@ -84,14 +84,14 @@ export function validateStandaloneBook(input: CreateStandaloneBookInput): Normal
     if (title.length < MINIMUM_TEXT_LENGTH) {
         issues.push({
             field: "title",
-            message: "O titulo deve conter no minimo 2 caracteres."
+            message: "O título deve conter no mínimo 2 caracteres."
         })
     }
 
     if (authorName.length < MINIMUM_TEXT_LENGTH) {
         issues.push({
             field: "authorName",
-            message: "O autor deve conter no minimo 2 caracteres."
+            message: "O autor deve conter no mínimo 2 caracteres."
         })
     }
 
@@ -134,14 +134,14 @@ export function validateBookDates<TIssue extends { field: string; message: strin
     if (readingStartedOn !== null && !isCompleteIsoDate(readingStartedOn)) {
         issues.push({
             field: startedField,
-            message: "Informe uma data de inicio completa."
+            message: "Informe uma data de início completa."
         } as TIssue)
     }
 
     if (readingFinishedOn !== null && !isCompleteIsoDate(readingFinishedOn)) {
         issues.push({
             field: finishedField,
-            message: "Informe uma data de conclusao completa."
+            message: "Informe uma data de conclusão completa."
         } as TIssue)
     }
 
@@ -154,7 +154,7 @@ export function validateBookDates<TIssue extends { field: string; message: strin
     ) {
         issues.push({
             field: startedField,
-            message: "A data de inicio nao pode ser posterior a data de conclusao."
+            message: "A data de início não pode ser posterior à data de conclusão."
         } as TIssue)
     }
 

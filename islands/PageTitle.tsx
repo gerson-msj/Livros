@@ -38,7 +38,7 @@ export default function PageTitle(
 
     return (
         <>
-            <header class="livros-page-title" aria-label={`Titulo da pagina ${title}`}>
+            <header class="livros-page-title" aria-label={`Título da página ${title}`}>
                 <div class="livros-page-title-left">
                     <PageTitleLeft title={title} mode={leftMode} backHref={backHref} />
                 </div>

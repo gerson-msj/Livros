@@ -21,7 +21,7 @@ export default function ResetPasswordForm({ username, resetKey, newPassword, err
             {visibleError && <div class="notification is-danger is-light">{visibleError}</div>}
 
             <div class="field">
-                <label class="label" for="username">Nome de usuario</label>
+                <label class="label" for="username">Nome de usuário</label>
                 <div class="control has-icons-left">
                     <input
                         class="input"
@@ -39,7 +39,7 @@ export default function ResetPasswordForm({ username, resetKey, newPassword, err
             </div>
 
             <div class="field">
-                <label class="label" for="reset-key">Chave de redefinicao</label>
+                <label class="label" for="reset-key">Chave de redefinição</label>
                 <div class="control has-icons-left">
                     <input
                         class="input is-family-monospace"

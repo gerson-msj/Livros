@@ -33,17 +33,17 @@ export default function SeriesList({ series }: { series: ListedSeries[] }) {
             contentClassName="livros-books-page-list"
             header={
                 <>
-                    <PageTitle title="Series" leftMode="back" backHref="/biblioteca" />
-                    <div class="livros-books-toolbar" aria-label="Acoes da lista de series">
+                    <PageTitle title="Séries" leftMode="back" backHref="/biblioteca" />
+                    <div class="livros-books-toolbar" aria-label="Ações da lista de séries">
                         <div class="livros-books-toolbar-text">
-                            <p class="has-text-weight-semibold">Series de livros</p>
+                            <p class="has-text-weight-semibold">Séries de livros</p>
                             <p class="is-size-7 has-text-grey">Mais recentes primeiro</p>
                         </div>
                         <button class="button is-primary livros-books-new-button" type="button" onClick={openNewSeries}>
                             <span class="icon">
                                 <i class="fas fa-plus" aria-hidden="true"></i>
                             </span>
-                            <span>Nova serie</span>
+                            <span>Nova série</span>
                         </button>
                     </div>
                 </>
@@ -52,7 +52,7 @@ export default function SeriesList({ series }: { series: ListedSeries[] }) {
             {series.length === 0
                 ? <EmptySeriesState onNewSeries={openNewSeries} />
                 : (
-                    <div class="livros-series-list" aria-label="Lista de series de livros">
+                    <div class="livros-series-list" aria-label="Lista de séries de livros">
                         {series.map((item) => <SeriesListItem key={item.id} item={item} onSelect={openSeries} />)}
                     </div>
                 )}
@@ -75,7 +75,7 @@ function SeriesListItem({ item, onSelect }: { item: ListedSeries; onSelect: (ite
                     <i class="fas fa-chevron-right"></i>
                 </span>
             </span>
-            <span class="livros-series-books" aria-label={`Livros da serie ${item.name}`}>
+            <span class="livros-series-books" aria-label={`Livros da série ${item.name}`}>
                 {sortedBooks.map((book) => <SeriesBookItem key={`${item.id}-${book.order}`} book={book} />)}
             </span>
         </button>
@@ -88,8 +88,8 @@ function SeriesBookItem({ book }: { book: ListedSeriesBook }) {
             <span class="livros-series-book-main">
                 <span class="livros-series-book-title">{book.title}</span>
                 <span class="livros-series-book-dates">
-                    <span>Inicio: {formatDate(book.readingStartedOn) ?? "Em aberto"}</span>
-                    <span>Conclusao: {formatDate(book.readingFinishedOn) ?? "Em aberto"}</span>
+                    <span>Início: {formatDate(book.readingStartedOn) ?? "Em aberto"}</span>
+                    <span>Conclusão: {formatDate(book.readingFinishedOn) ?? "Em aberto"}</span>
                 </span>
             </span>
         </span>
@@ -102,10 +102,10 @@ function EmptySeriesState({ onNewSeries }: { onNewSeries: () => void }) {
             <span class="icon livros-books-empty-icon" aria-hidden="true">
                 <i class="fas fa-layer-group"></i>
             </span>
-            <p class="has-text-weight-semibold">Nenhuma serie cadastrada.</p>
-            <p class="has-text-grey">Use o botao de inclusao para cadastrar a primeira serie.</p>
+            <p class="has-text-weight-semibold">Nenhuma série cadastrada.</p>
+            <p class="has-text-grey">Use o botão de inclusão para cadastrar a primeira série.</p>
             <button class="button is-primary is-light" type="button" onClick={onNewSeries}>
-                Nova serie
+                Nova série
             </button>
         </div>
     )

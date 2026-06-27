@@ -64,7 +64,7 @@ export class LibsqlUserRepository implements UserRepository {
         })
 
         if (!result.rows[0]) {
-            throw new Error("Usuario nao encontrado para atualizar segredos.")
+            throw new Error("Usuário não encontrado para atualizar segredos.")
         }
 
         return mapUser(result.rows[0])

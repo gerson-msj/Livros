@@ -154,7 +154,7 @@ export class LibsqlStandaloneBookRepository implements StandaloneBookRepository 
         const book = await this.findByUserAndId(input.userId, input.id)
 
         if (book === null) {
-            throw new Error("Livro avulso nao encontrado apos criacao.")
+            throw new Error("Livro avulso não encontrado após criação.")
         }
 
         return book

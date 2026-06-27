@@ -30,7 +30,7 @@ export default define.page<typeof handler>(function Series({ data }) {
     return (
         <section class="livros-books-page">
             <Head>
-                <title>Series | Biblioteca</title>
+                <title>Séries | Biblioteca</title>
             </Head>
             <SeriesList series={data.series} />
         </section>

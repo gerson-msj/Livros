@@ -114,7 +114,7 @@ export class LibsqlBookSeriesRepository implements BookSeriesRepository {
         const series = await this.findByUserAndId(input.userId, input.id)
 
         if (series === null) {
-            throw new Error("Serie nao encontrada apos criacao.")
+            throw new Error("Série não encontrada após criação.")
         }
 
         return series
@@ -241,7 +241,7 @@ function mapBookInSeries(row: Row, seriesId: string): BookInSeries {
     const seriesOrder = row.series_order
 
     if (typeof seriesOrder !== "number") {
-        throw new Error("Ordem de livro de serie inesperada.")
+        throw new Error("Ordem de livro de série inesperada.")
     }
 
     return {

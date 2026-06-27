@@ -37,7 +37,7 @@ export default function BookCreateForm({ authors }: { authors: SelectableAuthor[
         }
 
         const result: PopupMessageResult = await showMessage({
-            title: "Alteracoes nao salvas",
+            title: "Alterações não salvas",
             message: "Existem dados preenchidos neste cadastro. Deseja voltar para a lista mesmo assim?",
             theme: "warning",
             positiveText: "Permanecer",
@@ -109,7 +109,7 @@ export default function BookCreateForm({ authors }: { authors: SelectableAuthor[
         <>
             <div class="livros-book-form-page">
                 <div class="livros-book-form-page-content">
-                    <header class="livros-page-title" aria-label="Titulo da pagina Novo livro">
+                    <header class="livros-page-title" aria-label="Título da página Novo livro">
                         <div class="livros-page-title-left">
                             <button class="livros-page-title-icon-button" type="button" aria-label="Voltar" onClick={tryBack}>
                                 <span class="icon">
@@ -121,10 +121,10 @@ export default function BookCreateForm({ authors }: { authors: SelectableAuthor[
                         <div class="livros-page-title-right"></div>
                     </header>
 
-                    <div class="livros-books-toolbar livros-book-form-toolbar" aria-label="Acoes do cadastro de livro">
+                    <div class="livros-books-toolbar livros-book-form-toolbar" aria-label="Ações do cadastro de livro">
                         <div class="livros-books-toolbar-text">
                             <p class="has-text-weight-semibold">Incluir livro</p>
-                            <p class="is-size-7 has-text-grey">Informe titulo, autor e datas opcionais</p>
+                            <p class="is-size-7 has-text-grey">Informe título, autor e datas opcionais</p>
                         </div>
                         <button
                             class={`button is-primary livros-books-new-button ${isSaving ? "is-loading" : ""}`}
@@ -148,7 +148,7 @@ export default function BookCreateForm({ authors }: { authors: SelectableAuthor[
                         }}
                     >
                         <div class="field">
-                            <label class="label livros-book-form-label">Titulo</label>
+                            <label class="label livros-book-form-label">Título</label>
                             <div class="control">
                                 <input
                                     class="input"
@@ -164,13 +164,13 @@ export default function BookCreateForm({ authors }: { authors: SelectableAuthor[
 
                         <div class="livros-book-form-dates">
                             <BookDateInput
-                                label="Inicio da leitura"
+                                label="Início da leitura"
                                 value={startedAt}
                                 class={getDateInputClass(startedAt)}
                                 onInput={(event) => setStartedAt(event.currentTarget.value)}
                             />
                             <BookDateInput
-                                label="Conclusao da leitura"
+                                label="Conclusão da leitura"
                                 value={finishedAt}
                                 class={getDateInputClass(finishedAt)}
                                 onInput={(event) => setFinishedAt(event.currentTarget.value)}

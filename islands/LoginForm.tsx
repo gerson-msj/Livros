@@ -20,7 +20,7 @@ export default function LoginForm({ username, password, error }: LoginFormProps)
             {visibleError && <div class="notification is-danger is-light">{visibleError}</div>}
 
             <div class="field">
-                <label class="label" for="username">Nome de usuario</label>
+                <label class="label" for="username">Nome de usuário</label>
                 <div class="control has-icons-left">
                     <input
                         class="input"

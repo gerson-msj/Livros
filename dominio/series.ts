@@ -85,14 +85,14 @@ export interface NormalizedUpdateBookSeriesDatesInput {
 
 export class BookSeriesValidationError extends Error {
     constructor(public readonly issues: BookSeriesValidationIssue[]) {
-        super("Dados da serie invalidos")
+        super("Dados da série inválidos")
         this.name = "BookSeriesValidationError"
     }
 }
 
 export class DuplicateBookSeriesError extends Error {
     constructor() {
-        super("Serie duplicada para o usuario e autor.")
+        super("Série duplicada para o usuário e autor.")
         this.name = "DuplicateBookSeriesError"
     }
 }
@@ -105,14 +105,14 @@ export function validateBookSeries(input: CreateBookSeriesInput): NormalizedCrea
     if (name.length < MINIMUM_TEXT_LENGTH) {
         issues.push({
             field: "name",
-            message: "O nome da serie deve conter no minimo 2 caracteres."
+            message: "O nome da série deve conter no mínimo 2 caracteres."
         })
     }
 
     if (authorName.length < MINIMUM_TEXT_LENGTH) {
         issues.push({
             field: "authorName",
-            message: "O autor deve conter no minimo 2 caracteres."
+            message: "O autor deve conter no mínimo 2 caracteres."
         })
     }
 
@@ -126,7 +126,7 @@ export function validateBookSeries(input: CreateBookSeriesInput): NormalizedCrea
         if (title.length < MINIMUM_TEXT_LENGTH) {
             issues.push({
                 field: `books.${index}.title`,
-                message: "O titulo do livro deve conter no minimo 2 caracteres."
+                message: "O título do livro deve conter no mínimo 2 caracteres."
             })
         }
 
@@ -140,7 +140,7 @@ export function validateBookSeries(input: CreateBookSeriesInput): NormalizedCrea
     if (books.length === 0) {
         issues.push({
             field: "books",
-            message: "Inclua ao menos um livro com titulo."
+            message: "Inclua ao menos um livro com título."
         })
     }
 
@@ -151,7 +151,7 @@ export function validateBookSeries(input: CreateBookSeriesInput): NormalizedCrea
     if (duplicatedBookTitle) {
         issues.push({
             field: "books",
-            message: "A mesma serie nao pode ter livros com titulos repetidos."
+            message: "A mesma série não pode ter livros com títulos repetidos."
         })
     }
 
@@ -183,7 +183,7 @@ export function validateBookSeriesDates(input: UpdateBookSeriesDatesInput): Norm
     if (books.length === 0) {
         issues.push({
             field: "books",
-            message: "Informe ao menos um livro da serie."
+            message: "Informe ao menos um livro da série."
         })
     }
 

@@ -16,7 +16,7 @@ const emptyData: LoginPageData = {
     password: ""
 }
 
-const invalidLoginMessage = "Nao foi possivel entrar. Confira nome de usuario e senha."
+const invalidLoginMessage = "Não foi possível entrar. Confira nome de usuário e senha."
 
 export const handler = define.handlers({
     async GET(ctx) {
@@ -71,7 +71,7 @@ export default define.page<typeof handler>(function Login({ data }) {
 
                         <div class="content has-text-centered">
                             <p>
-                                Ainda nao tem conta? <a href="/cadastro">Criar conta</a>
+                                Ainda não tem conta? <a href="/cadastro">Criar conta</a>
                             </p>
                             <p>
                                 Esqueceu a senha? <a href="/redefinir-senha">Redefinir senha</a>

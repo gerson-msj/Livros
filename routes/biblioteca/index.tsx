@@ -50,7 +50,7 @@ export default define.page<typeof handler>(function Biblioteca({ data }) {
                 <div class="columns is-centered">
                     <div class="column is-full-mobile is-two-thirds-tablet is-half-desktop">
                         <PageTitle title="Biblioteca" showLogout />
-                        <nav class="livros-library-shortcuts" aria-label="Areas da biblioteca">
+                        <nav class="livros-library-shortcuts" aria-label="Áreas da biblioteca">
                             <a class="button livros-library-shortcut" href="/biblioteca/livros">
                                 <span class="icon" aria-hidden="true">
                                     <i class="fas fa-book"></i>
@@ -61,7 +61,7 @@ export default define.page<typeof handler>(function Biblioteca({ data }) {
                                 <span class="icon" aria-hidden="true">
                                     <i class="fas fa-layer-group"></i>
                                 </span>
-                                <span>Series</span>
+                                <span>Séries</span>
                             </a>
                         </nav>
                         {data.recentBooks.length === 0 ? <EmptyRecentBooks /> : <RecentBooks books={data.recentBooks} />}
@@ -87,10 +87,10 @@ function RecentBooks({ books }: { books: RecentLibraryBook[] }) {
         <section class="livros-library-recent" aria-labelledby="livros-library-recent-title">
             <header class="livros-library-recent-header">
                 <div>
-                    <h2 id="livros-library-recent-title" class="title is-5">Ultimos livros</h2>
+                    <h2 id="livros-library-recent-title" class="title is-5">Últimos livros</h2>
                 </div>
             </header>
-            <ol class="livros-library-recent-list" aria-label="Ultimos 10 livros">
+            <ol class="livros-library-recent-list" aria-label="Últimos 10 livros">
                 {books.map((book) => <RecentBookItem key={book.id} book={book} />)}
             </ol>
         </section>
@@ -103,7 +103,7 @@ function EmptyRecentBooks() {
             <span class="icon livros-library-empty-icon" aria-hidden="true">
                 <i class="fas fa-book-open"></i>
             </span>
-            <p>Ainda nao existem livros ou series.</p>
+            <p>Ainda não existem livros ou séries.</p>
         </div>
     )
 }

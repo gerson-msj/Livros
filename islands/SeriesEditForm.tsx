@@ -52,7 +52,7 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
     const [isDeleting, setIsDeleting] = useState(false)
     const [feedback, setFeedback] = useState<FeedbackState>({
         theme: "info",
-        messages: ["Altere somente as datas dos livros da serie."]
+        messages: ["Altere somente as datas dos livros da série."]
     })
 
     const hasChanges = books.some((book, index) =>
@@ -67,7 +67,7 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
         }
 
         const result: PopupMessageResult = await showMessage({
-            title: "Alteracoes nao salvas",
+            title: "Alterações não salvas",
             message: `As datas de "${series.name}" foram alteradas. Deseja voltar para a lista mesmo assim?`,
             theme: "warning",
             positiveText: "Permanecer",
@@ -146,8 +146,8 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
         }
 
         const confirmation = await showMessage({
-            title: "Excluir serie",
-            message: `Deseja excluir "${series.name}" e todos os livros vinculados? Esta acao nao pode ser desfeita.`,
+            title: "Excluir série",
+            message: `Deseja excluir "${series.name}" e todos os livros vinculados? Esta ação não pode ser desfeita.`,
             theme: "danger",
             positiveText: "Excluir",
             negativeText: "Cancelar",
@@ -185,8 +185,8 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
             }
 
             await showMessage({
-                title: "Serie excluida",
-                message: result.messages[0] ?? "Serie excluida com sucesso.",
+                title: "Série excluída",
+                message: result.messages[0] ?? "Série excluída com sucesso.",
                 theme: "success"
             })
 
@@ -212,7 +212,7 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
                 contentClassName="livros-book-form-page-content livros-series-form-scroll-content"
                 header={
                     <>
-                        <header class="livros-page-title" aria-label="Titulo da pagina Editar serie">
+                        <header class="livros-page-title" aria-label="Título da página Editar série">
                             <div class="livros-page-title-left">
                                 <button class="livros-page-title-icon-button" type="button" aria-label="Voltar" onClick={tryBack}>
                                     <span class="icon">
@@ -220,12 +220,12 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
                                     </span>
                                 </button>
                             </div>
-                            <h1 class="title livros-page-title-heading">Editar serie</h1>
+                            <h1 class="title livros-page-title-heading">Editar série</h1>
                             <div class="livros-page-title-right">
                                 <button
                                     class="livros-page-title-action-icon"
                                     type="button"
-                                    aria-label="Excluir serie"
+                                    aria-label="Excluir série"
                                     onClick={deleteSeries}
                                     disabled={isDeleting}
                                 >
@@ -236,10 +236,10 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
                             </div>
                         </header>
 
-                        <div class="livros-books-toolbar livros-book-form-toolbar" aria-label="Acoes da edicao de serie">
+                        <div class="livros-books-toolbar livros-book-form-toolbar" aria-label="Ações da edição de série">
                             <div class="livros-books-toolbar-text">
                                 <p class="has-text-weight-semibold">Editar datas</p>
-                                <p class="is-size-7 has-text-grey">Serie, autor e titulos permanecem somente leitura</p>
+                                <p class="is-size-7 has-text-grey">Série, autor e títulos permanecem somente leitura</p>
                             </div>
                             <button
                                 class={`button is-primary livros-books-new-button ${isSaving ? "is-loading" : ""}`}
@@ -266,7 +266,7 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
                     }}
                 >
                     <div class="field">
-                        <label class="label livros-book-form-label">Nome da serie</label>
+                        <label class="label livros-book-form-label">Nome da série</label>
                         <div class="control">
                             <input class="input livros-book-readonly-input" type="text" value={series.name} readOnly />
                         </div>
@@ -280,13 +280,13 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
                     </div>
 
                     <p class="help livros-book-readonly-help">
-                        Para corrigir nome, autor, titulos ou ordem, exclua a serie e cadastre novamente.
+                        Para corrigir nome, autor, títulos ou ordem, exclua a série e cadastre novamente.
                     </p>
 
                     <div class="livros-series-form-section">
                         <div class="livros-series-form-section-header">
                             <div>
-                                <p class="has-text-weight-semibold">Livros da serie</p>
+                                <p class="has-text-weight-semibold">Livros da série</p>
                                 <p class="is-size-7 has-text-grey">Apenas as datas podem ser alteradas</p>
                             </div>
                         </div>
@@ -301,7 +301,7 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
                             ))}
                         </div>
 
-                        <div class="livros-series-form-list-actions" aria-label="Acoes da lista de livros da serie">
+                        <div class="livros-series-form-list-actions" aria-label="Ações da lista de livros da série">
                             <button class="button is-text livros-series-form-top-link" type="button" onClick={scrollToTop}>
                                 Voltar ao topo
                             </button>
@@ -320,20 +320,20 @@ function EditableSeriesBookFields(
     return (
         <section class="livros-series-form-book">
             <div class="field">
-                <label class="label livros-book-form-label">Titulo do livro</label>
+                <label class="label livros-book-form-label">Título do livro</label>
                 <div class="control">
                     <input class="input livros-book-readonly-input" type="text" value={book.title} readOnly />
                 </div>
             </div>
             <div class="livros-book-form-dates">
                 <BookDateInput
-                    label="Inicio da leitura"
+                    label="Início da leitura"
                     value={book.readingStartedOn}
                     class={getDateInputClass(book.readingStartedOn)}
                     onInput={(event) => onChange({ readingStartedOn: event.currentTarget.value })}
                 />
                 <BookDateInput
-                    label="Conclusao da leitura"
+                    label="Conclusão da leitura"
                     value={book.readingFinishedOn}
                     class={getDateInputClass(book.readingFinishedOn)}
                     onInput={(event) => onChange({ readingFinishedOn: event.currentTarget.value })}

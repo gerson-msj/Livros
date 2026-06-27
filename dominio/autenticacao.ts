@@ -59,28 +59,28 @@ export interface ValidationIssue {
 
 export class RegistrationValidationError extends Error {
     constructor(public readonly issues: ValidationIssue[]) {
-        super("Dados de cadastro invalidos")
+        super("Dados de cadastro inválidos")
         this.name = "RegistrationValidationError"
     }
 }
 
 export class UsernameAlreadyExistsError extends Error {
     constructor(username: string) {
-        super(`Nome de usuario indisponivel: ${username}`)
+        super(`Nome de usuário indisponível: ${username}`)
         this.name = "UsernameAlreadyExistsError"
     }
 }
 
 export class InvalidCredentialsError extends Error {
     constructor() {
-        super("Credenciais invalidas")
+        super("Credenciais inválidas")
         this.name = "InvalidCredentialsError"
     }
 }
 
 export class InvalidPasswordResetError extends Error {
     constructor() {
-        super("Dados de redefinicao invalidos")
+        super("Dados de redefinição inválidos")
         this.name = "InvalidPasswordResetError"
     }
 }
@@ -118,14 +118,14 @@ export function validateRegistration(input: RegistrationInput): NormalizedRegist
     if (normalized.username.length < MINIMUM_CREDENTIAL_LENGTH) {
         issues.push({
             field: "username",
-            message: "O nome de usuario deve conter no minimo 5 caracteres."
+            message: "O nome de usuário deve conter no mínimo 5 caracteres."
         })
     }
 
     if (normalized.password.length < MINIMUM_CREDENTIAL_LENGTH) {
         issues.push({
             field: "password",
-            message: "A senha deve conter no minimo 5 caracteres."
+            message: "A senha deve conter no mínimo 5 caracteres."
         })
     }
 
@@ -143,21 +143,21 @@ export function validatePasswordReset(input: PasswordResetInput): NormalizedPass
     if (normalized.username.length < MINIMUM_CREDENTIAL_LENGTH) {
         issues.push({
             field: "username",
-            message: "O nome de usuario deve conter no minimo 5 caracteres."
+            message: "O nome de usuário deve conter no mínimo 5 caracteres."
         })
     }
 
     if (normalized.resetKey.length === 0) {
         issues.push({
             field: "resetKey",
-            message: "Informe a chave de redefinicao."
+            message: "Informe a chave de redefinição."
         })
     }
 
     if (normalized.newPassword.length < MINIMUM_CREDENTIAL_LENGTH) {
         issues.push({
             field: "newPassword",
-            message: "A nova senha deve conter no minimo 5 caracteres."
+            message: "A nova senha deve conter no mínimo 5 caracteres."
         })
     }
 

@@ -35,7 +35,7 @@ export const handler = define.handlers({
             })
 
             if (series === null) {
-                return jsonResponse({ ok: false, messages: ["Serie nao encontrada na sua biblioteca."] }, 404)
+                return jsonResponse({ ok: false, messages: ["Série não encontrada na sua biblioteca."] }, 404)
             }
 
             return jsonResponse({
@@ -60,18 +60,18 @@ export const handler = define.handlers({
         const series = await ctx.state.services.series.findBookSeries(session.userId, ctx.params.id)
 
         if (series === null) {
-            return jsonResponse({ ok: false, messages: ["Serie nao encontrada na sua biblioteca."] }, 404)
+            return jsonResponse({ ok: false, messages: ["Série não encontrada na sua biblioteca."] }, 404)
         }
 
         const deleted = await ctx.state.services.series.deleteBookSeries(session.userId, ctx.params.id)
 
         if (!deleted) {
-            return jsonResponse({ ok: false, messages: ["Serie nao encontrada na sua biblioteca."] }, 404)
+            return jsonResponse({ ok: false, messages: ["Série não encontrada na sua biblioteca."] }, 404)
         }
 
         return jsonResponse({
             ok: true,
-            messages: [`"${series.name}" foi excluida da sua biblioteca.`],
+            messages: [`"${series.name}" foi excluída da sua biblioteca.`],
             redirectTo: "/biblioteca/series"
         })
     }
@@ -81,7 +81,7 @@ export default define.page<typeof handler>(function EditarSerie({ data }) {
     return (
         <section class="livros-book-form-route">
             <Head>
-                <title>Editar serie | Biblioteca</title>
+                <title>Editar série | Biblioteca</title>
             </Head>
             <SeriesEditForm series={data.series} />
         </section>

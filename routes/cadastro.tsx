@@ -71,7 +71,7 @@ export const handler = define.handlers({
                         username: username.trim(),
                         password,
                         errors: {
-                            username: "Este nome de usuario nao esta disponivel."
+                            username: "Este nome de usuário não está disponível."
                         }
                     }
                 }

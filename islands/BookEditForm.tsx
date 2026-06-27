@@ -43,7 +43,7 @@ export default function BookEditForm({ book }: { book: EditableBook }) {
         }
 
         const result: PopupMessageResult = await showMessage({
-            title: "Alteracoes nao salvas",
+            title: "Alterações não salvas",
             message: `As datas de "${book.title}" foram alteradas. Deseja voltar para a lista mesmo assim?`,
             theme: "warning",
             positiveText: "Permanecer",
@@ -116,7 +116,7 @@ export default function BookEditForm({ book }: { book: EditableBook }) {
 
         const confirmation = await showMessage({
             title: "Excluir livro",
-            message: `Deseja excluir "${book.title}" da sua biblioteca? Esta acao nao pode ser desfeita.`,
+            message: `Deseja excluir "${book.title}" da sua biblioteca? Esta ação não pode ser desfeita.`,
             theme: "danger",
             positiveText: "Excluir",
             negativeText: "Cancelar",
@@ -154,8 +154,8 @@ export default function BookEditForm({ book }: { book: EditableBook }) {
             }
 
             await showMessage({
-                title: "Livro excluido",
-                message: result.messages[0] ?? "Livro excluido da sua biblioteca.",
+                title: "Livro excluído",
+                message: result.messages[0] ?? "Livro excluído da sua biblioteca.",
                 theme: "success"
             })
 
@@ -169,7 +169,7 @@ export default function BookEditForm({ book }: { book: EditableBook }) {
         <>
             <div class="livros-book-form-page">
                 <div class="livros-book-form-page-content">
-                    <header class="livros-page-title" aria-label="Titulo da pagina Editar livro">
+                    <header class="livros-page-title" aria-label="Título da página Editar livro">
                         <div class="livros-page-title-left">
                             <button class="livros-page-title-icon-button" type="button" aria-label="Voltar" onClick={tryBack}>
                                 <span class="icon">
@@ -193,10 +193,10 @@ export default function BookEditForm({ book }: { book: EditableBook }) {
                         </div>
                     </header>
 
-                    <div class="livros-books-toolbar livros-book-form-toolbar" aria-label="Acoes da edicao de livro">
+                    <div class="livros-books-toolbar livros-book-form-toolbar" aria-label="Ações da edição de livro">
                         <div class="livros-books-toolbar-text">
                             <p class="has-text-weight-semibold">Editar datas</p>
-                            <p class="is-size-7 has-text-grey">Titulo e autor permanecem somente leitura</p>
+                            <p class="is-size-7 has-text-grey">Título e autor permanecem somente leitura</p>
                         </div>
                         <button
                             class={`button is-primary livros-books-new-button ${isSaving ? "is-loading" : ""}`}
@@ -220,7 +220,7 @@ export default function BookEditForm({ book }: { book: EditableBook }) {
                         }}
                     >
                         <div class="field">
-                            <label class="label livros-book-form-label">Titulo</label>
+                            <label class="label livros-book-form-label">Título</label>
                             <div class="control">
                                 <input class="input livros-book-readonly-input" type="text" value={book.title} readOnly />
                             </div>
@@ -233,17 +233,17 @@ export default function BookEditForm({ book }: { book: EditableBook }) {
                             </div>
                         </div>
 
-                        <p class="help livros-book-readonly-help">Para corrigir titulo ou autor, exclua o livro e cadastre novamente.</p>
+                        <p class="help livros-book-readonly-help">Para corrigir título ou autor, exclua o livro e cadastre novamente.</p>
 
                         <div class="livros-book-form-dates">
                             <BookDateInput
-                                label="Inicio da leitura"
+                                label="Início da leitura"
                                 value={startedAt}
                                 class={getDateInputClass(startedAt)}
                                 onInput={(event) => setStartedAt(event.currentTarget.value)}
                             />
                             <BookDateInput
-                                label="Conclusao da leitura"
+                                label="Conclusão da leitura"
                                 value={finishedAt}
                                 class={getDateInputClass(finishedAt)}
                                 onInput={(event) => setFinishedAt(event.currentTarget.value)}

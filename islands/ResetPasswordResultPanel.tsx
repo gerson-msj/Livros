@@ -15,14 +15,14 @@ export default function ResetPasswordResultPanel({ resetKey }: { resetKey: strin
         <div class="box">
             <div class="notification is-success is-light">
                 <p class="has-text-weight-semibold">Senha redefinida.</p>
-                <p>Guarde a nova chave de redefinicao antes de continuar.</p>
+                <p>Guarde a nova chave de redefinição antes de continuar.</p>
             </div>
 
-            <CopyableResetKeyField id="new-reset-key" label="Nova chave de redefinicao" resetKey={resetKey} onCopy={copyKey} />
+            <CopyableResetKeyField id="new-reset-key" label="Nova chave de redefinição" resetKey={resetKey} onCopy={copyKey} />
 
             {copyStatus === "copied" && <p class="help is-success" role="status">Chave copiada.</p>}
             {copyStatus === "unavailable" && <p class="help" role="status">Copie a chave manualmente.</p>}
-            {copyStatus === "failed" && <p class="help is-danger" role="status">Nao foi possivel copiar. Copie manualmente.</p>}
+            {copyStatus === "failed" && <p class="help is-danger" role="status">Não foi possível copiar. Copie manualmente.</p>}
 
             <div class="field mt-4">
                 <a class="button is-primary is-fullwidth" href="/biblioteca">

@@ -49,7 +49,7 @@ export const handler = define.handlers({
             if (error instanceof DuplicateBookSeriesError) {
                 return jsonResponse({
                     ok: false,
-                    messages: ["Ja existe uma serie com este nome e autor."]
+                    messages: ["Já existe uma série com este nome e autor."]
                 }, 400)
             }
 
@@ -62,7 +62,7 @@ export default define.page<typeof handler>(function NovaSerie({ data }) {
     return (
         <section class="livros-book-form-route">
             <Head>
-                <title>Nova serie | Biblioteca</title>
+                <title>Nova série | Biblioteca</title>
             </Head>
             <SeriesCreateForm authors={data.authors} />
         </section>

@@ -21,7 +21,7 @@ export default function BookDateInput({ label, class: className, ...inputAttribu
                 <button
                     class="icon is-small is-right livros-field-icon-button livros-book-date-picker-button"
                     type="button"
-                    aria-label={`Abrir calendario de ${label}`}
+                    aria-label={`Abrir calendário de ${label}`}
                     onClick={() => inputRef.current?.showPicker()}
                 >
                     <i class="fas fa-calendar" aria-hidden="true"></i>

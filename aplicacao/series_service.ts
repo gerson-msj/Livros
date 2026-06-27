@@ -74,7 +74,7 @@ export class SeriesService {
         }))
 
         if (seriesBooks.length === 0) {
-            throw new BookSeriesValidationError([{ field: "books", message: "Inclua ao menos um livro com titulo." }])
+            throw new BookSeriesValidationError([{ field: "books", message: "Inclua ao menos um livro com título." }])
         }
 
         return await this.series.create({
