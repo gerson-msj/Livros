@@ -345,7 +345,7 @@ function EditableSeriesBookFields(
 
 function FeedbackMessage({ feedback }: { feedback: FeedbackState }) {
     return (
-        <div class={`notification is-${feedback.theme} is-light livros-books-feedback livros-book-form-feedback`} role="status">
+        <div class={`notification is-${feedback.theme} livros-books-feedback livros-book-form-feedback`} role="status">
             {feedback.messages.length === 1 ? feedback.messages[0] : (
                 <ul class="livros-book-form-feedback-list">
                     {feedback.messages.map((message) => <li key={message}>{message}</li>)}

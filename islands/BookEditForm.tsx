@@ -249,24 +249,6 @@ export default function BookEditForm({ book }: { book: EditableBook }) {
                                 onInput={(event) => setFinishedAt(event.currentTarget.value)}
                             />
                         </div>
-
-                        <div class="livros-book-form-preview">
-                            <p class="has-text-weight-semibold">Previa</p>
-                            <dl>
-                                <div>
-                                    <dt>Titulo</dt>
-                                    <dd>{book.title}</dd>
-                                </div>
-                                <div>
-                                    <dt>Autor</dt>
-                                    <dd>{book.author}</dd>
-                                </div>
-                                <div>
-                                    <dt>Datas</dt>
-                                    <dd>{formatDatePreview(startedAt)} ate {formatDatePreview(finishedAt)}</dd>
-                                </div>
-                            </dl>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -289,15 +271,6 @@ function FeedbackMessage({ feedback }: { feedback: FeedbackState }) {
 
 function getDateInputClass(value: string): string {
     return isCompleteDate(value) ? "" : "is-placeholder"
-}
-
-function formatDatePreview(value: string): string {
-    if (!isCompleteDate(value)) {
-        return "em aberto"
-    }
-
-    const [year, month, day] = value.split("-")
-    return `${day}/${month}/${year}`
 }
 
 function isCompleteDate(value: string): boolean {

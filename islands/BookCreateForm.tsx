@@ -176,27 +176,6 @@ export default function BookCreateForm({ authors }: { authors: SelectableAuthor[
                                 onInput={(event) => setFinishedAt(event.currentTarget.value)}
                             />
                         </div>
-
-                        <div class="livros-book-form-preview">
-                            <p class="has-text-weight-semibold">Previa</p>
-                            <dl>
-                                <div>
-                                    <dt>Titulo</dt>
-                                    <dd>{title.trim() || "Ainda sem titulo"}</dd>
-                                </div>
-                                <div>
-                                    <dt>Autor</dt>
-                                    <dd>
-                                        {author?.name ?? "Ainda sem autor"}
-                                        {author?.isNew && <span class="tag is-link is-light ml-2">novo</span>}
-                                    </dd>
-                                </div>
-                                <div>
-                                    <dt>Datas</dt>
-                                    <dd>{formatDatePreview(startedAt)} ate {formatDatePreview(finishedAt)}</dd>
-                                </div>
-                            </dl>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -219,15 +198,6 @@ function FeedbackMessage({ feedback }: { feedback: FeedbackState }) {
 
 function getDateInputClass(value: string): string {
     return isCompleteDate(value) ? "" : "is-placeholder"
-}
-
-function formatDatePreview(value: string): string {
-    if (!isCompleteDate(value)) {
-        return "em aberto"
-    }
-
-    const [year, month, day] = value.split("-")
-    return `${day}/${month}/${year}`
 }
 
 function isCompleteDate(value: string): boolean {

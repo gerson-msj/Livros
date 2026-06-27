@@ -203,11 +203,11 @@ html {
     display: grid;
     gap: 0.75rem;
     grid-template-columns: auto minmax(0, 1fr) auto;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .livros-page-title-heading {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
     min-width: 0;
     overflow-wrap: anywhere;
     text-align: left;
@@ -411,7 +411,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .livros-books-fixed-header-inner {
     margin: 0 auto;
-    max-width: 36rem;
+    max-width: 44rem;
     width: calc(100% - 3rem);
 }
 
@@ -476,7 +476,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .livros-books-page-list {
     margin-left: auto;
     margin-right: auto;
-    max-width: 36rem;
+    max-width: 45rem;
     padding: 0 0.125rem 3rem;
     width: calc(100% - 3rem);
 }
@@ -484,7 +484,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .livros-book-form-page-content {
     margin-left: auto;
     margin-right: auto;
-    max-width: 36rem;
+    max-width: 45rem;
     padding: 1.5rem 0.125rem 3rem;
     width: calc(100% - 3rem);
 }
@@ -504,17 +504,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .livros-series-form-fixed-header {
     background: #111820;
-    padding: 1.5rem 0 0.75rem;
+    padding: 1.5rem 0 0;
 }
 
 .livros-series-form-fixed-header-inner {
     margin: 0 auto;
-    max-width: 36rem;
+    max-width: 45rem;
     width: calc(100% - 3rem);
 }
 
 .livros-series-form-scroll-content {
-    padding-top: 0.75rem;
+    padding-top: 0;
 }
 
 .livros-series-form-page .livros-book-form-toolbar {
@@ -522,7 +522,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .livros-series-form-page .livros-book-form-feedback {
-    margin-bottom: 0;
+    margin-bottom: 1rem;
 }
 
 .livros-series-form-top-anchor {
@@ -538,11 +538,40 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .livros-book-form-toolbar + .livros-book-form-feedback {
-    margin-top: 0.75rem;
+    margin-top: 1.2rem;
 }
 
 .livros-book-form-feedback {
-    margin-bottom: 1rem;
+    background: #182230 !important;
+    border: 1px solid #344255;
+    border-left-width: 4px;
+    box-shadow: none;
+    color: #d8dee9 !important;
+    margin-bottom: 1.2rem !important;
+}
+
+.livros-book-form-feedback.notification:not(:last-child) {
+    margin-bottom: 1.2rem;
+}
+
+.livros-book-form-feedback.notification.is-info,
+.livros-book-form-feedback.notification.is-info.is-light {
+    border-left-color: #5f8fb8;
+}
+
+.livros-book-form-feedback.notification.is-success,
+.livros-book-form-feedback.notification.is-success.is-light {
+    border-left-color: #5fa779;
+}
+
+.livros-book-form-feedback.notification.is-warning,
+.livros-book-form-feedback.notification.is-warning.is-light {
+    border-left-color: #c2a25f;
+}
+
+.livros-book-form-feedback.notification.is-danger,
+.livros-book-form-feedback.notification.is-danger.is-light {
+    border-left-color: #b86b6b;
 }
 
 .livros-book-form-feedback-list {
@@ -612,36 +641,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .livros-book-date-picker-button:hover,
 .livros-book-date-picker-button:focus-visible {
     color: #f5f7fb;
-}
-
-.livros-book-form-preview {
-    background: #111820;
-    border: 1px solid #374151;
-    border-radius: 8px;
-    display: grid;
-    gap: 0.75rem;
-    margin-top: 0.75rem;
-    padding: 1rem;
-}
-
-.livros-book-form-preview dl {
-    display: grid;
-    gap: 0.65rem;
-}
-
-.livros-book-form-preview dl div {
-    display: grid;
-    gap: 0.1rem;
-}
-
-.livros-book-form-preview dt {
-    color: #aeb8c8;
-    font-size: 0.75rem;
-}
-
-.livros-book-form-preview dd {
-    color: #f5f7fb;
-    overflow-wrap: anywhere;
 }
 
 .livros-series-form-section {
