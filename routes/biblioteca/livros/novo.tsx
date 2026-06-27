@@ -1,7 +1,6 @@
 import { Head } from "fresh/runtime"
-import type { Author } from "../../../dominio/livros.ts"
+import type { Author } from "../../../dominio/autores.ts"
 import { DuplicateStandaloneBookError, StandaloneBookValidationError } from "../../../dominio/livros.ts"
-import { getSessionIdFromCookie } from "../../../infraestrutura/session_cookie.ts"
 import BookCreateForm from "../../../islands/BookCreateForm.tsx"
 import type { SelectableAuthor } from "../../../islands/AuthorPicker.tsx"
 import { define } from "../../../utils.ts"
@@ -12,14 +11,8 @@ interface NewBookPageData {
 
 export const handler = define.handlers({
     async GET(ctx) {
-        const sessionId = getSessionIdFromCookie(ctx.req.headers)
-        const session = sessionId ? await ctx.state.services.authentication.findActiveSession(sessionId) : null
-
-        if (session === null) {
-            return redirectToLogin()
-        }
-
-        const authors = await ctx.state.services.books.listAuthors(session.userId)
+        const session = ctx.state.authenticatedSession!
+        const authors = await ctx.state.services.authors.listAuthors(session.userId)
 
         return {
             data: {
@@ -29,13 +22,7 @@ export const handler = define.handlers({
     },
 
     async POST(ctx) {
-        const sessionId = getSessionIdFromCookie(ctx.req.headers)
-        const session = sessionId ? await ctx.state.services.authentication.findActiveSession(sessionId) : null
-
-        if (session === null) {
-            return jsonResponse({ ok: false, messages: ["Sessao expirada. Entre novamente."] }, 401)
-        }
-
+        const session = ctx.state.authenticatedSession!
         const form = await ctx.req.formData()
 
         try {
@@ -96,15 +83,5 @@ function jsonResponse(body: unknown, status = 200): Response {
         headers: {
             "content-type": "application/json; charset=utf-8"
         }
-    })
-}
-
-function redirectToLogin(): Response {
-    const headers = new Headers()
-    headers.set("location", "/login")
-
-    return new Response(null, {
-        status: 303,
-        headers
     })
 }

@@ -1,16 +1,10 @@
 import { Head } from "fresh/runtime"
-import { clearSessionCookie, getSessionIdFromCookie } from "../infraestrutura/session_cookie.ts"
-import PageTitle from "../islands/PageTitle.tsx"
-import { define } from "../utils.ts"
+import { clearSessionCookie, getSessionIdFromCookie } from "../../infraestrutura/session_cookie.ts"
+import PageTitle from "../../islands/PageTitle.tsx"
+import { define } from "../../utils.ts"
 
 export const handler = define.handlers({
-    async GET(ctx) {
-        const sessionId = getSessionIdFromCookie(ctx.req.headers)
-
-        if (!sessionId || !(await ctx.state.services.authentication.findActiveSession(sessionId))) {
-            return redirectToLogin()
-        }
-
+    GET() {
         return { data: {} }
     },
 

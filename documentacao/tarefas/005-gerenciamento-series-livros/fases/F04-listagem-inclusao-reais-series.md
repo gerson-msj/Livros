@@ -2,8 +2,10 @@
 
 **Tarefa:** [T-005 - Gerenciamento de series de livros](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
+
 **Depende de:** F03
+
 **Tipo de fase:** Comum
 
 ## Objetivo tecnico
@@ -12,7 +14,8 @@ Integrar a biblioteca, a listagem e a inclusao de series aos dados reais, preser
 
 ## Contexto necessario
 
-- [Rotas Fresh e handlers](../../../conhecimento.md#rotas-fresh-e-handlers): paginas e handlers de rota devem ser preferidos quando suficientes.
+- [Rotas Fresh e handlers](../../../conhecimento.md#rotas-fresh-e-handlers): paginas e handlers de rota devem ser preferidos quando
+  suficientes.
 - [Interface com Bulma](../../../conhecimento.md#interface-com-bulma): manter componentes e estilo visual existentes.
 - [F01 - Experiencia mockada de listagem de series](F01-experiencia-mockada-listagem-series.md): base visual da entrada e listagem.
 - [F02 - Experiencia mockada de formulario de serie](F02-experiencia-mockada-formulario-serie.md): base visual da inclusao.
@@ -45,3 +48,15 @@ Integrar a biblioteca, a listagem e a inclusao de series aos dados reais, preser
 - Edicao real de datas de series existentes.
 - Exclusao real de series.
 - Reordenacao, adicao ou remocao de livros depois do cadastro.
+
+## Resultado
+
+- Resultado entregue: listagem `/biblioteca/series` passou a carregar series reais do usuario autenticado, ordenadas por cadastro mais
+  recente, com livros ordenados; `/biblioteca/series/nova` passou a carregar autores reais e salvar series reais com um ou mais livros e
+  datas opcionais.
+- Mocks substituidos: dados temporarios da listagem, autores temporarios e resposta mockada de salvamento foram removidos ou trocados por
+  handlers reais.
+- Ajuste de validacao aplicado: rota de nova serie passou a buscar autores em `AuthorsService` e salvar series via `SeriesService`.
+- Verificacoes realizadas: `deno task build`.
+- Testes unitarios temporarios: removidos conforme solicitacao do usuario; nenhum novo teste foi criado.
+- Riscos, limitacoes ou pendencias: nenhum apos validacao final pelo usuario.

@@ -17,6 +17,12 @@ interface FeedbackState {
     messages: string[]
 }
 
+interface SaveResponse {
+    ok: boolean
+    messages: string[]
+    redirectTo?: string
+}
+
 const emptyBook = (): SeriesDraftBook => ({
     title: "",
     readingStartedOn: "",
@@ -143,18 +149,50 @@ export default function SeriesCreateForm({ authors }: { authors: SelectableAutho
         setIsSaving(true)
 
         try {
+            const form = new FormData()
+            form.set("name", name)
+            form.set("authorName", author?.name ?? "")
+            for (const book of books) {
+                form.append("bookTitle", book.title)
+                form.append("bookReadingStartedOn", book.readingStartedOn)
+                form.append("bookReadingFinishedOn", book.readingFinishedOn)
+            }
+
+            const response = await fetch("/biblioteca/series/nova", {
+                method: "POST",
+                body: form,
+                headers: {
+                    accept: "application/json"
+                }
+            })
+
+            if (response.status === 401) {
+                globalThis.location.href = "/login"
+                return
+            }
+
+            const result = await response.json() as SaveResponse
+
+            if (!result.ok) {
+                setFeedback({
+                    theme: "danger",
+                    messages: result.messages
+                })
+                return
+            }
+
             setFeedback({
                 theme: "success",
-                messages: [`"${name.trim()}" seria salva com ${books.filter((book) => book.title.trim()).length} livro(s).`]
+                messages: result.messages
             })
 
             await showMessage({
                 title: "Serie salva",
-                message: "Fluxo mockado validado. A persistencia real entra nas proximas fases.",
+                message: result.messages[0] ?? "Serie salva com sucesso.",
                 theme: "success"
             })
 
-            globalThis.location.href = "/biblioteca/series"
+            globalThis.location.href = result.redirectTo ?? "/biblioteca/series"
         } finally {
             setIsSaving(false)
         }

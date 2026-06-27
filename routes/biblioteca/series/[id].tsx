@@ -1,36 +1,79 @@
 import { Head } from "fresh/runtime"
-import { getSessionIdFromCookie } from "../../../infraestrutura/session_cookie.ts"
+import { type BookSeries, BookSeriesValidationError } from "../../../dominio/series.ts"
 import SeriesEditForm, { type EditableSeries } from "../../../islands/SeriesEditForm.tsx"
 import { define } from "../../../utils.ts"
 
-const mockSeries: EditableSeries = {
-    id: "serie-roda-do-tempo",
-    name: "A Roda do Tempo",
-    author: "Robert Jordan",
-    books: [
-        { id: "olho-do-mundo", title: "O Olho do Mundo", readingStartedOn: "2026-01-04", readingFinishedOn: "2026-02-18" },
-        { id: "grande-cacada", title: "A Grande Cacada", readingStartedOn: "2026-03-02", readingFinishedOn: null },
-        { id: "dragao-renascido", title: "O Dragao Renascido", readingStartedOn: null, readingFinishedOn: null }
-    ]
-}
-
 export const handler = define.handlers({
     async GET(ctx) {
-        const sessionId = getSessionIdFromCookie(ctx.req.headers)
-        const session = sessionId ? await ctx.state.services.authentication.findActiveSession(sessionId) : null
+        const session = ctx.state.authenticatedSession!
+        const series = await ctx.state.services.series.findBookSeries(session.userId, ctx.params.id)
 
-        if (session === null) {
-            return redirectToLogin()
+        if (series === null) {
+            return redirectToSeries()
         }
 
         return {
             data: {
-                series: {
-                    ...mockSeries,
-                    id: ctx.params.id
-                }
+                series: mapEditableSeries(series)
             }
         }
+    },
+
+    async POST(ctx) {
+        const session = ctx.state.authenticatedSession!
+        const form = await ctx.req.formData()
+
+        try {
+            const series = await ctx.state.services.series.updateBookSeriesDates({
+                userId: session.userId,
+                seriesId: ctx.params.id,
+                books: form.getAll("bookId").map((bookId, index) => ({
+                    bookId: bookId.toString(),
+                    readingStartedOn: form.getAll("bookReadingStartedOn")[index]?.toString() ?? "",
+                    readingFinishedOn: form.getAll("bookReadingFinishedOn")[index]?.toString() ?? ""
+                }))
+            })
+
+            if (series === null) {
+                return jsonResponse({ ok: false, messages: ["Serie nao encontrada na sua biblioteca."] }, 404)
+            }
+
+            return jsonResponse({
+                ok: true,
+                messages: [`As datas de "${series.name}" foram salvas.`],
+                redirectTo: "/biblioteca/series"
+            })
+        } catch (error) {
+            if (error instanceof BookSeriesValidationError) {
+                return jsonResponse({
+                    ok: false,
+                    messages: error.issues.map((issue) => issue.message)
+                }, 400)
+            }
+
+            throw error
+        }
+    },
+
+    async DELETE(ctx) {
+        const session = ctx.state.authenticatedSession!
+        const series = await ctx.state.services.series.findBookSeries(session.userId, ctx.params.id)
+
+        if (series === null) {
+            return jsonResponse({ ok: false, messages: ["Serie nao encontrada na sua biblioteca."] }, 404)
+        }
+
+        const deleted = await ctx.state.services.series.deleteBookSeries(session.userId, ctx.params.id)
+
+        if (!deleted) {
+            return jsonResponse({ ok: false, messages: ["Serie nao encontrada na sua biblioteca."] }, 404)
+        }
+
+        return jsonResponse({
+            ok: true,
+            messages: [`"${series.name}" foi excluida da sua biblioteca.`],
+            redirectTo: "/biblioteca/series"
+        })
     }
 })
 
@@ -45,12 +88,35 @@ export default define.page<typeof handler>(function EditarSerie({ data }) {
     )
 })
 
-function redirectToLogin(): Response {
+function mapEditableSeries(series: BookSeries): EditableSeries {
+    return {
+        id: series.id,
+        name: series.name,
+        author: series.author.name,
+        books: series.books.map((book) => ({
+            id: book.id,
+            title: book.title,
+            readingStartedOn: book.readingStartedOn,
+            readingFinishedOn: book.readingFinishedOn
+        }))
+    }
+}
+
+function redirectToSeries(): Response {
     const headers = new Headers()
-    headers.set("location", "/login")
+    headers.set("location", "/biblioteca/series")
 
     return new Response(null, {
         status: 303,
         headers
+    })
+}
+
+function jsonResponse(body: unknown, status = 200): Response {
+    return new Response(JSON.stringify(body), {
+        status,
+        headers: {
+            "content-type": "application/json; charset=utf-8"
+        }
     })
 }

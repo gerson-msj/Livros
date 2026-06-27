@@ -49,7 +49,6 @@ export default function SeriesList({ series }: { series: ListedSeries[] }) {
                 </>
             }
         >
-            <p class="livros-series-mock-note">Dados temporarios para validar a experiencia visual.</p>
             {series.length === 0
                 ? <EmptySeriesState onNewSeries={openNewSeries} />
                 : (

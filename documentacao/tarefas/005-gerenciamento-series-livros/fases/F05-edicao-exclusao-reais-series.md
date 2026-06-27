@@ -2,8 +2,10 @@
 
 **Tarefa:** [T-005 - Gerenciamento de series de livros](../tarefa.md)
 
-**Estado:** Planejada
+**Estado:** Concluida
+
 **Depende de:** F04
+
 **Tipo de fase:** Comum
 
 ## Objetivo tecnico
@@ -12,7 +14,8 @@ Integrar a edicao de datas e a exclusao de series aos dados reais, concluindo o 
 
 ## Contexto necessario
 
-- [Serie](../../../conhecimento.md#serie): depois do cadastro, somente datas dos livros podem ser alteradas e a serie pode ser excluida inteira.
+- [Serie](../../../conhecimento.md#serie): depois do cadastro, somente datas dos livros podem ser alteradas e a serie pode ser excluida
+  inteira.
 - [Imutabilidade dos cadastros](../../../conhecimento.md#imutabilidade-dos-cadastros): nome, autor, livros e ordem nao devem ser editaveis.
 - [Privacidade](../../../conhecimento.md#privacidade): usuario autenticado deve acessar somente seus proprios dados.
 - [F02 - Experiencia mockada de formulario de serie](F02-experiencia-mockada-formulario-serie.md): base visual da edicao e exclusao.
@@ -45,3 +48,14 @@ Integrar a edicao de datas e a exclusao de series aos dados reais, concluindo o 
 - Inclusao de novos livros em serie existente.
 - Edicao de nome da serie, autor, titulos ou ordem.
 - Encerramento e consolidacao permanente da tarefa.
+
+## Resultado
+
+- Resultado entregue: `/biblioteca/series/:id` passou a carregar somente serie propria, salvar apenas datas dos livros vinculados e excluir
+  a serie completa com seus livros apos confirmacao na interface.
+- Mocks substituidos: serie temporaria, resposta mockada de salvamento e resposta mockada de exclusao foram removidas ou trocadas por
+  handlers reais.
+- Ajuste de validacao aplicado: rota de edicao e exclusao passou a operar via `SeriesService`.
+- Verificacoes realizadas: `deno task build`.
+- Testes unitarios temporarios: removidos conforme solicitacao do usuario; nenhum novo teste foi criado.
+- Riscos, limitacoes ou pendencias: nenhum apos validacao final pelo usuario.

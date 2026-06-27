@@ -1,7 +1,7 @@
 # Conhecimento do projeto
 
 Livros e um MVP para controlar leituras e organizar series de livros. O projeto usa Fresh, Deno e Bulma, possui cadastro, login, redefinicao
-de senha, sessao HTTP persistida em libSQL local e gerenciamento de livros avulsos na area segura `/biblioteca`.
+de senha, sessao HTTP persistida em libSQL local e gerenciamento de livros avulsos e series na area segura `/biblioteca`.
 
 ## Visao
 
@@ -89,10 +89,10 @@ serie inteira.
   suporta a Clipboard API, cria uma sessao inicial por cookie HTTP e mantem a chave visivel antes de seguir para `/biblioteca`.
 - Redefinicao de senha em `/redefinir-senha` com nome de usuario, chave atual e nova senha, invalidando a chave usada, apresentando uma nova
   chave e criando sessao autenticada.
-- Persistencia local com libSQL em `Livros.db` para usuarios, sessoes, autores e livros.
+- Persistencia local com libSQL em `Livros.db` para usuarios, sessoes, autores, livros e series.
 - Senhas e chaves de redefinicao sao armazenadas por hash, nao em texto puro.
 - Sessoes tem validade de uma semana e ha no maximo uma sessao persistida por usuario.
-- `/biblioteca` existe como area segura com opcao de saida, entrada para livros avulsos e entrada de series marcada como recurso futuro.
+- `/biblioteca` existe como area segura com opcao de saida, entrada para livros avulsos e entrada para series.
 - Visitantes sem sessao ativa sao redirecionados de `/biblioteca` para `/login`; usuarios ja logados sao redirecionados de `/login`,
   `/cadastro` e `/redefinir-senha` para `/biblioteca`.
 - Logout remove a sessao persistida, limpa o cookie, redireciona para `/login` e impede novo acesso seguro com a mesma sessao.
@@ -102,8 +102,15 @@ serie inteira.
   apresenta confirmacao e retorna para a lista.
 - `/biblioteca/livros/:id` permite abrir livro avulso proprio para editar somente datas ou excluir o livro. Titulo e autor ficam somente
   leitura; a exclusao exige confirmacao contendo o titulo do livro e retorna para a lista apos sucesso.
+- `/biblioteca/series` lista series do usuario autenticado, ordenadas por inclusao com cadastros mais recentes no inicio, exibindo nome,
+  autor e livros vinculados em ordem.
+- `/biblioteca/series/nova` permite incluir serie com nome, autor existente ou novo, e um ou mais livros com datas opcionais. Ao salvar com
+  sucesso, apresenta confirmacao e retorna para a lista.
+- `/biblioteca/series/:id` permite abrir serie propria para editar somente datas dos livros vinculados ou excluir a serie completa. Nome,
+  autor e titulos ficam somente leitura; a exclusao exige confirmacao e retorna para a lista apos sucesso.
 - Os fluxos de inclusao e edicao alertam o usuario ao tentar voltar com alteracoes nao salvas.
-- Visitantes sem sessao ativa nao acessam as rotas de livros; usuarios autenticados veem, editam e excluem somente seus proprios livros.
+- Visitantes sem sessao ativa nao acessam as rotas de livros ou series; usuarios autenticados veem, editam e excluem somente seus proprios
+  registros.
 - Popup de mensagem reutilizavel como island Preact, com chamada assincrona, retorno `ok` ou `cancel`, temas Bulma, botoes opcionais,
   quebras de linha legiveis e cancelamento por clique fora ou tecla `Esc`.
 - Titulo padrao reutilizavel como island Preact, com area esquerda configuravel, titulo alinhado a esquerda, intencao de voltar emitida por
@@ -111,10 +118,6 @@ serie inteira.
 - As paginas `/login`, `/cadastro`, `/redefinir-senha` e `/biblioteca` usam o titulo padrao; a biblioteca confirma a saida antes de executar
   o logout existente.
 - Alteracoes em `Livros.db` sao ignoradas pelo watcher do Vite para evitar refresh durante o desenvolvimento local.
-
-### Escopo inicial planejado
-
-- Cadastro e organizacao de series de livros.
 
 ## Decisoes
 
@@ -160,7 +163,7 @@ registros.
 
 Dentro dos dados de um mesmo usuario, autores sao compartilhados entre livros avulsos e series e podem ser selecionados em novos cadastros.
 
-O isolamento tambem se aplica a listagens, selecoes, validacoes de duplicidade, edicao e exclusao de livros avulsos.
+O isolamento tambem se aplica a listagens, selecoes, validacoes de duplicidade, edicao e exclusao de livros avulsos e series.
 
 ### Imutabilidade dos cadastros
 
@@ -171,11 +174,11 @@ depois de cadastrada; ela pode ser excluida integralmente.
 
 ### Modelo de livros e autores
 
-Autores e livros sao persistidos em tabelas `authors` e `books`, sempre associados ao usuario. A tabela `books` e unica para livros avulsos
-e futuros livros de series.
+Autores, livros e series sao persistidos em tabelas `authors`, `books` e `series`, sempre associados ao usuario. A tabela `books` e unica
+para livros avulsos e livros de series.
 
-Um livro avulso e identificado por `author_id` preenchido, `series_id` vazio e `series_order` vazia. Um futuro livro de serie devera usar
-`series_id` e `series_order` preenchidos, com `author_id` vazio, herdando o autor da serie.
+Um livro avulso e identificado por `author_id` preenchido, `series_id` vazio e `series_order` vazia. Um livro de serie usa `series_id` e
+`series_order` preenchidos, com `author_id` vazio, herdando o autor da serie.
 
 A referencia de autor permanece opcional no banco para compatibilidade com livros de series, mas o servico mantem autor obrigatorio na regra
 de negocio de livro avulso.
@@ -200,6 +203,10 @@ consumo por componentes interativos ou reutilizacao entre fluxos.
 
 As rotas de livros avulsos confirmadas sao `/biblioteca/livros`, `/biblioteca/livros/novo` e `/biblioteca/livros/:id`. A rota de edicao usa
 `GET` para carregar a pagina, `POST` para salvar datas e `DELETE` para excluir por chamada do componente interativo.
+
+A area segura `/biblioteca` usa middleware aninhado em `routes/biblioteca/_middleware.ts` para validar a sessao e disponibiliza-la em
+`ctx.state.authenticatedSession`. A pagina raiz da biblioteca fica em `routes/biblioteca/index.tsx` para participar da mesma arvore de
+middleware. Requisicoes de pagina sem sessao ativa redirecionam para `/login`; requisicoes que pedem JSON recebem `401`.
 
 ### Organizacao orientada a dominio
 
@@ -250,4 +257,6 @@ popup de mensagem, titulo padrao, aplicacao em cadastro e biblioteca e confirmac
 redefinicao de senha com nova chave, redirecionamentos para login, componentes de autenticacao e sessao unica por usuario. A tarefa
 [TF-004 - Gerenciamento de livros avulsos](tarefas/004-gerenciamento-livros-avulsos/tarefa.md) esta concluida apos implementar e validar
 entrada pela biblioteca, listagem, inclusao, edicao de datas, exclusao, autores privados reutilizaveis, persistencia libSQL e isolamento por
-usuario.
+usuario. A tarefa [T-005 - Gerenciamento de series de livros](tarefas/005-gerenciamento-series-livros/tarefa.md) esta concluida apos
+implementar e validar listagem, inclusao, edicao de datas e exclusao de series, com autores reutilizaveis, livros ordenados, persistencia
+libSQL e isolamento por usuario.

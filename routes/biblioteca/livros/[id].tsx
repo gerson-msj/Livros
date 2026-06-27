@@ -1,6 +1,5 @@
 import { Head } from "fresh/runtime"
 import { StandaloneBookValidationError } from "../../../dominio/livros.ts"
-import { getSessionIdFromCookie } from "../../../infraestrutura/session_cookie.ts"
 import BookEditForm, { type EditableBook } from "../../../islands/BookEditForm.tsx"
 import { define } from "../../../utils.ts"
 
@@ -10,13 +9,7 @@ interface EditBookPageData {
 
 export const handler = define.handlers({
     async GET(ctx) {
-        const sessionId = getSessionIdFromCookie(ctx.req.headers)
-        const session = sessionId ? await ctx.state.services.authentication.findActiveSession(sessionId) : null
-
-        if (session === null) {
-            return redirectToLogin()
-        }
-
+        const session = ctx.state.authenticatedSession!
         const book = await ctx.state.services.books.findStandaloneBook(session.userId, ctx.params.id)
 
         if (book === null) {
@@ -37,13 +30,7 @@ export const handler = define.handlers({
     },
 
     async POST(ctx) {
-        const sessionId = getSessionIdFromCookie(ctx.req.headers)
-        const session = sessionId ? await ctx.state.services.authentication.findActiveSession(sessionId) : null
-
-        if (session === null) {
-            return jsonResponse({ ok: false, messages: ["Sessao expirada. Entre novamente."] }, 401)
-        }
-
+        const session = ctx.state.authenticatedSession!
         const form = await ctx.req.formData()
 
         try {
@@ -76,13 +63,7 @@ export const handler = define.handlers({
     },
 
     async DELETE(ctx) {
-        const sessionId = getSessionIdFromCookie(ctx.req.headers)
-        const session = sessionId ? await ctx.state.services.authentication.findActiveSession(sessionId) : null
-
-        if (session === null) {
-            return jsonResponse({ ok: false, messages: ["Sessao expirada. Entre novamente."] }, 401)
-        }
-
+        const session = ctx.state.authenticatedSession!
         const book = await ctx.state.services.books.findStandaloneBook(session.userId, ctx.params.id)
 
         if (book === null) {
@@ -113,16 +94,6 @@ export default define.page<typeof handler>(function EditarLivro({ data }: { data
         </section>
     )
 })
-
-function redirectToLogin(): Response {
-    const headers = new Headers()
-    headers.set("location", "/login")
-
-    return new Response(null, {
-        status: 303,
-        headers
-    })
-}
 
 function redirectToBooks(): Response {
     const headers = new Headers()

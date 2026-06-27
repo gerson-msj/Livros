@@ -1,5 +1,4 @@
 import {
-    type Author,
     type CreateStandaloneBookInput,
     DuplicateStandaloneBookError,
     type StandaloneBook,
@@ -8,12 +7,7 @@ import {
     validateStandaloneBookDates
 } from "../dominio/livros.ts"
 import type { Clock, IdGenerator } from "./autenticacao_service.ts"
-
-export interface AuthorRepository {
-    listByUser(userId: string): Promise<Author[]>
-    findByUserAndNormalizedName(userId: string, normalizedName: string): Promise<Author | null>
-    create(input: CreateAuthorInput): Promise<Author>
-}
+import type { AuthorsService } from "./autores_service.ts"
 
 export interface StandaloneBookRepository {
     listByUser(userId: string): Promise<StandaloneBook[]>
@@ -22,14 +16,6 @@ export interface StandaloneBookRepository {
     create(input: CreateStandaloneBookRecordInput): Promise<StandaloneBook>
     updateDates(input: UpdateStandaloneBookDatesRecordInput): Promise<StandaloneBook | null>
     deleteByUserAndId(userId: string, bookId: string): Promise<boolean>
-}
-
-export interface CreateAuthorInput {
-    id: string
-    userId: string
-    name: string
-    normalizedName: string
-    createdAt: Date
 }
 
 export interface CreateStandaloneBookRecordInput {
@@ -52,15 +38,11 @@ export interface UpdateStandaloneBookDatesRecordInput {
 
 export class BooksService {
     constructor(
-        private readonly authors: AuthorRepository,
+        private readonly authors: AuthorsService,
         private readonly books: StandaloneBookRepository,
         private readonly ids: IdGenerator,
         private readonly clock: Clock
     ) {}
-
-    listAuthors(userId: string): Promise<Author[]> {
-        return this.authors.listByUser(userId)
-    }
 
     listStandaloneBooks(userId: string): Promise<StandaloneBook[]> {
         return this.books.listByUser(userId)
@@ -73,12 +55,7 @@ export class BooksService {
     async createStandaloneBook(input: CreateStandaloneBookInput): Promise<StandaloneBook> {
         const normalized = validateStandaloneBook(input)
         const now = this.clock.now()
-        const author = await this.findOrCreateAuthor(
-            normalized.userId,
-            normalized.authorName,
-            normalized.normalizedAuthorName,
-            now
-        )
+        const author = await this.authors.findOrCreateAuthor(normalized.userId, normalized.authorName, now)
         const duplicate = await this.books.findByUserTitleAndAuthor(normalized.userId, normalized.normalizedTitle, author.id)
 
         if (duplicate !== null) {
@@ -110,21 +87,5 @@ export class BooksService {
 
     deleteStandaloneBook(userId: string, bookId: string): Promise<boolean> {
         return this.books.deleteByUserAndId(userId, bookId)
-    }
-
-    private async findOrCreateAuthor(userId: string, name: string, normalizedName: string, createdAt: Date): Promise<Author> {
-        const existingAuthor = await this.authors.findByUserAndNormalizedName(userId, normalizedName)
-
-        if (existingAuthor !== null) {
-            return existingAuthor
-        }
-
-        return await this.authors.create({
-            id: this.ids.newId(),
-            userId,
-            name,
-            normalizedName,
-            createdAt
-        })
     }
 }

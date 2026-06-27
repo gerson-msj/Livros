@@ -1,6 +1,6 @@
 # T-005 - Gerenciamento de series de livros
 
-**Estado:** Em desenvolvimento
+**Estado:** Concluida
 
 **Tipo:** Nova capacidade
 
@@ -76,12 +76,16 @@ registrar series como recurso existente e as regras efetivamente implementadas.
 
 ## Decisoes pendentes
 
-- Confirmar se a duplicidade de serie e de livros da serie deve usar a mesma normalizacao ja aplicada aos livros avulsos.
-- Confirmar se as validacoes de datas serao identicas as de livros avulsos: datas opcionais e data de inicio nao posterior a conclusao.
+Nenhuma. Na F03, a duplicidade de series e de livros da serie passou a usar a mesma normalizacao ja aplicada aos livros avulsos. As datas de
+livros de serie passaram a seguir a mesma regra de livros avulsos: opcionais e com inicio nao posterior a conclusao.
+
+Durante a validacao dos fontes, foi confirmado que a tabela `books` permanece compartilhada entre livros avulsos e livros de series, mas as
+camadas de dominio, servico e repositorio devem ficar separadas entre autores, livros avulsos e series. Autores podem ser dependencia de
+livros e series; series tambem podem depender de conceitos de livro, sem concentrar regras de series no servico de livros.
 
 ## Plano
 
-**Revisao:** 1 **Proxima acao:** Aguardar confirmacao para commitar os artefatos de planejamento e iniciar as fases.
+**Revisao:** 1 **Proxima acao:** Tarefa concluida.
 
 ### Estrategia
 
@@ -100,26 +104,53 @@ As decisoes pendentes sobre normalizacao e datas devem ser fechadas durante a pr
 | ---- | --------- | ---------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | F01  | Concluida | Nenhuma    | Criar experiencia mockada da listagem e entrada de series na biblioteca    | [F01 - Experiencia mockada de listagem de series](fases/F01-experiencia-mockada-listagem-series.md)   |
 | F02  | Concluida | F01        | Criar experiencia mockada de inclusao, edicao de datas e exclusao de serie | [F02 - Experiencia mockada de formulario de serie](fases/F02-experiencia-mockada-formulario-serie.md) |
-| F03  | Planejada | F01, F02   | Implementar dominio e persistencia de series com livros ordenados          | [F03 - Dominio e persistencia de series](fases/F03-dominio-persistencia-series.md)                    |
-| F04  | Planejada | F03        | Integrar biblioteca, listagem e inclusao de series com dados reais         | [F04 - Listagem e inclusao reais de series](fases/F04-listagem-inclusao-reais-series.md)              |
-| F05  | Planejada | F04        | Integrar edicao de datas e exclusao real de series                         | [F05 - Edicao e exclusao reais de series](fases/F05-edicao-exclusao-reais-series.md)                  |
+| F03  | Concluida | F01, F02   | Implementar dominio e persistencia de series com livros ordenados          | [F03 - Dominio e persistencia de series](fases/F03-dominio-persistencia-series.md)                    |
+| F04  | Concluida | F03        | Integrar biblioteca, listagem e inclusao de series com dados reais         | [F04 - Listagem e inclusao reais de series](fases/F04-listagem-inclusao-reais-series.md)              |
+| F05  | Concluida | F04        | Integrar edicao de datas e exclusao real de series                         | [F05 - Edicao e exclusao reais de series](fases/F05-edicao-exclusao-reais-series.md)                  |
 
 ## Resumo final da tarefa
 
-Aguardando encerramento.
-
 ### Fonte da verdade
 
-Aguardando encerramento.
+O gerenciamento de series de livros foi implementado e validado. A biblioteca oferece acesso a `/biblioteca/series`, onde o usuario
+autenticado lista somente suas series, cria series com autor existente ou novo e livros ordenados, edita somente datas dos livros vinculados
+e exclui a serie completa apos confirmacao.
+
+### Referencias
+
+- [F01 - Experiencia mockada de listagem de series](fases/F01-experiencia-mockada-listagem-series.md): entrada e listagem validadas com
+  dados mockados.
+- [F02 - Experiencia mockada de formulario de serie](fases/F02-experiencia-mockada-formulario-serie.md): inclusao, edicao, exclusao e
+  confirmacoes validadas com dados mockados.
+- [F03 - Dominio e persistencia de series](fases/F03-dominio-persistencia-series.md): dominio, service, repositorio libSQL, validacoes,
+  isolamento por usuario e exclusao da serie com livros vinculados.
+- [F04 - Listagem e inclusao reais de series](fases/F04-listagem-inclusao-reais-series.md): listagem e cadastro reais integrados a autores e
+  series persistidos.
+- [F05 - Edicao e exclusao reais de series](fases/F05-edicao-exclusao-reais-series.md): edicao real de datas e exclusao real de series.
 
 ### Regras de negocio implementadas
 
-Aguardando encerramento.
+- Series exigem nome, autor e ao menos um livro com titulo.
+- Series duplicadas para o mesmo usuario e autor sao recusadas com normalizacao por codigo.
+- Livros duplicados dentro da mesma serie sao recusados com a mesma normalizacao.
+- Livros da serie recebem ordem crescente automaticamente no cadastro.
+- Depois do cadastro, somente datas dos livros da serie podem ser alteradas.
+- Datas sao opcionais; quando informadas, a data de inicio nao pode ser posterior a conclusao.
+- Series, livros e autores permanecem isolados por usuario.
 
 ### Decisoes tecnicas importantes
 
-Aguardando encerramento.
+- Autores foram separados em dominio, service e repositorio proprios para serem reutilizados por livros avulsos e series.
+- Series usam tabela `series`; livros vinculados a series continuam na tabela `books` com `series_id` e `series_order`, sem autor direto.
+- A area segura `/biblioteca` passou a usar middleware aninhado para centralizar a validacao da sessao e expor a sessao autenticada em
+  `ctx.state`.
 
 ### Limites conhecidos
 
-Aguardando encerramento.
+- O MVP nao permite reordenar livros, adicionar ou remover livros de uma serie existente, editar nome da serie, autor ou titulos depois do
+  cadastro.
+- O ambiente local de producao ainda exige a dependencia nativa opcional do libSQL para subir o servidor gerado no Windows.
+
+## Validacao final da tarefa
+
+**Resultado:** Aprovado **Retorno:** Usuario informou que esta tudo ok com a tarefa 5 e autorizou finalizar.

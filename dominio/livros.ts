@@ -1,12 +1,4 @@
-export const MINIMUM_BOOK_TEXT_LENGTH = 2
-
-export interface Author {
-    id: string
-    userId: string
-    name: string
-    normalizedName: string
-    createdAt: Date
-}
+import { type Author, MINIMUM_TEXT_LENGTH, normalizeSearchText } from "./autores.ts"
 
 export interface StandaloneBook {
     id: string
@@ -71,30 +63,30 @@ export class DuplicateStandaloneBookError extends Error {
     }
 }
 
-export function normalizeSearchText(value: string): string {
-    return value.trim().toLowerCase()
+export function normalizeBookTitle(value: string): string {
+    return value.trim()
 }
 
 export function validateStandaloneBook(input: CreateStandaloneBookInput): NormalizedStandaloneBookInput {
-    const title = input.title.trim()
+    const title = normalizeBookTitle(input.title)
     const authorName = input.authorName.trim()
     const issues: StandaloneBookValidationIssue[] = []
 
-    if (title.length < MINIMUM_BOOK_TEXT_LENGTH) {
+    if (title.length < MINIMUM_TEXT_LENGTH) {
         issues.push({
             field: "title",
             message: "O titulo deve conter no minimo 2 caracteres."
         })
     }
 
-    if (authorName.length < MINIMUM_BOOK_TEXT_LENGTH) {
+    if (authorName.length < MINIMUM_TEXT_LENGTH) {
         issues.push({
             field: "authorName",
             message: "O autor deve conter no minimo 2 caracteres."
         })
     }
 
-    const dates = validateBookDates(input, issues)
+    const dates = validateBookDates(input, issues, "readingStartedOn", "readingFinishedOn")
 
     if (issues.length > 0) {
         throw new StandaloneBookValidationError(issues)
@@ -112,7 +104,7 @@ export function validateStandaloneBook(input: CreateStandaloneBookInput): Normal
 
 export function validateStandaloneBookDates(input: BookDatesInput): NormalizedBookDates {
     const issues: StandaloneBookValidationIssue[] = []
-    const dates = validateBookDates(input, issues)
+    const dates = validateBookDates(input, issues, "readingStartedOn", "readingFinishedOn")
 
     if (issues.length > 0) {
         throw new StandaloneBookValidationError(issues)
@@ -121,22 +113,27 @@ export function validateStandaloneBookDates(input: BookDatesInput): NormalizedBo
     return dates
 }
 
-function validateBookDates(input: BookDatesInput, issues: StandaloneBookValidationIssue[]): NormalizedBookDates {
+export function validateBookDates<TIssue extends { field: string; message: string }>(
+    input: BookDatesInput,
+    issues: TIssue[],
+    startedField: TIssue["field"],
+    finishedField: TIssue["field"]
+): NormalizedBookDates {
     const readingStartedOn = normalizeOptionalDate(input.readingStartedOn)
     const readingFinishedOn = normalizeOptionalDate(input.readingFinishedOn)
 
     if (readingStartedOn !== null && !isCompleteIsoDate(readingStartedOn)) {
         issues.push({
-            field: "readingStartedOn",
+            field: startedField,
             message: "Informe uma data de inicio completa."
-        })
+        } as TIssue)
     }
 
     if (readingFinishedOn !== null && !isCompleteIsoDate(readingFinishedOn)) {
         issues.push({
-            field: "readingFinishedOn",
+            field: finishedField,
             message: "Informe uma data de conclusao completa."
-        })
+        } as TIssue)
     }
 
     if (
@@ -147,9 +144,9 @@ function validateBookDates(input: BookDatesInput, issues: StandaloneBookValidati
         readingStartedOn > readingFinishedOn
     ) {
         issues.push({
-            field: "readingStartedOn",
+            field: startedField,
             message: "A data de inicio nao pode ser posterior a data de conclusao."
-        })
+        } as TIssue)
     }
 
     return {

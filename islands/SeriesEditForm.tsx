@@ -31,6 +31,12 @@ interface FeedbackState {
     messages: string[]
 }
 
+interface SaveResponse {
+    ok: boolean
+    messages: string[]
+    redirectTo?: string
+}
+
 export default function SeriesEditForm({ series }: { series: EditableSeries }) {
     const { popup, showMessage } = usePopupMessage()
     const formTopRef = useRef<HTMLDivElement>(null)
@@ -87,18 +93,48 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
         setIsSaving(true)
 
         try {
+            const form = new FormData()
+            for (const book of books) {
+                form.append("bookId", book.id)
+                form.append("bookReadingStartedOn", book.readingStartedOn)
+                form.append("bookReadingFinishedOn", book.readingFinishedOn)
+            }
+
+            const response = await fetch(`/biblioteca/series/${series.id}`, {
+                method: "POST",
+                body: form,
+                headers: {
+                    accept: "application/json"
+                }
+            })
+
+            if (response.status === 401) {
+                globalThis.location.href = "/login"
+                return
+            }
+
+            const result = await response.json() as SaveResponse
+
+            if (!result.ok) {
+                setFeedback({
+                    theme: "danger",
+                    messages: result.messages
+                })
+                return
+            }
+
             setFeedback({
                 theme: "success",
-                messages: [`As datas de "${series.name}" seriam salvas.`]
+                messages: result.messages
             })
 
             await showMessage({
                 title: "Datas salvas",
-                message: "Fluxo mockado validado. A atualizacao real entra nas proximas fases.",
+                message: result.messages[0] ?? "Datas salvas com sucesso.",
                 theme: "success"
             })
 
-            globalThis.location.href = "/biblioteca/series"
+            globalThis.location.href = result.redirectTo ?? "/biblioteca/series"
         } finally {
             setIsSaving(false)
         }
@@ -126,13 +162,35 @@ export default function SeriesEditForm({ series }: { series: EditableSeries }) {
         setIsDeleting(true)
 
         try {
+            const response = await fetch(`/biblioteca/series/${series.id}`, {
+                method: "DELETE",
+                headers: {
+                    accept: "application/json"
+                }
+            })
+
+            if (response.status === 401) {
+                globalThis.location.href = "/login"
+                return
+            }
+
+            const result = await response.json() as SaveResponse
+
+            if (!result.ok) {
+                setFeedback({
+                    theme: "danger",
+                    messages: result.messages
+                })
+                return
+            }
+
             await showMessage({
                 title: "Serie excluida",
-                message: "Fluxo mockado validado. A exclusao real entra nas proximas fases.",
+                message: result.messages[0] ?? "Serie excluida com sucesso.",
                 theme: "success"
             })
 
-            globalThis.location.href = "/biblioteca/series"
+            globalThis.location.href = result.redirectTo ?? "/biblioteca/series"
         } finally {
             setIsDeleting(false)
         }
