@@ -11,7 +11,7 @@ inspecione todo o projeto ou toda a documentacao sem necessidade.
 
 - [Conhecimento do produto e decisoes tecnicas](documentacao/conhecimento.md):
   visao, dominio, recursos, estado atual e decisoes permanentes.
-- [Trabalhos rastreaveis](documentacao/trabalhos.md): propostas, planos e
+- [Tarefas rastreaveis](documentacao/tarefas.md): propostas, planos e
   andamento de mudancas com resultado observavel.
 - [README do esqueleto Fresh](README.md): comandos basicos fornecidos pelo
   projeto inicial.
@@ -21,9 +21,11 @@ inspecione todo o projeto ou toda a documentacao sem necessidade.
 - Trate o projeto como um MVP simples e evite complexidade preventiva.
 - Preserve Deno e Fresh como base tecnica.
 - Use Bulma para a interface quando os recursos do produto forem implementados.
+- Para ajustes visuais ou de layout, valide com navegador quando disponivel.
+  No VS Code, prefira `@chrome`/Chrome plugin para validar a tela renderizada.
 - Comece a persistencia com libSQL local e mantenha o uso futuro do Turso como
   direcao arquitetural.
 - Diferencie capacidades existentes de recursos apenas planejados.
 - Registre novas decisoes permanentes no conhecimento local.
-- Registre trabalho ativo em `documentacao/trabalhos.md` somente quando houver
+- Registre tarefa ativa em `documentacao/tarefas.md` somente quando houver
   uma mudanca rastreavel com resultado observavel.

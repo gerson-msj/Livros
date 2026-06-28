@@ -1,0 +1,162 @@
+import type { ComponentChild } from "preact"
+import { useEffect, useMemo, useState } from "preact/hooks"
+
+export type PopupMessageResult = "ok" | "cancel" | "negative"
+export type PopupMessageTheme = "primary" | "info" | "success" | "warning" | "danger" | "dark"
+
+export interface PopupMessageOptions {
+    message: string
+    title?: string
+    theme?: PopupMessageTheme
+    positiveText?: string
+    negativeText?: string
+    showPositiveButton?: boolean
+    showNegativeButton?: boolean
+}
+
+export interface NormalizedPopupMessageOptions {
+    message: string
+    title?: string
+    theme: PopupMessageTheme
+    positiveText: string
+    negativeText: string
+    showPositiveButton: boolean
+    showNegativeButton: boolean
+}
+
+interface ActiveMessage {
+    options: NormalizedPopupMessageOptions
+    finish(result: PopupMessageResult): void
+}
+
+export function usePopupMessage(): {
+    popup: ComponentChild
+    showMessage(options: PopupMessageOptions): Promise<PopupMessageResult>
+} {
+    const [activeMessage, setActiveMessage] = useState<ActiveMessage | null>(null)
+
+    useEffect(() => {
+        if (!activeMessage) {
+            return
+        }
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                activeMessage.finish("cancel")
+            }
+        }
+
+        document.addEventListener("keydown", onKeyDown)
+        return () => document.removeEventListener("keydown", onKeyDown)
+    }, [activeMessage])
+
+    return useMemo(() => ({
+        popup: activeMessage && <PopupMessageDialog activeMessage={activeMessage} />,
+        showMessage(options: PopupMessageOptions) {
+            return new Promise<PopupMessageResult>((resolve) => {
+                const session = createPopupMessageSession((result) => {
+                    setActiveMessage(null)
+                    resolve(result)
+                })
+
+                setActiveMessage({
+                    options: normalizePopupMessageOptions(options),
+                    finish: session.finish
+                })
+            })
+        }
+    }), [activeMessage])
+}
+
+export function normalizePopupMessageOptions(options: PopupMessageOptions): NormalizedPopupMessageOptions {
+    return {
+        message: options.message,
+        title: options.title,
+        theme: options.theme ?? "info",
+        positiveText: options.positiveText ?? "OK",
+        negativeText: options.negativeText ?? "Cancelar",
+        showPositiveButton: options.showPositiveButton ?? true,
+        showNegativeButton: options.showNegativeButton ?? false
+    }
+}
+
+export function getPopupMessageThemeClass(theme: PopupMessageTheme): string {
+    return `is-${theme}`
+}
+
+export function createPopupMessageSession(resolve: (result: PopupMessageResult) => void): {
+    finish(result: PopupMessageResult): void
+} {
+    let finished = false
+
+    return {
+        finish(result) {
+            if (finished) {
+                return
+            }
+
+            finished = true
+            resolve(result)
+        }
+    }
+}
+
+function PopupMessageDialog({ activeMessage }: { activeMessage: ActiveMessage }) {
+    const { options } = activeMessage
+    const themeClass = getPopupMessageThemeClass(options.theme)
+
+    return (
+        <div
+            class="modal is-active livros-popup-message"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={options.title ? "popup-message-title" : undefined}
+        >
+            <button
+                class="modal-background"
+                type="button"
+                aria-label="Cancelar mensagem"
+                onClick={() => activeMessage.finish("cancel")}
+            >
+            </button>
+            <div class="modal-content livros-popup-message-content">
+                <article class="message livros-popup-message-panel">
+                    {options.title && (
+                        <header class="message-header">
+                            <p id="popup-message-title">{options.title}</p>
+                        </header>
+                    )}
+                    <section class="message-body livros-popup-message-body">
+                        <div class="livros-popup-message-layout">
+                            <div class="livros-popup-message-text">
+                                {options.message}
+                            </div>
+                            {(options.showPositiveButton || options.showNegativeButton) && (
+                                <div class="livros-popup-message-actions">
+                                    {options.showNegativeButton && (
+                                        <button
+                                            class="button is-light livros-popup-message-button"
+                                            type="button"
+                                            onClick={() => activeMessage.finish("negative")}
+                                        >
+                                            {options.negativeText}
+                                        </button>
+                                    )}
+                                    {options.showPositiveButton && (
+                                        <button
+                                            class={`button ${themeClass} livros-popup-message-button`}
+                                            type="button"
+                                            onClick={() => activeMessage.finish("ok")}
+                                        >
+                                            {options.positiveText}
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                </article>
+            </div>
+        </div>
+    )
+}

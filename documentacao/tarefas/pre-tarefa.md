@@ -1,0 +1,15 @@
+# Gerenciamento de Livros
+
+Criar o gerenciamento de livros, onde o usuario poe visualizar, adicionar, alterar e excluir livros avulsos. Indiretamente, o usuário podera criar autores, todo esses dados estarão associados ao seu usuario, sem interferencia do cadastro de livros realizados por eutros usuarios.
+
+O gerenciamento de livros foi planejado para utilizar três rotas, /biblioteca/livros, /biblioteca/incluir-livro /biblioteca/editar-livro, esta estrutura está aberta a sugestões para uma possível estrutura melhor.
+
+Está prevista a criação de no mínimo dois componentes, uma para datas e um para seleção de autores.
+
+A rota /biblioteca/livros apresentará um botão para a inclusão de um novo livro e uma lista de livros existentes do usuário, apresentando o título, o autor e as datas de inicio de leitura e conclusão, a lista é ordenada pela inclusão, onde os mais antigos aparecem no fim da lista e os cadastros mais recentes aparecem no início. Um clique na lista abre o livro para edição.
+
+Ao editar um livro o titulo e o autor são somente leitura, as datas podem ser alteradas. O usuario deve ter a opção de salvar as alterações, excluir ou voltar (funcionalidade do header). ao salvar, o usuario visualiza uma confirmação (popup) e ao confirmar volta a lista de livros, ao voltar, se houver alguma alteração não salva, o usuario deve ser questionado sobre o retorno, ao excluir, o usuario deve confirmar que quer excluir o livro x, recebendo uma confirmação de exclusão e o retorno a lista de livros. As datas editadas devem ser coerentes, data de inicio não pode ser superior a data de conclusão. Um modelo de componente de data será fornecido para haver base de funcionalidade desejada.
+
+Ao criar um livro, o usuario informa o titulo, para o autor, um modelo de componente será fornecido para haver base de funcionalidade, as datas poderão ser escolhidas ou mantidas em branco, ao salvar, não pode existir um autor e titulo já cadastrados, mas o mesmo titulo pode existir, desde que com autor diferente.. O componente de seleção de autores apresentará uma lista de autores existentes (somente pré-cadastrados pelo usuario, os autores de usuarios diferentes não se misturam), o usuario poderá filtar autores ou digitar um novo nome de autor, por ser novo, este será criado juntamente com o livro e passa a vigorar como um dos autores do usuario. O modelo do componente do autor dará mais detalhes de como isso deve funcionar. Ao salvar, o usuario recebe uma confirmação (popup) e volta a lista de livros. Datas só são aceitas se completas ou em branco, titulos e autores devem ter dois ou mais caracteres. Quando em edição, ao tentar voltar, o usuario recebe um alerta pedindo confirmação.
+
+Esta tarefa deve separar fases de UX, onde as telas e componentes serão construidas com dados mockados de modo assistido, ou seja, com validação ao vivo constante, em diversas rodadas até estar tudo ok, um pair entre a skill designer e eu. Nesta fase fornecerei os exemplos de componente para explicar melhor a usabilidade.

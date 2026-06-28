@@ -1,5 +1,11 @@
 import type { Client, InValue, Row } from "@libsql/client"
-import type { CreateSessionInput, CreateUserInput, SessionRepository, UserRepository } from "../aplicacao/autenticacao_service.ts"
+import type {
+    CreateSessionInput,
+    CreateUserInput,
+    SessionRepository,
+    UpdateUserSecretsInput,
+    UserRepository
+} from "../aplicacao/autenticacao_service.ts"
 import type { Session, User } from "../dominio/autenticacao.ts"
 import { ensureDatabaseSchema } from "./database.ts"
 
@@ -38,6 +44,30 @@ export class LibsqlUserRepository implements UserRepository {
             resetKeyHash: input.resetKeyHash,
             createdAt: input.createdAt
         }
+    }
+
+    async updateSecrets(input: UpdateUserSecretsInput): Promise<User> {
+        await ensureDatabaseSchema(this.client)
+
+        const result = await this.client.execute({
+            sql: `
+                UPDATE users
+                SET password_hash = ?, reset_key_hash = ?
+                WHERE id = ?
+                RETURNING id, username, password_hash, reset_key_hash, created_at
+            `,
+            args: [
+                input.passwordHash,
+                input.resetKeyHash,
+                input.id
+            ]
+        })
+
+        if (!result.rows[0]) {
+            throw new Error("Usuário não encontrado para atualizar segredos.")
+        }
+
+        return mapUser(result.rows[0])
     }
 }
 
@@ -84,12 +114,21 @@ export class LibsqlSessionRepository implements SessionRepository {
         return result.rows[0] ? mapSession(result.rows[0]) : null
     }
 
-    async end(id: string, endedAt: Date): Promise<void> {
+    async end(id: string, _endedAt: Date): Promise<void> {
         await ensureDatabaseSchema(this.client)
 
         await this.client.execute({
-            sql: "UPDATE sessions SET ended_at = ? WHERE id = ? AND ended_at IS NULL",
-            args: [endedAt.toISOString(), id]
+            sql: "DELETE FROM sessions WHERE id = ?",
+            args: [id]
+        })
+    }
+
+    async endActiveByUserId(userId: string, _endedAt: Date): Promise<void> {
+        await ensureDatabaseSchema(this.client)
+
+        await this.client.execute({
+            sql: "DELETE FROM sessions WHERE user_id = ?",
+            args: [userId]
         })
     }
 }
