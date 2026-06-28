@@ -1,7 +1,6 @@
 # T-007 - Migrations e preparo para Turso
 
-**Estado:** Concluida
-**Tipo:** Infraestrutura
+**Estado:** Concluida **Tipo:** Infraestrutura
 
 ## Resumo
 
@@ -32,13 +31,14 @@ A aplicacao tambem precisa aceitar os dados de conexao remota do Turso para uso 
 
 ## Conhecimento relacionado
 
-- [Persistencia com libSQL e Turso](../../conhecimento.md#persistencia-com-libsql-e-turso): define libSQL local e Turso como direcao arquitetural.
+- [Persistencia com libSQL e Turso](../../conhecimento.md#persistencia-com-libsql-e-turso): define libSQL local e Turso como direcao
+  arquitetural.
 - [Estado atual](../../conhecimento.md#estado-atual): descreve as tabelas e recursos persistidos atualmente.
 
 ## Avaliacao arquitetural
 
-A estrutura de migrations passa a ser uma decisao permanente de infraestrutura. O conhecimento local deve ser consolidado quando a tarefa for
-encerrada.
+A estrutura de migrations passa a ser uma decisao permanente de infraestrutura. O conhecimento local deve ser consolidado quando a tarefa
+for encerrada.
 
 ## Decisoes pendentes
 
@@ -49,6 +49,7 @@ Nenhuma.
 - Estrutura inicial de migrations SQL criada em `infraestrutura/migrations`.
 - Helper local `deno task db:migrate` criado para aplicacao opcional das migrations.
 - Cliente libSQL preparado para receber `LIVROS_DATABASE_URL` e `LIVROS_DATABASE_AUTH_TOKEN`.
+- Driver de producao ajustado para `@tursodatabase/serverless`, evitando dependencias nativas no Deno Deploy.
 - Decisao permanente registrada em `documentacao/conhecimento.md`.
 - URL do banco Turso registrada: `libsql://livros-gerson-msj.aws-us-east-1.turso.io`.
 
@@ -62,6 +63,8 @@ inicial do banco e uma tabela `schema_migrations` para registrar versoes aplicad
 
 O banco Turso de producao foi definido como `libsql://livros-gerson-msj.aws-us-east-1.turso.io`, com token mantido fora da documentacao e do
 repositorio. A migration inicial foi aplicada com sucesso no Turso pelo usuario, e as variaveis de ambiente foram configuradas em producao.
+O acesso remoto em producao usa `@tursodatabase/serverless` para evitar carregamento de modulos nativos no Deno Deploy, enquanto o banco
+local continua usando `@libsql/client`.
 
 ### Referencias
 
