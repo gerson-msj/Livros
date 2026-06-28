@@ -1,16 +1,18 @@
-import { type Client, createClient } from "@libsql/client"
+import type { Client, InArgs, InStatement, ResultSet, TransactionMode } from "@libsql/client"
+import { type BatchStatement, type Config, connect, type Connection } from "@tursodatabase/serverless"
 
 const DEFAULT_DATABASE_URL = "file:Livros.db"
 
 let sharedClient: Client | null = null
 const migrations = new WeakMap<Client, Promise<void>>()
+const databaseUrl = Deno.env.get("LIVROS_DATABASE_URL") ?? DEFAULT_DATABASE_URL
+const databaseAuthToken = Deno.env.get("LIVROS_DATABASE_AUTH_TOKEN")
+const usesLocalFileDatabase = databaseUrl.startsWith("file:")
+const localCreateClient = usesLocalFileDatabase ? (await loadLocalClientFactory()) : null
 
 export function getDatabaseClient(): Client {
     if (sharedClient === null) {
-        sharedClient = createClient({
-            url: Deno.env.get("LIVROS_DATABASE_URL") ?? DEFAULT_DATABASE_URL,
-            authToken: Deno.env.get("LIVROS_DATABASE_AUTH_TOKEN")
-        })
+        sharedClient = createDatabaseClient()
     }
 
     return sharedClient
@@ -101,4 +103,63 @@ async function runMigrations(client: Client): Promise<void> {
             args: ["0001", "schema_inicial"]
         }
     ], "write")
+}
+
+function createDatabaseClient(): Client {
+    if (usesLocalFileDatabase) {
+        return localCreateClient!({
+            url: databaseUrl,
+            authToken: databaseAuthToken
+        })
+    }
+
+    return new TursoServerlessClient({
+        url: databaseUrl,
+        authToken: databaseAuthToken
+    }) as unknown as Client
+}
+
+async function loadLocalClientFactory(): Promise<(config: { url: string; authToken?: string }) => Client> {
+    const specifier = "@libsql/client"
+    const module = await import(specifier) as typeof import("@libsql/client")
+
+    return module.createClient
+}
+
+class TursoServerlessClient {
+    readonly protocol = "https"
+    readonly closed = false
+    private readonly connection: Connection
+
+    constructor(config: Config) {
+        this.connection = connect(config)
+    }
+
+    execute(stmt: InStatement, args?: InArgs): Promise<ResultSet> {
+        if (typeof stmt === "string") {
+            return this.connection.execute(stmt, Array.isArray(args) ? args : undefined)
+        }
+
+        return this.connection.execute(stmt.sql, Array.isArray(stmt.args) ? stmt.args : undefined)
+    }
+
+    batch(stmts: Array<InStatement>, mode?: TransactionMode): Promise<Array<ResultSet>> {
+        return this.connection.batch(stmts as BatchStatement[], mapTransactionMode(mode)) as Promise<Array<ResultSet>>
+    }
+
+    close(): void {
+        void this.connection.close()
+    }
+}
+
+function mapTransactionMode(mode?: TransactionMode): "deferred" | "immediate" | undefined {
+    if (mode === "write") {
+        return "immediate"
+    }
+
+    if (mode === "deferred") {
+        return "deferred"
+    }
+
+    return undefined
 }

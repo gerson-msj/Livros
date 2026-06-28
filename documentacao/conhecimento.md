@@ -153,6 +153,9 @@ banco, a CLI do Turso pode ser usada para confirmar latencias reais da conexao l
 O banco Turso inicial do projeto usa a URL `libsql://livros-gerson-msj.aws-us-east-1.turso.io`. O token de acesso nao deve ser registrado na
 documentacao ou no repositorio; ele deve permanecer armazenado separadamente e ser configurado por variavel de ambiente.
 
+Em producao, a conexao com Turso usa o driver `@tursodatabase/serverless`, baseado em HTTP/fetch, para evitar dependencias nativas no Deno
+Deploy. O driver `@libsql/client` permanece restrito ao uso local com `file:Livros.db`.
+
 ### Autenticacao e redefinicao de senha
 
 O sistema nao exige email. Cada conta usa nome de usuario e senha.
