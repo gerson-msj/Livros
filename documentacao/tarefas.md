@@ -15,3 +15,5 @@ contexto, decisoes pendentes e evidencias relevantes sem poluir o conhecimento p
   exclusao de series de livros do usuario.
 - [T-006 - Biblioteca com ultimos livros](tarefas/006-biblioteca-ultimos-livros/tarefa.md): layout da biblioteca com pontos de entrada
   reduzidos e lista compacta dos ultimos livros do usuario.
+- [T-007 - Migrations e preparo para Turso](tarefas/007-migrations-turso/tarefa.md): estrutura de migrations SQL manuais e configuracao
+  inicial para conexao com Turso.

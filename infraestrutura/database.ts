@@ -8,7 +8,8 @@ const migrations = new WeakMap<Client, Promise<void>>()
 export function getDatabaseClient(): Client {
     if (sharedClient === null) {
         sharedClient = createClient({
-            url: Deno.env.get("LIVROS_DATABASE_URL") ?? DEFAULT_DATABASE_URL
+            url: Deno.env.get("LIVROS_DATABASE_URL") ?? DEFAULT_DATABASE_URL,
+            authToken: Deno.env.get("LIVROS_DATABASE_AUTH_TOKEN")
         })
     }
 
@@ -30,6 +31,11 @@ export function ensureDatabaseSchema(client = getDatabaseClient()): Promise<void
 
 async function runMigrations(client: Client): Promise<void> {
     await client.batch([
+        `CREATE TABLE IF NOT EXISTS schema_migrations (
+            version TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            applied_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+        )`,
         `CREATE TABLE IF NOT EXISTS users (
             id TEXT PRIMARY KEY,
             username TEXT NOT NULL UNIQUE,
@@ -89,6 +95,10 @@ async function runMigrations(client: Client): Promise<void> {
         )`,
         "CREATE INDEX IF NOT EXISTS idx_books_user_created_at ON books(user_id, created_at)",
         "CREATE INDEX IF NOT EXISTS idx_books_user_title_author ON books(user_id, normalized_title, author_id)",
-        "CREATE INDEX IF NOT EXISTS idx_books_user_series_order ON books(user_id, series_id, series_order)"
+        "CREATE INDEX IF NOT EXISTS idx_books_user_series_order ON books(user_id, series_id, series_order)",
+        {
+            sql: "INSERT OR IGNORE INTO schema_migrations (version, name) VALUES (?, ?)",
+            args: ["0001", "schema_inicial"]
+        }
     ], "write")
 }

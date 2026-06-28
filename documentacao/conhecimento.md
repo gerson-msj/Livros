@@ -142,6 +142,17 @@ compatibilidade com SQLite.
 SQLite foi preferido ao Deno KV por ser mais abrangente para o dominio esperado. libSQL foi escolhido por permitir trabalhar tanto
 localmente quanto com Turso.
 
+O schema do banco possui scripts SQL versionados em `infraestrutura/migrations`. A criacao inicial no Turso deve ser feita manualmente a
+partir desses scripts, e futuras alteracoes de schema devem adicionar novas migrations numeradas. O projeto mantem um helper local
+`deno task db:migrate` para aplicar as migrations quando conveniente, mas migrations de producao continuam sendo uma acao manual.
+
+Para usuarios no Brasil, a regiao inicial recomendada para o banco Turso e Virginia entre as opcoes disponiveis avaliadas, por ficar na
+costa leste dos Estados Unidos e tender a ter melhor latencia que Ohio, Oregon, Ireland, Mumbai ou Tokyo. Antes da criacao definitiva do
+banco, a CLI do Turso pode ser usada para confirmar latencias reais da conexao local.
+
+O banco Turso inicial do projeto usa a URL `libsql://livros-gerson-msj.aws-us-east-1.turso.io`. O token de acesso nao deve ser registrado na
+documentacao ou no repositorio; ele deve permanecer armazenado separadamente e ser configurado por variavel de ambiente.
+
 ### Autenticacao e redefinicao de senha
 
 O sistema nao exige email. Cada conta usa nome de usuario e senha.
